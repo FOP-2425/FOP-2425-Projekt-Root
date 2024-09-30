@@ -3,6 +3,7 @@ plugins {
     application
     alias(libs.plugins.style)
     alias(libs.plugins.jagr.gradle)
+    alias(libs.plugins.javafx)
 }
 
 version = file("version").readLines().first()
@@ -41,6 +42,16 @@ tasks {
             runDir.mkdirs()
         }
         workingDir = runDir
+        jvmArgs(
+            "-Djava.awt.headless=true",
+            "-Dtestfx.robot=glass",
+            "-Dtestfx.headless=true",
+            "-Dprism.order=sw",
+            "-Dprism.lcdtext=false",
+            "-Dprism.subpixeltext=false",
+            "-Dglass.win.uiScale=100%",
+            "-Dprism.text=t2k"
+        )
         useJUnitPlatform()
     }
     withType<JavaCompile> {
@@ -48,4 +59,13 @@ tasks {
         sourceCompatibility = "17"
         targetCompatibility = "17"
     }
+    javadoc {
+        options.jFlags?.add("-Duser.language=en")
+        options.optionFiles = mutableListOf(project.file("src/main/javadoc.options"))
+    }
+}
+
+javafx {
+    version = "21"
+    modules("javafx.controls", "javafx.graphics", "javafx.base", "javafx.fxml", "javafx.swing", "javafx.media")
 }
