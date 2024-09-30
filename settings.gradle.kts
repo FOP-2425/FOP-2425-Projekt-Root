@@ -7,4 +7,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Projekt-Root"
+rootProject.name = "FOP-2425-Projekt-Root"
