@@ -8,21 +8,59 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
+/**
+ * The NameGenerator class generates new names based on a given list of names
+ * using a markov chain.
+ * The order of the markov chain can be specified.
+ *
+ * A list of german town names is included in the resources folder.
+ * The list was taken from the "Gemeindeverzeichnis Deutschland" from the
+ * "Statistisches Bundesamt"
+ * (https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/_inhalt.html)
+ * version from the 30.09.2024.
+ *
+ */
 public class NameGenerator {
     public final Map<String, SortedMap<Character, Integer>> ngramCollection = new HashMap<>();
     private final int order;
     private final Random random;
 
+    /**
+     * Creates a new NameGenerator trained on the given names with the specified
+     * order.
+     * Uses the given random instance.
+     *
+     * @param names  the names to train on
+     * @param order  the order of the markov chain
+     * @param random the random instance to use
+     */
     public NameGenerator(String[] names, int order, Random random) {
         this.random = random;
         this.order = order;
         train(names, order);
     }
 
+    /**
+     * Creates a new NameGenerator trained on the given names with the specified
+     * order.
+     * Uses a new random instance.
+     *
+     * {@link NameGenerator#NameGenerator(String[], int, Random)} for more
+     * information.
+     *
+     * @param names the names to train on
+     * @param order the order of the markov chain
+     */
     public NameGenerator(String[] names, int order) {
         this(names, order, new Random());
     }
 
+    /**
+     * Trains the markov chain on the given names with the specified order.
+     *
+     * @param names the names to train on
+     * @param order the order of the markov chain
+     */
     private void train(String[] names, int order) {
         for (String name : names) {
             name = "^" + name + "$";
@@ -38,6 +76,13 @@ public class NameGenerator {
         }
     }
 
+    /**
+     * Returns a weighted random choice based on the given characters and weights.
+     *
+     * @param characters the characters to choose from
+     * @param weights    the weights of the characters
+     * @return the chosen character
+     */
     private char weightedRandomChoice(List<Character> characters, List<Integer> weights) {
         int totalWeight = weights.stream().mapToInt(Integer::intValue).sum();
         int randomIndex = random.nextInt(totalWeight);
@@ -53,6 +98,12 @@ public class NameGenerator {
         return characters.get(characters.size() - 1);
     }
 
+    /**
+     * Generates a new name with at most the given length.
+     *
+     * @param length the maximum length of the name
+     * @return the generated name
+     */
     public String generateName(int length) {
         String result = ((Function<List<String>, String>) (ngrams) -> {
             return ngrams.stream().skip(random.nextInt(ngrams.size())).findFirst().get();
