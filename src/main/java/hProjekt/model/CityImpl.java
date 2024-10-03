@@ -6,26 +6,22 @@ public record CityImpl(TilePosition position, String name, boolean isStartingCit
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getName'");
+        return name;
     }
 
     @Override
     public TilePosition getPosition() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPosition'");
+        return position;
     }
 
     @Override
     public HexGrid getHexGrid() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHexGrid'");
+        return hexGrid;
     }
 
     @Override
     public boolean isStartingCity() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStartingCity'");
+        return isStartingCity;
     }
 
     @Override
