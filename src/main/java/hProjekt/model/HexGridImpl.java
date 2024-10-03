@@ -55,6 +55,16 @@ public class HexGridImpl implements HexGrid {
                 random));
     }
 
+    /**
+     * Performs a random walk starting at the given position.
+     * The walk will be of the given length.
+     * Adds tiles of the given type.
+     *
+     * @param start  the starting position
+     * @param type   the type of the tiles to add
+     * @param length the length of the walk
+     */
+    @DoNotTouch
     private void doRandomWalk(final TilePosition start, final Tile.Type type, final int length) {
         TilePosition current = start;
         for (int i = 0; i < length; i++) {
@@ -65,6 +75,18 @@ public class HexGridImpl implements HexGrid {
         }
     }
 
+    /**
+     * Checks if the neighbouring tiles of the given position satisfy the given
+     * predicate.
+     * Checks the tiles in the given radius.
+     *
+     * @param center    the center position
+     * @param predicate the predicate to check
+     * @param radius    the radius to check
+     * @return true if the predicate is satisfied by a neighbouring tile, false
+     *         otherwise
+     */
+    @DoNotTouch
     private boolean isNear(final TilePosition center, final Predicate<Tile> predicate, final int radius) {
         boolean[] found = { false };
         TilePosition.forEachSpiral(center, radius, (position, params) -> {
@@ -79,10 +101,10 @@ public class HexGridImpl implements HexGrid {
 
     /**
      * Initializes the tiles in this grid.
+     * Performs several random walks to create a random map.
+     * The map will contain plains and mountains.
      *
-     * @param grid_scale          radius of the grid, center is included
-     * @param rollNumberGenerator a supplier returning a tile's roll number
-     * @param tileTypeGenerator   a supplier returning a tile's type
+     * @param grid_scale the scale of the grid
      */
     @DoNotTouch
     private void initTiles(final int grid_scale) {
