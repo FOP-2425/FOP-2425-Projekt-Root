@@ -108,8 +108,8 @@ public interface Tile {
      * Custom tile types need to be added to this list manually.
      */
     enum Type {
-        PLAIN(Color.web("#99C000")),
-        MOUNTAIN(Color.web("#50B695"));
+        PLAIN(Color.GREEN),
+        MOUNTAIN(Color.BROWN);
 
         /**
          * The color of the tile.
