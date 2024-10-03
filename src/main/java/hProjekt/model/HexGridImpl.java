@@ -1,6 +1,7 @@
 package hProjekt.model;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,11 +39,10 @@ public class HexGridImpl implements HexGrid {
     private final Random random = new Random();
 
     /**
-     * Constructs a new hex grid with the specified radius and generators.
+     * Creates a new HexGrid with the given scale.
      *
-     * @param scale               radius of the grid, center is included
-     * @param rollNumberGenerator a supplier returning a tile's roll number
-     * @param tileTypeGenerator   a supplier returning a tile's type
+     * @param scale the scale of the grid
+     * @throws IOException
      */
     @DoNotTouch
     public HexGridImpl(final int scale) throws IOException {
@@ -51,8 +51,16 @@ public class HexGridImpl implements HexGrid {
         initTiles(scale);
         initEdges();
 
-        initCities(new NameGenerator(Files.readAllLines(Paths.get("town_names_ger.txt")).toArray(String[]::new), 3,
-                random));
+        String[] names = new String[0];
+
+        try {
+            names = Files.readAllLines(Paths.get(
+                    HexGridImpl.class.getResource("/town_names_ger.txt").toURI())).toArray(String[]::new);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        initCities(36, new NameGenerator(names, 3, random));
     }
 
     /**
@@ -122,8 +130,11 @@ public class HexGridImpl implements HexGrid {
         }
     }
 
-    private void initCities(NameGenerator nameGenerator) {
-        for (final Tile tile : this.tiles.values()) {
+    @DoNotTouch
+    private void initCities(int amount, NameGenerator nameGenerator) {
+        while (cities.size() < amount) {
+            Tile tile = tiles.values().stream().skip(random.nextInt(tiles.size())).findFirst().get();
+
             if (tile.getType() != Tile.Type.PLAIN) {
                 continue;
             }
@@ -132,15 +143,17 @@ public class HexGridImpl implements HexGrid {
             if (tile.isAtCaost()) {
                 probability = 0.1;
             }
-            if (isNear(tile.getPosition(), t -> t.getType() == Tile.Type.MOUNTAIN, 1)) {
+
+            if (isNear(tile.getPosition(), t -> t != null && t.getType() == Tile.Type.MOUNTAIN, 1)) {
                 probability = 0.05;
             }
-            if (isNear(tile.getPosition(), t -> cities.get(tile.getPosition()) != null, 2)) {
+
+            if (isNear(tile.getPosition(), t -> t != null && cities.get(t.getPosition()) != null, 3)) {
                 probability = 0.001;
             }
 
             if (random.nextDouble() < probability) {
-                final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(15), false, this);
+                final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(10), false, this);
                 this.cities.put(tile.getPosition(), city);
             }
         }
