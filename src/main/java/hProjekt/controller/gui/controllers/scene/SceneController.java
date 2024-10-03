@@ -1,7 +1,8 @@
-package hProjekt.controller.gui;
+package hProjekt.controller.gui.controllers.scene;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
+import hProjekt.controller.gui.controllers.Controller;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 

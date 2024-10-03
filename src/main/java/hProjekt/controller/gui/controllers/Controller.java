@@ -1,4 +1,4 @@
-package hProjekt.controller.gui;
+package hProjekt.controller.gui.controllers;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
