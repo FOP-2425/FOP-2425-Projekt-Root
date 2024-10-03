@@ -5,6 +5,8 @@ import java.io.PrintStream;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
+import hProjekt.controller.gui.SceneSwitcher;
+import hProjekt.controller.gui.SceneSwitcher.SceneType;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -36,8 +38,8 @@ public class MyApplication extends Application {
         stage.setHeight(720);
 
         // TODO: Uncomment when implemented
-        // SceneSwitcher.getInstance(stage,
-        // gameLoopStart).loadScene(SceneType.MAIN_MENU);
+        SceneSwitcher.getInstance(stage, (gc) -> {
+        }).loadScene(SceneType.MAP);
     }
 
     /**
