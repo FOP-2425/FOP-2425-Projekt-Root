@@ -261,8 +261,7 @@ public class HexGridImpl implements HexGrid {
 
     @Override
     public Map<TilePosition, City> getCities() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCities'");
+        return Collections.unmodifiableMap(cities);
     }
 
     @Override
