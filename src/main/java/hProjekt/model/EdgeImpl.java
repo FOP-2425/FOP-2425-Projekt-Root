@@ -38,14 +38,7 @@ public record EdgeImpl(
     }
 
     @Override
-    @StudentImplementationRequired("H1.3")
-    public boolean connectsTo(final Edge other) {
-        return getAdjacentTilePositions().contains(other.getPosition1())
-                || getAdjacentTilePositions().contains(other.getPosition2());
-    }
-
-    @Override
-    public Property<List<Player>> getRoadOwnersProperty() {
+    public Property<List<Player>> getRailOwnersProperty() {
         return railOwners;
     }
 
@@ -54,7 +47,7 @@ public record EdgeImpl(
     public Set<Edge> getConnectedRails(final Player player) {
         return getConnectedEdges().stream()
                 .filter(Edge::hasRail)
-                .filter(edge -> edge.getRoadOwnersProperty().getValue().equals(player))
+                .filter(edge -> edge.getRailOwnersProperty().getValue().contains(player))
                 .collect(Collectors.toUnmodifiableSet());
     }
 

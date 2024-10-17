@@ -40,7 +40,10 @@ public interface Edge {
      * @param other the other edge
      * @return whether the two edges are connected
      */
-    boolean connectsTo(Edge other);
+    default boolean connectsTo(Edge other) {
+        return getAdjacentTilePositions().contains(other.getPosition1())
+                || getAdjacentTilePositions().contains(other.getPosition2());
+    }
 
     /**
      * Returns the {@link TilePosition}s that this edge lies between.
