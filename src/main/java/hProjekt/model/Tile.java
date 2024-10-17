@@ -12,9 +12,8 @@ import javafx.scene.paint.Color;
 
 /**
  * Represents a tile in the game grid.
- * A tile has six sides ({@link Edge}s), six vertices
- * ({@link Intersection}s), a
- * {@link ResourceType} and a roll number.
+ * A tile has a position, a type, may have a city and is connected to other
+ * tiles via edges.
  */
 @DoNotTouch
 public interface Tile {
@@ -67,7 +66,7 @@ public interface Tile {
     }
 
     /**
-     * Returns the tile next to the given edge.
+     * Returns the tile next in the given direction.
      *
      * @param direction the direction of the edge
      * @return the neighbouring tile
@@ -81,21 +80,21 @@ public interface Tile {
     }
 
     /**
-     * Returns the edge on the given edge.
+     * Returns the edge in the given direction.
      *
      * @param direction the direction of the edge
-     * @return the edge on the given edge
+     * @return the edge in the given direction
      */
     Edge getEdge(EdgeDirection direction);
 
     Set<Edge> getEdges();
 
     /**
-     * Add a rail on the given edge.
-     * Check {@link HexGrid#addRail(TilePosition, TilePosition, Player, boolean)}
+     * Add a rail in the given direction.
+     * Check {@link HexGrid#addRail(TilePosition, TilePosition, Player)}
      * for details.
      *
-     * @param direction the direction of the edge
+     * @param direction the direction of the tile the rail runs to
      * @param owner     the player who owns the rail
      * @return whether the rail was added
      */

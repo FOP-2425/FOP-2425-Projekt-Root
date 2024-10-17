@@ -62,31 +62,31 @@ public interface Edge {
     }
 
     /**
-     * Returns {@code true} if a player has built a road on this edge and
+     * Returns {@code true} if a player has built a rail on this edge and
      * {@code false} otherwise.
      *
-     * @return whether a player has placed a road on this edge
+     * @return whether a player has placed a rail on this edge
      */
     default boolean hasRail() {
-        return getRoadOwnersProperty().getValue() != null || !getRoadOwnersProperty().getValue().isEmpty();
+        return getRailOwnersProperty().getValue() != null || !getRailOwnersProperty().getValue().isEmpty();
     }
 
     /**
-     * Returns the road's owner, if a road has been built on this edge.
+     * Returns the rail's owner, if a rail has been built on this edge.
      *
-     * @return the road's owner, if a road has been built on this edge
+     * @return the rail's owner, if a rail has been built on this edge
      */
-    Property<List<Player>> getRoadOwnersProperty();
+    Property<List<Player>> getRailOwnersProperty();
 
     default List<Player> getRailOwners() {
-        return getRoadOwnersProperty().getValue();
+        return getRailOwnersProperty().getValue();
     }
 
     /**
-     * Returns the connected roads of the given player.
+     * Returns the connected rails of the given player.
      *
      * @param player the player to check for.
-     * @return the connected roads.
+     * @return the connected rails.
      */
     Set<Edge> getConnectedRails(Player player);
 

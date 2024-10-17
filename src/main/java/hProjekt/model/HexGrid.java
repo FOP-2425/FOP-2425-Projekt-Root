@@ -17,8 +17,7 @@ import javafx.beans.value.ObservableDoubleValue;
  * <li>tiles and their logical and graphical properties (position, height,
  * width, etc.)</li>
  * <li>edges</li>
- * <li>intersections</li>
- * <li>the robber / bandit</li>
+ * <li>cities</li>
  * </ul>
  * are saved in and modified by instances of this interface.
  */
@@ -111,6 +110,10 @@ public interface HexGrid {
      */
     Edge getEdge(TilePosition position0, TilePosition position1);
 
+    Map<TilePosition, City> getCities();
+
+    City getCityAt(TilePosition position);
+
     /**
      * Returns all rails of the given player.
      *
@@ -121,7 +124,7 @@ public interface HexGrid {
 
     /**
      * Adds the given rail to the grid. Does not check or remove the player's
-     * resources.
+     * credits.
      *
      * @param position0 the first position of the rail
      * @param position1 the second position of the rail
@@ -132,17 +135,15 @@ public interface HexGrid {
 
     /**
      * Adds the given rail to the grid relative to the given tile.
-     * See {@link HexGrid#addRail(TilePosition, TilePosition, Player, boolean)}
+     * See {@link HexGrid#addRail(TilePosition, TilePosition, Player)}
      * for details.
      *
      * @param tile          the tile the rail is next to
-     * @param edgeDirection the direction of the edge the rail is on
+     * @param edgeDirection the direction of the tile the rail runs to
      * @param player        the player that owns the rail
-     * @param checkVillages whether to check if the player has a connected village
      * @return whether the rail was added
      */
-    default boolean addRail(
-            final Tile tile, final EdgeDirection edgeDirection, final Player player) {
+    default boolean addRail(final Tile tile, final EdgeDirection edgeDirection, final Player player) {
         return tile.addRail(edgeDirection, player);
     }
 
@@ -151,22 +152,20 @@ public interface HexGrid {
      *
      * @param position0 the first position
      * @param position1 the second position
+     * @param player    the player that owns the rail
      * @return whether the rail was removed
      */
-    boolean removeRail(TilePosition position0, TilePosition position1);
+    boolean removeRail(TilePosition position0, TilePosition position1, Player player);
 
     /**
      * Removes the rail at the given edge.
      *
-     * @param rail (the edge of) the rail to remove
+     * @param rail   (the edge of) the rail to remove
+     * @param player the player that owns the rail
      * @return {@code true}, if the rail has been successfully removed,
      *         {@code false} otherwise
      */
-    default boolean removeRail(final Edge rail) {
-        return removeRail(rail.getPosition1(), rail.getPosition2());
+    default boolean removeRail(final Edge rail, Player player) {
+        return removeRail(rail.getPosition1(), rail.getPosition2(), player);
     }
-
-    Map<TilePosition, City> getCities();
-
-    City getCityAt(TilePosition position);
 }

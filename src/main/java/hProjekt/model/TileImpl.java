@@ -11,9 +11,7 @@ import javafx.beans.value.ObservableDoubleValue;
  * Holds information on a tile.
  *
  * @param position       this tile's position
- * @param type           the resource type this tile can produce
- * @param rollNumber     the number that needs to be rolled to yield the
- *                       resource
+ * @param type           the type of this tile
  * @param heightProperty the height of this tile
  * @param widthProperty  the width of this tile
  * @param hexGrid        the grid this tile is placed in
@@ -33,9 +31,7 @@ public record TileImpl(
      *
      * @param q              the q-coordinate of this tile in the grid
      * @param r              the r-coordinate of this tile in the grid
-     * @param type           the resource type this tile can produce
-     * @param rollNumber     the number that needs to be rolled to yield the
-     *                       resource
+     * @param type           the type of this tile
      * @param heightProperty the height of this tile
      * @param widthProperty  the width of this tile
      * @param hexGrid        the grid this tile is placed in
@@ -45,7 +41,6 @@ public record TileImpl(
             final int q,
             final int r,
             final Type type,
-            final int rollNumber,
             final ObservableDoubleValue heightProperty,
             final ObservableDoubleValue widthProperty,
             final HexGrid hexGrid) {

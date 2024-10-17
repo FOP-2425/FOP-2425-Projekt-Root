@@ -137,7 +137,7 @@ public record TilePosition(int q, int r) implements Comparable<TilePosition> {
 
     /**
      * The possible directions around a tile position other tiles may be placed.
-     * The order of the directions is counterclockwise.
+     * The order of the directions is counterclockwise and important!
      */
     public enum EdgeDirection {
         EAST(new TilePosition(1, 0)),
