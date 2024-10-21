@@ -39,7 +39,7 @@ public class MyApplication extends Application {
 
         // TODO: Uncomment when implemented
         SceneSwitcher.getInstance(stage, (gc) -> {
-        }).loadScene(SceneType.MAP);
+        }).loadScene(SceneType.MAIN_MENU);
     }
 
     /**
