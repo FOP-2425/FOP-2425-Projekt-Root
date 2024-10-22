@@ -1,15 +1,17 @@
-/* Allgemeine Einstellungen für das gesamte Menü */
+@font-face {
+    font-family: "BroncoPersonalUse";
+    src: url("fonts/BroncoPersonalUse.ttf");
+}
+
+
 .root {
-    -fx-font-family: "Arial", sans-serif;
+
 }
 
 /* Stil für den Titel "DAMPFROSS" */
 .text-title {
-    -fx-font-family: "Arial";
-    -fx-font-size: 30px; 
-    -fx-padding: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-font-family: "BroncoPersonalUse";
+    -fx-font-size: 30px;
 }
 
 /* Stil für Buttons */
@@ -37,6 +39,6 @@
 }
 
 @font-face {
-    font-family: "Pixel";
-    src: url("/fonts/pixel.TTF");
+    font-family: "BroncoPersonalUse";
+    src: url("fonts/BroncoPersonalUse.ttf");
 }

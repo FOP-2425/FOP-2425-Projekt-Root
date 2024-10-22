@@ -17,6 +17,7 @@ import javafx.scene.text.Text;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
 
 public class MainMenuSceneController implements SceneController {
 
@@ -30,27 +31,26 @@ public class MainMenuSceneController implements SceneController {
         return () -> {
             StackPane root = new StackPane();
 
+            // Play background video
             String videoPath = getClass().getResource("/images/train.mp4").toExternalForm();
             Media media = new Media(videoPath);
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setCycleCount(5);
-
             MediaView mediaView = new MediaView(mediaPlayer);
             mediaView.setFitWidth(1920);
             mediaView.setFitHeight(1080);
             mediaView.setPreserveRatio(false);
-
             mediaPlayer.play();
 
             VBox centerBox = new VBox(20);
             centerBox.setAlignment(Pos.CENTER);
             centerBox.setPadding(new Insets(50));
 
-            
-            Text title = new Text(""); //"Dampfross", wenn das mit dem Font klappt...
+            // Create Title (Font does not work somehow...)
+            Text title = new Text("Dampfross");
             title.getStyleClass().add("text-title");
-            
 
+            // Create Start Game Button
             Button startGameButton = new Button("Start Game");
             startGameButton.setMinWidth(200);
             startGameButton.setOnAction(event -> {
@@ -59,27 +59,33 @@ public class MainMenuSceneController implements SceneController {
             });
             startGameButton.getStyleClass().add("button");
 
+            // Create Map Editor Button
             Button mapEditorButton = new Button("Map Editor");
             mapEditorButton.setMinWidth(200);
             mapEditorButton.setOnAction(event -> {
                 mediaPlayer.stop();
+                // SceneSwitcher noch implementieren
             });
             mapEditorButton.getStyleClass().add("button");
 
+            // Create Settings Button
             Button settingsButton = new Button("Settings");
             settingsButton.setMinWidth(200);
             settingsButton.setOnAction(event -> {
                 mediaPlayer.stop();
-                SceneController.loadSettingsScene();
+                //SceneController.loadSettingsScene();
             });
             settingsButton.getStyleClass().add("button");
 
+            // Add them to the box in the middle
             centerBox.getChildren().addAll(title, startGameButton, mapEditorButton, settingsButton);
 
+            // Create box for Exit Button
             HBox bottomBox = new HBox();
             bottomBox.setPadding(new Insets(20));
             bottomBox.setAlignment(Pos.BOTTOM_LEFT);
 
+            // Create Exit Button
             Button exitButton = new Button("Exit");
             exitButton.setMinWidth(150);
             exitButton.setOnAction(event -> {
@@ -94,6 +100,8 @@ public class MainMenuSceneController implements SceneController {
             bottomBox.getChildren().add(exitButton);
 
             root.getChildren().addAll(mediaView, layout);
+            
+            // Add CSS style
             root.getStylesheets().add(getClass().getResource("/css/mainmenu.css").toExternalForm());
 
             return root;
