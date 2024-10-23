@@ -2,6 +2,7 @@ package hProjekt.controller.gui.controllers.scene;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
+import hProjekt.controller.gui.SceneSwitcher;
 import hProjekt.controller.gui.controllers.Controller;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -56,10 +57,17 @@ public interface SceneController extends Controller {
     }
 
     /**
+     * Loads the map editor scene.
+     */
+    static void loadMapEditorScene() {
+        // SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.MAP_EDITOR);
+    }
+
+    /**
      * Loads the game scene.
      */
     static void loadGameScene() {
-        // SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.GAME_BOARD);
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.MAP);
     }
 
     /**
