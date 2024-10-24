@@ -1,16 +1,9 @@
-@font-face {
-    font-family: "BroncoPersonalUse";
-    src: url("fonts/BroncoPersonalUse.ttf");
-}
-
-
 .root {
 
 }
 
 /* Stil für den Titel "DAMPFROSS" */
 .text-title {
-    -fx-font-family: "BroncoPersonalUse";
     -fx-font-size: 30px;
     -fx-font-fill: white;
 }
@@ -37,9 +30,4 @@
 /* Fokus-Effekt für Buttons */
 .button:focused {
     -fx-border-color: darkgray; 
-}
-
-@font-face {
-    font-family: "BroncoPersonalUse";
-    src: url("fonts/BroncoPersonalUse.ttf");
 }
