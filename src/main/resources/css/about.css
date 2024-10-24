@@ -1,4 +1,8 @@
-/* Allgemeine Stile für die About-Seite */
+@font-face {
+    font-family: "BroncoPersonalUse";
+    src: url("fonts/BroncoPersonalUse.ttf");
+}
+
 .text-title {
     font-size: 32px;
     font-weight: bold;
@@ -17,25 +21,27 @@
     padding: 5px;
 }
 
-
 .button {
-    -fx-background-color: #007bff; 
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 10px 15px;
-    -fx-background-radius: 5px;
-    -fx-border-radius: 5px;
+    -fx-background-color: white; 
+    -fx-border-color: black; 
+    -fx-border-width: 2px; 
+    -fx-text-fill: black; 
+    -fx-font-size: 16px; 
+    -fx-font-family: "Arial", sans-serif; 
+    -fx-padding: 10px 20px; 
+    -fx-background-radius: 0; 
+    -fx-border-radius: 0; 
+    -fx-cursor: hand;
 }
 
 .button:hover {
-    -fx-background-color: #0056b3; 
+    -fx-background-color: lightgray;
 }
 
-.button:pressed {
-    -fx-background-color: #004085; 
+.button:focused {
+    -fx-border-color: darkgray;
 }
 
-/* Layout-Styles */
 .stack-pane {
     -fx-alignment: center;
 }
@@ -50,4 +56,3 @@
     -fx-spacing: 10; 
     -fx-alignment: center;
 }
-
