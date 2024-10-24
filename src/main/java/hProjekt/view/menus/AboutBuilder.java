@@ -3,6 +3,8 @@ package hProjekt.view.menus;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -22,8 +24,11 @@ public class AboutBuilder implements Builder<Region> {
         root.setPadding(new Insets(20));
         root.setAlignment(Pos.CENTER);
 
-        Text title = new Text("Dampfross");
-        title.getStyleClass().add("text-title");
+        // Logo
+        ImageView logo = new ImageView(new Image(getClass().getResourceAsStream("/images/dampfross_logo_black.png")));
+        logo.setFitWidth(300);
+        logo.setPreserveRatio(true);
+
         Text gameDescription = new Text("Dampfross is a strategic train simulation game where you manage railway networks and expand your empire.");
         gameDescription.getStyleClass().add("text-description");
 
@@ -56,7 +61,7 @@ public class AboutBuilder implements Builder<Region> {
         Button backButton = new Button("Back to Main Menu");
         backButton.setOnAction(event -> loadMainMenuAction.run());
         backButton.getStyleClass().add("button");
-        root.getChildren().addAll(title, gameDescription, developerInfo, credits, licenseInfo, acknowledgements, legalInfo, backButton);
+        root.getChildren().addAll(logo, gameDescription, developerInfo, credits, licenseInfo, acknowledgements, legalInfo, backButton);
 
         // Add css style
         root.getStylesheets().add(getClass().getResource("/css/about.css").toExternalForm());

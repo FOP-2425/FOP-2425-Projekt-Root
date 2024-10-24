@@ -3,6 +3,8 @@ package hProjekt.view.menus;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -49,9 +51,10 @@ public class MainMenuBuilder implements Builder<Region> {
         centerBox.setAlignment(Pos.CENTER);
         centerBox.setPadding(new Insets(50));
 
-        // Create Title (Font does not work somehow...)
-        Text title = new Text("Dampfross");
-        title.getStyleClass().add("text-title");
+        // Use Image Logo instead of Text Font (as font is not loading...)
+        ImageView logo = new ImageView(new Image(getClass().getResourceAsStream("/images/dampfross_logo_black.png")));
+        logo.setFitWidth(500);
+        logo.setPreserveRatio(true);
 
         // Create Start Game Button
         Button startGameButton = new Button("Start Game");
@@ -81,7 +84,7 @@ public class MainMenuBuilder implements Builder<Region> {
         settingsButton.getStyleClass().add("button");
 
         // Add them to the box in the middle
-        centerBox.getChildren().addAll(title, startGameButton, mapEditorButton, settingsButton);
+        centerBox.getChildren().addAll(logo, startGameButton, mapEditorButton, settingsButton);
 
         // Create box for Exit Button
         HBox bottomBox = new HBox();
