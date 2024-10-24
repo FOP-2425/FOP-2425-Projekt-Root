@@ -97,11 +97,24 @@ public class MainMenuBuilder implements Builder<Region> {
         });
         exitButton.getStyleClass().add("button");
 
+        // Create About Button
+        Button aboutButton = new Button("About");
+        aboutButton.setMinWidth(150);
+        aboutButton.setOnAction(event -> {
+            mediaPlayer.stop();
+            loadAboutSceneAction.run();
+        });
+        aboutButton.getStyleClass().add("button");
+
+        // Add both buttons to the bottom box with spacing
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        bottomBox.getChildren().addAll(exitButton, spacer, aboutButton);
+
+
         BorderPane layout = new BorderPane();
         layout.setCenter(centerBox);
         layout.setBottom(bottomBox);
-        bottomBox.getChildren().add(exitButton);
-
         root.getChildren().addAll(mediaView, layout);
 
         // Add CSS style

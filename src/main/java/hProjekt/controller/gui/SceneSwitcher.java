@@ -6,9 +6,11 @@ import java.util.function.Supplier;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.GameController;
+import hProjekt.controller.gui.controllers.scene.AboutSceneController;
 import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
 import hProjekt.controller.gui.controllers.scene.MapSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
+import hProjekt.view.menus.AboutBuilder;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -71,7 +73,9 @@ public class SceneSwitcher {
      */
     public enum SceneType {
         MAP(MapSceneController::new),
-        MAIN_MENU(MainMenuSceneController::new);
+        MAIN_MENU(MainMenuSceneController::new),
+        ABOUT(AboutSceneController::new);
+  
 
         private final Supplier<SceneController> controller;
 

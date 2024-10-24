@@ -1,0 +1,53 @@
+/* Allgemeine Stile für die About-Seite */
+.text-title {
+    font-size: 32px;
+    font-weight: bold;
+    fill: #3a3a3a; 
+    padding: 10px;
+}
+
+.text-description, 
+.text-subheading,
+.text-credits,
+.text-license,
+.text-acknowledgements,
+.text-legal {
+    font-size: 16px;
+    fill: #555; 
+    padding: 5px;
+}
+
+
+.button {
+    -fx-background-color: #007bff; 
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 15px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #0056b3; 
+}
+
+.button:pressed {
+    -fx-background-color: #004085; 
+}
+
+/* Layout-Styles */
+.stack-pane {
+    -fx-alignment: center;
+}
+
+.vbox {
+    -fx-spacing: 10; 
+    -fx-padding: 20;
+}
+
+.hbox {
+    -fx-padding: 10;
+    -fx-spacing: 10; 
+    -fx-alignment: center;
+}
+

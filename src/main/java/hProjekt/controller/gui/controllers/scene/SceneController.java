@@ -32,7 +32,7 @@ public interface SceneController extends Controller {
      * Loads the main menu scene.
      */
     static void loadMainMenuScene() {
-        // SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.MAIN_MENU);
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.MAIN_MENU);
     }
 
     /**
@@ -74,6 +74,6 @@ public interface SceneController extends Controller {
      * Loads the about scene.
      */
     static void loadAboutScene() {
-        // SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.ABOUT);
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.ABOUT);
     }
 }

@@ -12,6 +12,7 @@
 .text-title {
     -fx-font-family: "BroncoPersonalUse";
     -fx-font-size: 30px;
+    -fx-font-fill: white;
 }
 
 /* Stil für Buttons */
