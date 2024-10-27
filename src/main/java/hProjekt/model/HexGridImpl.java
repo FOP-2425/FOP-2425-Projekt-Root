@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
+import hProjekt.Config;
 import hProjekt.model.TilePosition.EdgeDirection;
 import hProjekt.util.NameGenerator;
 import javafx.beans.binding.Bindings;
@@ -162,17 +163,20 @@ public class HexGridImpl implements HexGrid {
                 continue;
             }
 
-            double probability = 0.3;
+            double probability = Config.CITY_BASE_PROBABILTY;
+
             if (tile.isAtCaost()) {
-                probability = 0.1;
+                probability = Config.CITY_AT_COAST_PROBABILTY;
             }
 
-            if (isNear(tile.getPosition(), t -> t != null && t.getType() == Tile.Type.MOUNTAIN, 1)) {
-                probability = 0.05;
+            if (isNear(tile.getPosition(), t -> t != null && t.getType() == Tile.Type.MOUNTAIN,
+                    Config.CITY_NEAR_MOUNTAIN_RADIUS)) {
+                probability = Config.CITY_NEAR_MOUNTAIN_PROBABILTY;
             }
 
-            if (isNear(tile.getPosition(), t -> t != null && cities.get(t.getPosition()) != null, 3)) {
-                probability = 0.001;
+            if (isNear(tile.getPosition(), t -> t != null && cities.get(t.getPosition()) != null,
+                    Config.CITY_NEAR_CITY_RADIUS)) {
+                probability = Config.CITY_NEAR_CITY_PROBABILTY;
             }
 
             if (random.nextDouble() < probability) {
