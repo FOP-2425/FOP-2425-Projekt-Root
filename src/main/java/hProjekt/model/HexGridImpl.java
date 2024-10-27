@@ -62,6 +62,14 @@ public class HexGridImpl implements HexGrid {
 
         initCities(numberOfCities, new NameGenerator(names, 3, random));
     }
+
+    /**
+     * Creates a new HexGrid with the default values.
+     *
+     * @throws IOException
+     */
+    public HexGridImpl() throws IOException {
+        this(Config.MAP_SCALE, Config.NUMBER_OF_CITIES);
     }
 
     /**
