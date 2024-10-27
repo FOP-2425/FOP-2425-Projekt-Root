@@ -130,6 +130,20 @@ public class HexGridImpl implements HexGrid {
         }
     }
 
+    /**
+     * Initializes the cities in this grid.
+     * The cities will be placed randomly on the map.
+     * The names of the cities will be generated using the given name generator.
+     * The cities are placed based on certain rules:
+     * - Cities will only be placed on plains
+     * - Cities are placed with a base probability of 0.3
+     * - If the tile is at the coast the probability is 0.1
+     * - If the tile is near a mountain the probability is 0.05
+     * - If the tile is near another city the probability is 0.001
+     *
+     * @param amount        the amount of cities to place
+     * @param nameGenerator the name generator to use
+     */
     @DoNotTouch
     private void initCities(int amount, NameGenerator nameGenerator) {
         while (cities.size() < amount) {
@@ -277,7 +291,11 @@ public class HexGridImpl implements HexGrid {
 
     @Override
     public City getCityAt(TilePosition position) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCityAt'");
+        return cities.get(position);
+    }
+
+    @Override
+    public City getCityWithRollNumber(int rollNumber) {
+        return cities.values().stream().filter(c -> c.getRollNumbers().contains(rollNumber)).findFirst().orElse(null);
     }
 }

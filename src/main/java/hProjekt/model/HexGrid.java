@@ -110,9 +110,30 @@ public interface HexGrid {
      */
     Edge getEdge(TilePosition position0, TilePosition position1);
 
+    /**
+     * Returns all cities of the grid.
+     *
+     * @return all cities of the grid
+     */
     Map<TilePosition, City> getCities();
 
+    /**
+     * Returns the city at the given position or {@code null} if there is no city.
+     *
+     * @param position the position of the city
+     * @return the city at the given position or {@code null} if there is no city
+     */
     City getCityAt(TilePosition position);
+
+    /**
+     * Returns the city with the given roll number or {@code null} if no city has
+     * the given roll number.
+     *
+     * @param rollNumber the roll number of the city
+     * @return the city with the given roll number or {@code null} if no city has
+     *         the given roll number
+     */
+    City getCityWithRollNumber(int rollNumber);
 
     /**
      * Returns all rails of the given player.
