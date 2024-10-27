@@ -262,8 +262,7 @@ public class HexGridImpl implements HexGrid {
     @Override
     @StudentImplementationRequired("H1.3")
     public boolean addRail(final TilePosition position0, final TilePosition position1, final Player player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCities'");
+        return edges.get(Set.of(position0, position1)).getRailOwnersProperty().getValue().add(player);
     }
 
     @Override
