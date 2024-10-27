@@ -1,8 +1,10 @@
 package hProjekt.model;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
-public record CityImpl(TilePosition position, String name, boolean isStartingCity, HexGrid hexGrid) implements City {
+public record CityImpl(TilePosition position, String name, boolean isStartingCity, Set<Integer> rollNumbers,
+        HexGrid hexGrid) implements City {
 
     @Override
     public String getName() {
@@ -25,9 +27,8 @@ public record CityImpl(TilePosition position, String name, boolean isStartingCit
     }
 
     @Override
-    public List<Integer> getRollNumbers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRollNumbers'");
+    public Set<Integer> getRollNumbers() {
+        return Collections.unmodifiableSet(rollNumbers);
     }
 
 }

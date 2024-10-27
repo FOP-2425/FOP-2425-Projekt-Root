@@ -1,13 +1,13 @@
 package hProjekt.model;
 
-import java.util.List;
+import java.util.Set;
 
 public interface City {
     String getName();
 
     TilePosition getPosition();
 
-    List<Integer> getRollNumbers();
+    Set<Integer> getRollNumbers();
 
     HexGrid getHexGrid();
 
