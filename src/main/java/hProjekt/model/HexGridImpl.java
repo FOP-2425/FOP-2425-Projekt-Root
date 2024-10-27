@@ -45,7 +45,7 @@ public class HexGridImpl implements HexGrid {
      * @throws IOException
      */
     @DoNotTouch
-    public HexGridImpl(final int scale) throws IOException {
+    public HexGridImpl(final int scale, final int numberOfCities) throws IOException {
         this.tileHeight = Bindings.createDoubleBinding(() -> tileSize.get() * 2, tileSize);
         this.tileWidth = Bindings.createDoubleBinding(() -> Math.sqrt(3) * tileSize.get(), tileSize);
         initTiles(scale);
@@ -60,7 +60,8 @@ public class HexGridImpl implements HexGrid {
             e.printStackTrace();
         }
 
-        initCities(36, new NameGenerator(names, 3, random));
+        initCities(numberOfCities, new NameGenerator(names, 3, random));
+    }
     }
 
     /**
