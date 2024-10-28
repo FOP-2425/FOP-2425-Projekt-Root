@@ -38,7 +38,7 @@ public class HexGridImpl implements HexGrid {
     private final ObservableDoubleValue tileWidth;
     private final ObservableDoubleValue tileHeight;
     private final DoubleProperty tileSize = new SimpleDoubleProperty(50);
-    private final Random random = new Random();
+    private final Random random = Config.RANDOM;
 
     /**
      * Creates a new HexGrid with the given scale.
