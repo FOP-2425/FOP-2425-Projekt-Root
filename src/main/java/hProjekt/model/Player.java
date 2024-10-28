@@ -59,11 +59,14 @@ public interface Player {
     public void addCredits(int amount);
 
     /**
-     * Removes the given amount of credits from the player.
+     * Tries to remove the given amount of credits from the player.
+     * Expects a positive amount.
      *
      * @param amount the amount of credits to remove
+     * @return {@code true} if the player had enough credits and they were removed,
+     *         {@code false} otherwise
      */
-    public void removeCredits(int amount);
+    public boolean removeCredits(int amount);
 
     /**
      * Returns all rails of the player.
