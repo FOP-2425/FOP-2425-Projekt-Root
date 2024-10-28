@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 public class Config {
     /**
      * The number of sides on each die.
+     * Maximum is 9.
      */
     public static final int DICE_SIDES = 6;
 
