@@ -1,5 +1,6 @@
 package hProjekt;
 
+import java.util.Iterator;
 import java.util.stream.IntStream;
 
 public class Config {
@@ -76,11 +77,17 @@ public class Config {
     public static final int MAP_SCALE = 15;
 
     /**
-     * Returns a stream to generate all possible roll numbers.
-     *
-     * @return a stream of all possible roll numbers
+     * The iterator to generate roll numbers for the cities.
+     * There are sides of a dice squared roll numbers in total.
+     * Each digit ranges from 1 to the number of sides of a dice.
+     * For example a 6 sided dice would generate the following sequence:
+     * 11,12,13,14,15,16,21,22,...,66
      */
-    public static IntStream generateRollNumbers() {
-        return IntStream.rangeClosed(11, DICE_SIDES * 10 + DICE_SIDES);
-    }
+    public static final Iterator<Integer> ROLL_NUMBER_ITERATOR = IntStream
+            .iterate(11, (i) -> i / 10 <= DICE_SIDES, (i) -> {
+                if (i % 10 == DICE_SIDES) {
+                    return (i / 10 + 1) * 10 + 1;
+                }
+                return i + 1;
+            }).iterator();
 }
