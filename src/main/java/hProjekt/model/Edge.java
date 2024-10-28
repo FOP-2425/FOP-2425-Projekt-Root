@@ -75,12 +75,17 @@ public interface Edge {
     }
 
     /**
-     * Returns the rail's owner, if a rail has been built on this edge.
+     * Returns the rail's owners, if a rail has been built on this edge.
      *
-     * @return the rail's owner, if a rail has been built on this edge
+     * @return the rail's owners, if a rail has been built on this edge
      */
     Property<List<Player>> getRailOwnersProperty();
 
+    /**
+     * Returns the rail's owners, if a rail has been built on this edge.
+     *
+     * @return the rail's owners, if a rail has been built on this edge
+     */
     default List<Player> getRailOwners() {
         return getRailOwnersProperty().getValue();
     }

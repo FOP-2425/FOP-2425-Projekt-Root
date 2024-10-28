@@ -75,6 +75,11 @@ public interface Tile {
         return getHexGrid().getTileAt(TilePosition.neighbour(getPosition(), direction));
     }
 
+    /**
+     * Returns whether this tile is at the coast.
+     *
+     * @return whether this tile is at the coast
+     */
     default boolean isAtCaost() {
         return getNeighbours().size() < 6;
     }
@@ -87,6 +92,11 @@ public interface Tile {
      */
     Edge getEdge(EdgeDirection direction);
 
+    /**
+     * Returns all edges connected to this tile.
+     *
+     * @return all edges connected to this tile
+     */
     Set<Edge> getEdges();
 
     /**
@@ -100,6 +110,11 @@ public interface Tile {
      */
     boolean addRail(EdgeDirection direction, Player owner);
 
+    /**
+     * Returns whether this tile has a city.
+     *
+     * @return whether this tile has a city
+     */
     boolean hasCity();
 
     /**
