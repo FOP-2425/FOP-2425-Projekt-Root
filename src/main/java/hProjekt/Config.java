@@ -1,9 +1,15 @@
 package hProjekt;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class Config {
+    /**
+     * The global source of randomness.
+     */
+    public static final Random RANDOM = new Random();
+
     /**
      * The number of sides on each die.
      * Maximum is 9.
