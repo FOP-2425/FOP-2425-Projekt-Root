@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -156,6 +157,8 @@ public class HexGridImpl implements HexGrid {
      */
     @DoNotTouch
     private void initCities(int amount, NameGenerator nameGenerator) {
+        int startingCitiesAdded = 0;
+
         while (cities.size() < amount) {
             Tile tile = tiles.values().stream().skip(random.nextInt(tiles.size())).findFirst().get();
 
@@ -180,7 +183,22 @@ public class HexGridImpl implements HexGrid {
             }
 
             if (random.nextDouble() < probability) {
-                final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(10), false, this);
+                boolean isStartingCity = false;
+                if (startingCitiesAdded < Config.NUMBER_OF_STARTING_CITIES
+                        && (amount - cities.size() <= Config.NUMBER_OF_STARTING_CITIES - startingCitiesAdded
+                                || random.nextBoolean())) {
+                    isStartingCity = true;
+                    startingCitiesAdded++;
+                }
+
+                Set<Integer> rollNumbers = new HashSet<>();
+                rollNumbers.add(Config.ROLL_NUMBER_ITERATOR.next());
+                if (isStartingCity) {
+                    rollNumbers.add(Config.ROLL_NUMBER_ITERATOR.next());
+                }
+
+                final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(10), isStartingCity,
+                        rollNumbers, this);
                 this.cities.put(tile.getPosition(), city);
             }
         }
