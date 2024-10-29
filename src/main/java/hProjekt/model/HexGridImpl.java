@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
+import hProjekt.Config;
 import hProjekt.model.TilePosition.EdgeDirection;
 import hProjekt.util.NameGenerator;
 import javafx.beans.binding.Bindings;
@@ -36,7 +38,7 @@ public class HexGridImpl implements HexGrid {
     private final ObservableDoubleValue tileWidth;
     private final ObservableDoubleValue tileHeight;
     private final DoubleProperty tileSize = new SimpleDoubleProperty(50);
-    private final Random random = new Random();
+    private final Random random = Config.RANDOM;
 
     /**
      * Creates a new HexGrid with the given scale.
@@ -45,7 +47,7 @@ public class HexGridImpl implements HexGrid {
      * @throws IOException
      */
     @DoNotTouch
-    public HexGridImpl(final int scale) throws IOException {
+    public HexGridImpl(final int scale, final int numberOfCities) throws IOException {
         this.tileHeight = Bindings.createDoubleBinding(() -> tileSize.get() * 2, tileSize);
         this.tileWidth = Bindings.createDoubleBinding(() -> Math.sqrt(3) * tileSize.get(), tileSize);
         initTiles(scale);
@@ -60,7 +62,16 @@ public class HexGridImpl implements HexGrid {
             e.printStackTrace();
         }
 
-        initCities(36, new NameGenerator(names, 3, random));
+        initCities(numberOfCities, new NameGenerator(names, 3, random));
+    }
+
+    /**
+     * Creates a new HexGrid with the default values.
+     *
+     * @throws IOException
+     */
+    public HexGridImpl() throws IOException {
+        this(Config.MAP_SCALE, Config.NUMBER_OF_CITIES);
     }
 
     /**
@@ -130,8 +141,24 @@ public class HexGridImpl implements HexGrid {
         }
     }
 
+    /**
+     * Initializes the cities in this grid.
+     * The cities will be placed randomly on the map.
+     * The names of the cities will be generated using the given name generator.
+     * The cities are placed based on certain rules:
+     * - Cities will only be placed on plains
+     * - Cities are placed with a base probability of 0.3
+     * - If the tile is at the coast the probability is 0.1
+     * - If the tile is near a mountain the probability is 0.05
+     * - If the tile is near another city the probability is 0.001
+     *
+     * @param amount        the amount of cities to place
+     * @param nameGenerator the name generator to use
+     */
     @DoNotTouch
     private void initCities(int amount, NameGenerator nameGenerator) {
+        int startingCitiesAdded = 0;
+
         while (cities.size() < amount) {
             Tile tile = tiles.values().stream().skip(random.nextInt(tiles.size())).findFirst().get();
 
@@ -139,21 +166,39 @@ public class HexGridImpl implements HexGrid {
                 continue;
             }
 
-            double probability = 0.3;
+            double probability = Config.CITY_BASE_PROBABILTY;
+
             if (tile.isAtCaost()) {
-                probability = 0.1;
+                probability = Config.CITY_AT_COAST_PROBABILTY;
             }
 
-            if (isNear(tile.getPosition(), t -> t != null && t.getType() == Tile.Type.MOUNTAIN, 1)) {
-                probability = 0.05;
+            if (isNear(tile.getPosition(), t -> t != null && t.getType() == Tile.Type.MOUNTAIN,
+                    Config.CITY_NEAR_MOUNTAIN_RADIUS)) {
+                probability = Config.CITY_NEAR_MOUNTAIN_PROBABILTY;
             }
 
-            if (isNear(tile.getPosition(), t -> t != null && cities.get(t.getPosition()) != null, 3)) {
-                probability = 0.001;
+            if (isNear(tile.getPosition(), t -> t != null && cities.get(t.getPosition()) != null,
+                    Config.CITY_NEAR_CITY_RADIUS)) {
+                probability = Config.CITY_NEAR_CITY_PROBABILTY;
             }
 
             if (random.nextDouble() < probability) {
-                final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(10), false, this);
+                boolean isStartingCity = false;
+                if (startingCitiesAdded < Config.NUMBER_OF_STARTING_CITIES
+                        && (amount - cities.size() <= Config.NUMBER_OF_STARTING_CITIES - startingCitiesAdded
+                                || random.nextBoolean())) {
+                    isStartingCity = true;
+                    startingCitiesAdded++;
+                }
+
+                Set<Integer> rollNumbers = new HashSet<>();
+                rollNumbers.add(Config.ROLL_NUMBER_ITERATOR.next());
+                if (isStartingCity) {
+                    rollNumbers.add(Config.ROLL_NUMBER_ITERATOR.next());
+                }
+
+                final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(10), isStartingCity,
+                        rollNumbers, this);
                 this.cities.put(tile.getPosition(), city);
             }
         }
@@ -262,8 +307,7 @@ public class HexGridImpl implements HexGrid {
     @Override
     @StudentImplementationRequired("H1.3")
     public boolean addRail(final TilePosition position0, final TilePosition position1, final Player player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCities'");
+        return edges.get(Set.of(position0, position1)).getRailOwnersProperty().getValue().add(player);
     }
 
     @Override
@@ -278,7 +322,11 @@ public class HexGridImpl implements HexGrid {
 
     @Override
     public City getCityAt(TilePosition position) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCityAt'");
+        return cities.get(position);
+    }
+
+    @Override
+    public City getCityWithRollNumber(int rollNumber) {
+        return cities.values().stream().filter(c -> c.getRollNumbers().contains(rollNumber)).findFirst().orElse(null);
     }
 }

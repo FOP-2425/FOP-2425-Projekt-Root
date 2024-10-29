@@ -1,6 +1,8 @@
 package hProjekt.model;
 
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -75,8 +77,7 @@ public record TileImpl(
 
     @Override
     public Set<Edge> getEdges() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEdges'");
+        return Collections.unmodifiableSet(EdgeDirection.stream().map(this::getEdge).collect(Collectors.toSet()));
     }
 
     @Override
