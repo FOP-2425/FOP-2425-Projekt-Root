@@ -1,9 +1,6 @@
 package hProjekt.model;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,20 +44,11 @@ public class HexGridImpl implements HexGrid {
      * @throws IOException
      */
     @DoNotTouch
-    public HexGridImpl(final int scale, final int numberOfCities) throws IOException {
+    public HexGridImpl(final int scale, final int numberOfCities, final String[] names) {
         this.tileHeight = Bindings.createDoubleBinding(() -> tileSize.get() * 2, tileSize);
         this.tileWidth = Bindings.createDoubleBinding(() -> Math.sqrt(3) * tileSize.get(), tileSize);
         initTiles(scale);
         initEdges();
-
-        String[] names = new String[0];
-
-        try {
-            names = Files.readAllLines(Paths.get(
-                    HexGridImpl.class.getResource("/town_names_ger.txt").toURI())).toArray(String[]::new);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
         initCities(numberOfCities, new NameGenerator(names, 3, random));
     }
@@ -70,8 +58,8 @@ public class HexGridImpl implements HexGrid {
      *
      * @throws IOException
      */
-    public HexGridImpl() throws IOException {
-        this(Config.MAP_SCALE, Config.NUMBER_OF_CITIES);
+    public HexGridImpl(String[] names) {
+        this(Config.MAP_SCALE, Config.NUMBER_OF_CITIES, names);
     }
 
     /**
