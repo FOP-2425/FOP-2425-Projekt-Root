@@ -4,6 +4,8 @@ import java.util.Set;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
+import hProjekt.controller.PlayerObjective;
+
 /**
  * Holds information on a player's state.
  * that can be upgraded
@@ -12,5 +14,6 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
  */
 @DoNotTouch
 public record PlayerState(
-        Set<Edge> buildableRailEdges) {
+        Set<Edge> buildableRailEdges,
+        PlayerObjective playerObjective) {
 }
