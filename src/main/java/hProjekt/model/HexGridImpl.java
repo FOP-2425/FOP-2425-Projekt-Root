@@ -317,4 +317,12 @@ public class HexGridImpl implements HexGrid {
     public City getCityWithRollNumber(int rollNumber) {
         return cities.values().stream().filter(c -> c.getRollNumbers().contains(rollNumber)).findFirst().orElse(null);
     }
+
+    @Override
+    public Map<TilePosition, City> getConnectedCities() {
+        return Collections.unmodifiableMap(cities.entrySet().stream()
+                .filter(entry -> edges.values().stream().filter(edge -> edge.hasRail())
+                        .anyMatch(edge -> edge.getAdjacentTilePositions().contains(entry.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    }
 }
