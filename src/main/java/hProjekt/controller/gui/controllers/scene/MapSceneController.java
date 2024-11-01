@@ -14,7 +14,7 @@ public class MapSceneController implements SceneController {
 
     public MapSceneController() {
         try {
-            this.grid = new HexGridImpl(15);
+            this.grid = new HexGridImpl();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
