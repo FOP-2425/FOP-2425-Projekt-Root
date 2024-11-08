@@ -84,6 +84,27 @@ public class GameController {
             initPlayerControllers();
         }
 
+        // Bauphase
+
+        while (state.getGrid().getCities().values().size() - state.getGrid().getConnectedCities().size() > 3) {
+            roundCounter.add(1);
+            final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
+            withActivePlayer(
+                    playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
+                    () -> {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
+
+                        getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
+                        for (int i = 0; i < state.getPlayers().size(); i++) {
+                            final Player player = state.getPlayers()
+                                    .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
+                            final PlayerController pc = playerControllers.get(player);
+                            withActivePlayer(pc, () -> {
+                                pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                            });
+                        }
+                    });
+        }
     }
 
     /**
