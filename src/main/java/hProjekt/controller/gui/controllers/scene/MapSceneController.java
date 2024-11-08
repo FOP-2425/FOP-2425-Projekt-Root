@@ -1,7 +1,6 @@
 package hProjekt.controller.gui.controllers.scene;
 
-import java.io.IOException;
-
+import hProjekt.Config;
 import hProjekt.controller.gui.controllers.HexGridController;
 import hProjekt.model.HexGrid;
 import hProjekt.model.HexGridImpl;
@@ -13,11 +12,7 @@ public class MapSceneController implements SceneController {
     private final HexGrid grid;
 
     public MapSceneController() {
-        try {
-            this.grid = new HexGridImpl();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.grid = new HexGridImpl(Config.TOWN_NAMES);
         this.controller = new HexGridController(grid);
     }
 

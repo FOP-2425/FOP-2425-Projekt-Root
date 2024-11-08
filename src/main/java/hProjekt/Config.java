@@ -1,5 +1,9 @@
 package hProjekt;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -96,4 +100,17 @@ public class Config {
                 }
                 return i + 1;
             }).iterator();
+
+    public static final String[] TOWN_NAMES;
+
+    static {
+        String[] names = new String[0];
+        try {
+            names = Files.readAllLines(Paths.get(Config.class.getResource("/town_names_ger.txt").toURI()))
+                    .toArray(String[]::new);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+        TOWN_NAMES = names;
+    }
 }
