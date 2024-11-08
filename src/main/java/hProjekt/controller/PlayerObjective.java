@@ -11,6 +11,7 @@ import hProjekt.controller.actions.PlayerAction;
  */
 public enum PlayerObjective {
     PLACE_RAIL(Set.of()),
+    ROLL_DICE(Set.of()),
     IDLE(Set.of());
 
     final Set<Class<? extends PlayerAction>> allowedActions;
