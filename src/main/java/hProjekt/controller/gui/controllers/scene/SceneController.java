@@ -36,6 +36,13 @@ public interface SceneController extends Controller {
     }
 
     /**
+     * Loads the setup game scene.
+     */
+    static void loadSetupGameScene() {
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.SETUP_GAME_MENU);
+    }
+
+    /**
      * Loads the create game scene.
      */
     static void loadCreateGameScene() {

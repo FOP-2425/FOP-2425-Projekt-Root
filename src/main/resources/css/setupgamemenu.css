@@ -1,0 +1,77 @@
+.root {
+    -fx-background-color: #f4f4f4;
+}
+
+/* Title Style */
+.text-title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #333;
+    -fx-padding: 10px 0;
+}
+
+/* General Button Styles */
+.button, .button-add {
+    -fx-background-color: white; 
+    -fx-border-color: black; 
+    -fx-border-width: 2px; 
+    -fx-text-fill: black; 
+    -fx-font-size: 16px; 
+    -fx-font-family: "Arial", sans-serif; 
+    -fx-padding: 10px 20px; 
+    -fx-background-radius: 0; 
+    -fx-border-radius: 0; 
+    -fx-cursor: hand; 
+}
+
+/* Hover Effect for General Buttons */
+.button:hover, .button-add:hover {
+    -fx-background-color: lightgray;
+}
+
+/* Remove Button Styles */
+.button-remove {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button-remove:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Toggle Button Style */
+.toggle-button {
+    -fx-base: #bcbcbc;
+    -fx-text-fill: black;
+    -fx-padding: 8px 15px;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+}
+
+/* Start Game Button Specific Styling (Matching Main Menu Style) */
+.button.start-game {
+    -fx-background-color: white; 
+    -fx-border-color: black; 
+    -fx-border-width: 2px; 
+    -fx-text-fill: black; 
+    -fx-font-size: 16px; 
+    -fx-font-family: "Arial", sans-serif; 
+    -fx-padding: 10px 20px; 
+    -fx-background-radius: 0; 
+    -fx-border-radius: 0; 
+    -fx-cursor: hand; 
+}
+
+.button.start-game:hover {
+    -fx-background-color: lightgray;
+}
+
+.button.start-game:focused {
+    -fx-border-color: darkgray;
+}
