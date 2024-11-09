@@ -7,8 +7,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Builder;
 
 import java.util.ArrayList;
@@ -65,14 +66,16 @@ public class SetupGameBuilder implements Builder<Region> {
 
         // Map selection dropdown
         Label mapLabel = new Label("Select a Map:");
+        mapLabel.getStyleClass().add("label");
         ComboBox<String> mapSelector = new ComboBox<>();
         mapSelector.getItems().addAll("Generate Random Map", "Germany", "Ireland", "Map Editor Custom #1"); // Example map options
         mapSelector.setMaxWidth(200);
         mapSelector.setValue("Generate Random Map"); // Default selection
+        mapSelector.getStyleClass().add("combo-box");
 
         // Start Game button
-        Button startGameButton = new Button("START GAME");
-        startGameButton.getStyleClass().add("button");
+        Button startGameButton = new Button("Start Game");
+        startGameButton.getStyleClass().add("start-game-button");
         startGameButton.setOnAction(event -> loadGameSceneAction.run());
 
         // Layout management
@@ -90,13 +93,20 @@ public class SetupGameBuilder implements Builder<Region> {
         HBox outerBox = new HBox();
         outerBox.setAlignment(Pos.CENTER);
 
-        HBox playerBox = new HBox(5); // Adjust spacing here
-        playerBox.setAlignment(Pos.CENTER_LEFT); // Align elements to the left within this box
+        HBox playerBox = new HBox(5); 
+        playerBox.setAlignment(Pos.CENTER_LEFT); 
 
-        // Create minus button (only visible for players 3-6)
-        Button removeButton = new Button("-");
-        removeButton.getStyleClass().add("button-remove");
+        // Create trash can button (only visible for players 3-6)
+        ImageView trashIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/trash.png")));
+        trashIcon.setFitWidth(20); // Set the desired size for the icon
+        trashIcon.setFitHeight(20);
+        trashIcon.setPreserveRatio(true);
+
+        Button removeButton = new Button();
+        removeButton.setGraphic(trashIcon);
+        removeButton.setStyle("-fx-background-color: transparent; -fx-padding: 5;"); // Transparent background and padding for easier clicking
         removeButton.setOnAction(event -> removePlayer(outerBox));
+
         if (playerBoxes.size() < 2) {
             removeButton.setVisible(false); // Hide for first 2 players
         }
@@ -121,7 +131,7 @@ public class SetupGameBuilder implements Builder<Region> {
         }
 
         // Setting margins to reduce excessive space between elements
-        HBox.setMargin(removeButton, new Insets(0, 5, 0, 0)); // Margin on right side of minus button
+        HBox.setMargin(removeButton, new Insets(0, 5, 0, 0)); // Margin on right side of trashcan button
         HBox.setMargin(playerNameField, new Insets(0, 5, 0, 5)); // Margin around the text field
 
         outerBox.getChildren().add(playerBox);

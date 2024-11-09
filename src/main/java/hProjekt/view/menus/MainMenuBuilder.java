@@ -59,7 +59,7 @@ public class MainMenuBuilder implements Builder<Region> {
         logo.setPreserveRatio(true);
 
         // Create Start Game Button
-        Button startGameButton = new Button("Start Game");
+        Button startGameButton = new Button("Create Game");
         startGameButton.setMinWidth(200);
         startGameButton.setOnAction(event -> {
             mediaPlayer.stop();
