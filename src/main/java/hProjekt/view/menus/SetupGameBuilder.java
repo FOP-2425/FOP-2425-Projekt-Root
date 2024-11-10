@@ -15,6 +15,8 @@ import javafx.util.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import hProjekt.Config;
+
 public class SetupGameBuilder implements Builder<Region> {
     private final Runnable loadMainMenuAction;
     private final Runnable loadGameSceneAction;
@@ -22,7 +24,7 @@ public class SetupGameBuilder implements Builder<Region> {
     private final VBox playerContainer;
     private final List<HBox> playerBoxes;
     private final Button addPlayerButton;
-    private final int maxPlayers = 6;
+    private final int maxPlayers = Config.MAX_PLAYERS;
 
     public SetupGameBuilder(Runnable loadGameSceneAction, Runnable loadMainMenuAction) {
         this.loadGameSceneAction = loadGameSceneAction;
