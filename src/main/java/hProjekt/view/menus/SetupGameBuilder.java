@@ -15,20 +15,26 @@ import javafx.util.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import hProjekt.model.GameSetup;
 import hProjekt.Config;
 
 public class SetupGameBuilder implements Builder<Region> {
     private final Runnable loadMainMenuAction;
     private final Runnable loadGameSceneAction;
+    private final GameSetup gameSetup;
 
     private final VBox playerContainer;
     private final List<HBox> playerBoxes;
     private final Button addPlayerButton;
     private final int maxPlayers = Config.MAX_PLAYERS;
+    private final List<String> availableColors = List.of(
+            "#ea3323", "#ff8b00", "#fde01a", "#1eb253", "#017cf3", "#9c78fe"
+    );
 
-    public SetupGameBuilder(Runnable loadGameSceneAction, Runnable loadMainMenuAction) {
+    public SetupGameBuilder(Runnable loadGameSceneAction, Runnable loadMainMenuAction, GameSetup gameSetup) {
         this.loadGameSceneAction = loadGameSceneAction;
         this.loadMainMenuAction = loadMainMenuAction;
+        this.gameSetup = gameSetup;
 
         playerBoxes = new ArrayList<>();
         playerContainer = new VBox(10);
@@ -47,11 +53,45 @@ public class SetupGameBuilder implements Builder<Region> {
         Button backButton = new Button("Back to Main Menu");
         backButton.getStyleClass().add("button-back");
         backButton.setOnAction(event -> loadMainMenuAction.run());
+        HBox backButtonContainer = new HBox(backButton);
+        backButtonContainer.setAlignment(Pos.TOP_LEFT);
+        backButtonContainer.setPadding(new Insets(10));
 
-        // Place "Back to Main Menu" button at top-left corner
-        HBox topBar = new HBox(backButton);
-        topBar.setAlignment(Pos.TOP_LEFT);
-        topBar.setPadding(new Insets(10));
+        // Create "Start Game" button
+        Button startGameButton = new Button("Start Game");
+        startGameButton.getStyleClass().add("start-game-button");
+        startGameButton.setOnAction(event -> {
+            List<String> playerNames = new ArrayList<>();
+            List<Boolean> isAiList = new ArrayList<>();
+
+            for (int i = 0; i < playerBoxes.size(); i++) {
+                HBox playerBox = playerBoxes.get(i);
+                TextField playerNameField = (TextField) playerBox.lookup(".text-field");
+                String playerName = playerNameField != null && !playerNameField.getText().trim().isEmpty()
+                        ? playerNameField.getText()
+                        : "Player " + (i + 1);
+                playerNames.add(playerName);
+
+                ToggleButton cpuToggle = (ToggleButton) playerBox.lookup(".toggle-button");
+                boolean isAi = cpuToggle != null && cpuToggle.isSelected();
+                isAiList.add(isAi);
+            }
+
+            gameSetup.setPlayerNames(playerNames);
+            for (int i = 0; i < isAiList.size(); i++) {
+                gameSetup.setPlayerAsAi(i, isAiList.get(i));
+            }
+
+            loadGameSceneAction.run();
+        });
+        HBox startButtonContainer = new HBox(startGameButton);
+        startButtonContainer.setAlignment(Pos.TOP_RIGHT);
+        startButtonContainer.setPadding(new Insets(10));
+
+        // Top bar layout containing both buttons
+        BorderPane topBar = new BorderPane();
+        topBar.setLeft(backButtonContainer);
+        topBar.setRight(startButtonContainer);
 
         // Main content in center
         VBox mainContent = new VBox(20);
@@ -62,26 +102,39 @@ public class SetupGameBuilder implements Builder<Region> {
         Label titleLabel = new Label("Setup Game");
         titleLabel.getStyleClass().add("text-title");
 
-        // Player management section
         addPlayer(); // Start with Player 1
         addPlayer(); // Start with Player 2
 
-        // Map selection dropdown
+        // Map selection container
+        VBox mapSelectionWrapper = new VBox();
+        mapSelectionWrapper.setAlignment(Pos.CENTER); // Center the inner container
+        mapSelectionWrapper.setPadding(new Insets(20)); // Padding around the entire box
+
+        HBox mapSelectionContainer = new HBox(10);
+        mapSelectionContainer.setAlignment(Pos.CENTER_LEFT);
+        mapSelectionContainer.setPadding(new Insets(10, 20, 10, 20));
+        mapSelectionContainer.setStyle("-fx-background-color: #2a2a3b; -fx-background-radius: 8px; -fx-border-radius: 8px;");
+        mapSelectionContainer.setMaxWidth(400); // Limit the width of the box
+
         Label mapLabel = new Label("Select a Map:");
         mapLabel.getStyleClass().add("label");
+
         ComboBox<String> mapSelector = new ComboBox<>();
-        mapSelector.getItems().addAll("Generate Random Map", "Germany", "Ireland", "Map Editor Custom #1"); // Example map options
+        mapSelector.getItems().addAll("Generate Random Map", "Germany", "Ireland", "Map Editor Custom #1");
         mapSelector.setMaxWidth(200);
-        mapSelector.setValue("Generate Random Map"); // Default selection
+        mapSelector.setValue("Generate Random Map");
         mapSelector.getStyleClass().add("combo-box");
+        mapSelector.setOnAction(event -> {
+            if (gameSetup != null) {
+                gameSetup.setMapSelection(mapSelector.getValue());
+            }
+        });
 
-        // Start Game button
-        Button startGameButton = new Button("Start Game");
-        startGameButton.getStyleClass().add("start-game-button");
-        startGameButton.setOnAction(event -> loadGameSceneAction.run());
+        // Add label and dropdown to the container
+        mapSelectionContainer.getChildren().addAll(mapLabel, mapSelector);
+        mapSelectionWrapper.getChildren().add(mapSelectionContainer);
 
-        // Layout management
-        mainContent.getChildren().addAll(titleLabel, playerContainer, addPlayerButton, mapLabel, mapSelector, startGameButton);
+        mainContent.getChildren().addAll(titleLabel, playerContainer, addPlayerButton, mapSelectionWrapper);
         root.setTop(topBar);
         root.setCenter(mainContent);
         root.getStylesheets().add(getClass().getResource("/css/setupgamemenu.css").toExternalForm());
@@ -90,64 +143,83 @@ public class SetupGameBuilder implements Builder<Region> {
     }
 
     private void addPlayer() {
-        if (playerBoxes.size() >= maxPlayers) return; // Limit to maxPlayers
+        if (playerBoxes.size() >= maxPlayers) return;
 
         HBox outerBox = new HBox();
         outerBox.setAlignment(Pos.CENTER);
 
-        HBox playerBox = new HBox(5); 
-        playerBox.setAlignment(Pos.CENTER_LEFT); 
+        HBox playerBox = new HBox(5);
+        playerBox.setAlignment(Pos.CENTER_LEFT);
 
-        // Create trash can button (only visible for players 3-6)
         ImageView trashIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/trash.png")));
-        trashIcon.setFitWidth(20); // Set the desired size for the icon
+        trashIcon.setFitWidth(20);
         trashIcon.setFitHeight(20);
         trashIcon.setPreserveRatio(true);
 
         Button removeButton = new Button();
         removeButton.setGraphic(trashIcon);
-        removeButton.setStyle("-fx-background-color: transparent; -fx-padding: 5;"); // Transparent background and padding for easier clicking
+        removeButton.setStyle("-fx-background-color: transparent; -fx-padding: 5;");
         removeButton.setOnAction(event -> removePlayer(outerBox));
 
         if (playerBoxes.size() < 2) {
-            removeButton.setVisible(false); // Hide for first 2 players
+            removeButton.setVisible(false);
         }
 
-        // Centered input field for player name
-        TextField playerNameField = new TextField("Player " + (playerBoxes.size() + 1));
+        int playerNumber = playerBoxes.size() + 1;
+        TextField playerNameField = new TextField("Player " + playerNumber);
         playerNameField.setPromptText("Enter Player Name");
         playerNameField.setMaxWidth(150);
 
-        // Conditionally create the CPU toggle button or a placeholder region
-        Region cpuPlaceholder = new Region();
-        cpuPlaceholder.setPrefSize(60, 30); // Same size as the CPU button to maintain alignment
-        ToggleButton cpuToggle = null;
+        ToggleButton cpuToggle = new ToggleButton("CPU");
+        cpuToggle.getStyleClass().add("toggle-button");
+        cpuToggle.setDisable(playerNumber == 1); // Disable for Player 1
 
-        if (playerBoxes.size() > 0) { // Only add the CPU toggle if it's not Player 1
-            cpuToggle = new ToggleButton("CPU");
-            cpuToggle.getStyleClass().add("toggle-button");
-            HBox.setMargin(cpuToggle, new Insets(0, 0, 0, 5)); // Margin on left side of CPU toggle button
-            playerBox.getChildren().addAll(removeButton, playerNameField, cpuToggle);
-        } else {
-            playerBox.getChildren().addAll(removeButton, playerNameField, cpuPlaceholder); // Add placeholder
+        HBox.setMargin(cpuToggle, new Insets(0, 0, 0, 5));
+        playerBox.getChildren().addAll(removeButton, playerNameField, cpuToggle);
+
+        // Add color selection buttons
+        HBox colorContainer = new HBox(5);
+        colorContainer.setAlignment(Pos.CENTER_LEFT);
+        List<Button> colorButtons = new ArrayList<>();
+        for (int i = 0; i < availableColors.size(); i++) {
+            String colorHex = availableColors.get(i);
+            Button colorButton = new Button();
+            colorButton.setStyle("-fx-background-color: " + colorHex + "; -fx-min-width: 20px; -fx-min-height: 20px; -fx-max-width: 20px; -fx-max-height: 20px; -fx-background-radius: 6; -fx-border-radius: 6;");
+
+            // Default selection logic
+            if (i == playerNumber - 1) {
+                colorButton.setStyle(colorButton.getStyle() + " -fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;");
+                gameSetup.setPlayerColor(playerNumber - 1, colorHex);
+            }
+
+            colorButton.setOnAction(event -> {
+                colorButtons.forEach(btn -> btn.setStyle(btn.getStyle().replaceAll("-fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;", "")));
+                colorButton.setStyle(colorButton.getStyle() + " -fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;");
+                gameSetup.setPlayerColor(playerNumber - 1, colorHex);
+            });
+
+            colorButtons.add(colorButton);
+            colorContainer.getChildren().add(colorButton);
         }
 
-        // Setting margins to reduce excessive space between elements
-        HBox.setMargin(removeButton, new Insets(0, 5, 0, 0)); // Margin on right side of trashcan button
-        HBox.setMargin(playerNameField, new Insets(0, 5, 0, 5)); // Margin around the text field
+        playerBox.getChildren().add(colorContainer);
+        HBox.setMargin(colorContainer, new Insets(0, 20, 0, 0));
 
         outerBox.getChildren().add(playerBox);
         playerContainer.getChildren().add(outerBox);
         playerBoxes.add(outerBox);
 
-        // Update visibility of add player button
         updateAddPlayerButtonVisibility();
     }
 
     private void removePlayer(HBox outerBox) {
-        if (playerBoxes.size() > 2) { // Minimum 2 players
+        int indexToRemove = playerBoxes.indexOf(outerBox);
+        if (playerBoxes.size() > 2) {
             playerContainer.getChildren().remove(outerBox);
             playerBoxes.remove(outerBox);
+            if (gameSetup != null) {
+                gameSetup.removePlayer(indexToRemove);
+            }
             updateAddPlayerButtonVisibility();
         }
     }
