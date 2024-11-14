@@ -126,10 +126,11 @@ public final class GameState {
      * @return the new {@link Player}
      * @throws IllegalStateException if the {@link Player} could not be added
      */
-    public Player newPlayer(final @Nullable String name, final Color color) {
+    public Player newPlayer(final @Nullable String name, final Color color, final boolean isAi) {
         final Player player = new PlayerImpl.Builder(this.players.size() + 1)
                 .color(color)
                 .name(name)
+                .ai(isAi)
                 .build(this.grid);
         if (!addPlayer(player)) {
             throw new IllegalStateException("Cannot add more players");

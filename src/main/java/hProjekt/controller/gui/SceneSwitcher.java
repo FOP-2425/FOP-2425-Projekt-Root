@@ -11,6 +11,7 @@ import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
 import hProjekt.controller.gui.controllers.scene.MapSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
+import hProjekt.model.GameState;
 import hProjekt.view.menus.AboutBuilder;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -97,12 +98,22 @@ public class SceneSwitcher {
      */
     @DoNotTouch
     public void loadScene(final SceneType sceneType) {
-        System.out.println("Loading scene: " + sceneType);
+        /*System.out.println("Loading scene: " + sceneType);
         final SceneController controller = sceneType.controller.get();
         final Scene scene = new Scene(controller.buildView());
         scene.getStylesheets().add("css/hexmap.css");
         stage.setScene(scene);
         stage.setTitle(controller.getTitle());
+        stage.show();*/
+        loadScene(sceneType.controller.get());
+    }
+
+    public void loadScene(final SceneController sceneController) {
+        System.out.println("Loading scene: " + sceneController.getTitle());
+        final Scene scene = new Scene(sceneController.buildView());
+        scene.getStylesheets().add("css/hexmap.css");
+        stage.setScene(scene);
+        stage.setTitle(sceneController.getTitle());
         stage.show();
     }
 }
