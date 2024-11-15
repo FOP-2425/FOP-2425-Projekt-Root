@@ -1,17 +1,21 @@
 package hProjekt.controller.gui.controllers.scene;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import hProjekt.Config;
 import hProjekt.controller.GameController;
+import hProjekt.controller.PlayerController;
 import hProjekt.controller.gui.controllers.HexGridController;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGridImpl;
+import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
 public class MapSceneController implements SceneController {
@@ -34,16 +38,32 @@ public class MapSceneController implements SceneController {
         BorderPane mapRoot = new BorderPane();
         mapRoot.setCenter(controller.getBuilder().build());
 
-        // Player overlay
+        // Create Player and Game Info Overlays
         PlayerOverlayView playerOverlay = new PlayerOverlayView(gameController.getState().getPlayers());
-        StackPane overlayContainer = new StackPane(playerOverlay);
-        overlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
-        overlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
+        GameInfoOverlayView gameInfoOverlay = new GameInfoOverlayView();
 
+        // Update gameInfoOverlay with active player info
+        PlayerController activePlayerController = gameController.getActivePlayerController();
+        gameInfoOverlay.setPlayerStatus(activePlayerController);
+
+        // Create containers for overlays
+        VBox playerOverlayContainer = new VBox(playerOverlay);
+        playerOverlayContainer.setPadding(new Insets(10));
+        playerOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
+        playerOverlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
+
+        VBox gameInfoOverlayContainer = new VBox(gameInfoOverlay);
+        gameInfoOverlayContainer.setPadding(new Insets(10));
+        gameInfoOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
+        gameInfoOverlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
+
+        // Root layout
         StackPane root = new StackPane();
-        root.getChildren().addAll(mapRoot, overlayContainer);
-        StackPane.setAlignment(overlayContainer, javafx.geometry.Pos.TOP_LEFT);
-        StackPane.setMargin(overlayContainer, new Insets(10));
+        root.getChildren().addAll(mapRoot, playerOverlayContainer, gameInfoOverlayContainer);
+
+        // Position the overlays
+        StackPane.setAlignment(playerOverlayContainer, javafx.geometry.Pos.TOP_LEFT);
+        StackPane.setAlignment(gameInfoOverlayContainer, javafx.geometry.Pos.TOP_CENTER);
 
         return () -> root;
     }
