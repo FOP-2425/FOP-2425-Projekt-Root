@@ -13,8 +13,14 @@ import hProjekt.controller.gui.controllers.scene.SceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
 import hProjekt.model.GameState;
 import hProjekt.view.menus.AboutBuilder;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * A SceneSwitcher is responsible for switching between the different
@@ -105,8 +111,20 @@ public class SceneSwitcher {
         stage.setScene(scene);
         stage.setTitle(controller.getTitle());
         stage.show();*/
-        loadScene(sceneType.controller.get());
+        Platform.runLater(() -> {
+            final SceneController newController = sceneType.controller.get();
+            Region newRoot = newController.buildView();
+                if (stage.getScene() == null) {
+                Scene initialScene = new Scene(new StackPane(), 800, 600); // Default
+                initialScene.setFill(javafx.scene.paint.Color.web("#1f1f2e"));
+                stage.setScene(initialScene);
+            }
+                stage.getScene().setFill(javafx.scene.paint.Color.web("#1f1f2e"));
+                stage.getScene().setRoot(newRoot);
+        });
     }
+        
+        
 
     public void loadScene(final SceneController sceneController) {
         System.out.println("Loading scene: " + sceneController.getTitle());
