@@ -104,15 +104,9 @@ public class SceneSwitcher {
      */
     @DoNotTouch
     public void loadScene(final SceneType sceneType) {
-        /*System.out.println("Loading scene: " + sceneType);
-        final SceneController controller = sceneType.controller.get();
-        final Scene scene = new Scene(controller.buildView());
-        scene.getStylesheets().add("css/hexmap.css");
-        stage.setScene(scene);
-        stage.setTitle(controller.getTitle());
-        stage.show();*/
         Platform.runLater(() -> {
             final SceneController newController = sceneType.controller.get();
+            System.out.println("Loading scene: " + sceneType);
             Region newRoot = newController.buildView();
                 if (stage.getScene() == null) {
                 Scene initialScene = new Scene(new StackPane(), 800, 600); // Default
@@ -121,6 +115,7 @@ public class SceneSwitcher {
             }
                 stage.getScene().setFill(javafx.scene.paint.Color.web("#1f1f2e"));
                 stage.getScene().setRoot(newRoot);
+                stage.setTitle(newController.getTitle());
         });
     }
         
