@@ -11,6 +11,7 @@ import hProjekt.model.GameState;
 import hProjekt.model.HexGridImpl;
 import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
+import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
@@ -38,9 +39,10 @@ public class MapSceneController implements SceneController {
         BorderPane mapRoot = new BorderPane();
         mapRoot.setCenter(controller.getBuilder().build());
 
-        // Create Player and Game Info Overlays
+        // Create Overlays
         PlayerOverlayView playerOverlay = new PlayerOverlayView(gameController.getState().getPlayers());
         GameInfoOverlayView gameInfoOverlay = new GameInfoOverlayView();
+        RollDiceOverlayView rollDiceOverlay = new RollDiceOverlayView(gameController);
 
         // Update gameInfoOverlay with active player info
         PlayerController activePlayerController = gameController.getActivePlayerController();
@@ -59,11 +61,12 @@ public class MapSceneController implements SceneController {
 
         // Root layout
         StackPane root = new StackPane();
-        root.getChildren().addAll(mapRoot, playerOverlayContainer, gameInfoOverlayContainer);
+        root.getChildren().addAll(mapRoot, playerOverlayContainer, gameInfoOverlayContainer, rollDiceOverlay);
 
         // Position the overlays
         StackPane.setAlignment(playerOverlayContainer, javafx.geometry.Pos.TOP_LEFT);
         StackPane.setAlignment(gameInfoOverlayContainer, javafx.geometry.Pos.TOP_CENTER);
+        StackPane.setAlignment(rollDiceOverlay, javafx.geometry.Pos.BOTTOM_CENTER);
 
         return () -> root;
     }
