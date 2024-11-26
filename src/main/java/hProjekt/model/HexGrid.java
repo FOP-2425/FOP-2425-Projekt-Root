@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
-import hProjekt.model.TilePosition.EdgeDirection;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableDoubleValue;
 
@@ -149,51 +148,4 @@ public interface HexGrid {
      * @return all rails of the given player
      */
     Map<Set<TilePosition>, Edge> getRails(Player player);
-
-    /**
-     * Adds the given rail to the grid. Does not check or remove the player's
-     * credits.
-     *
-     * @param position0 the first position of the rail
-     * @param position1 the second position of the rail
-     * @param player    the player that owns the rail
-     * @return whether the rail was added
-     */
-    boolean addRail(TilePosition position0, TilePosition position1, Player player);
-
-    /**
-     * Adds the given rail to the grid relative to the given tile.
-     * See {@link HexGrid#addRail(TilePosition, TilePosition, Player)}
-     * for details.
-     *
-     * @param tile          the tile the rail is next to
-     * @param edgeDirection the direction of the tile the rail runs to
-     * @param player        the player that owns the rail
-     * @return whether the rail was added
-     */
-    default boolean addRail(final Tile tile, final EdgeDirection edgeDirection, final Player player) {
-        return tile.addRail(edgeDirection, player);
-    }
-
-    /**
-     * Removes the rail between the given positions.
-     *
-     * @param position0 the first position
-     * @param position1 the second position
-     * @param player    the player that owns the rail
-     * @return whether the rail was removed
-     */
-    boolean removeRail(TilePosition position0, TilePosition position1, Player player);
-
-    /**
-     * Removes the rail at the given edge.
-     *
-     * @param rail   (the edge of) the rail to remove
-     * @param player the player that owns the rail
-     * @return {@code true}, if the rail has been successfully removed,
-     *         {@code false} otherwise
-     */
-    default boolean removeRail(final Edge rail, Player player) {
-        return removeRail(rail.getPosition1(), rail.getPosition2(), player);
-    }
 }

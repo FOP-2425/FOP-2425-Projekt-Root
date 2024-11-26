@@ -100,17 +100,6 @@ public interface Tile {
     Set<Edge> getEdges();
 
     /**
-     * Add a rail in the given direction.
-     * Check {@link HexGrid#addRail(TilePosition, TilePosition, Player)}
-     * for details.
-     *
-     * @param direction the direction of the tile the rail runs to
-     * @param owner     the player who owns the rail
-     * @return whether the rail was added
-     */
-    boolean addRail(EdgeDirection direction, Player owner);
-
-    /**
      * Returns whether this tile has a city.
      *
      * @return whether this tile has a city

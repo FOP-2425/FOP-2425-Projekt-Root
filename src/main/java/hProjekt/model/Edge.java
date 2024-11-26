@@ -1,5 +1,6 @@
 package hProjekt.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,6 +73,41 @@ public interface Edge {
      */
     default boolean hasRail() {
         return getRailOwnersProperty().getValue() != null || !getRailOwnersProperty().getValue().isEmpty();
+    }
+
+    /**
+     * Adds a rail for the given player to this edge.
+     * Checks if the player can build a rail on this edge.
+     * This method does not verify that the player has enough credits to build a
+     * rail.
+     *
+     * The following conditions must be met:
+     * - The player hasn't already built a rail here
+     * - The player has built a rail on a connected edge
+     * - If the player hasn't built any rails yet, the edge must be connected to a
+     * starting city
+     *
+     * @param player the player to add the rail for
+     * @return {@code true} if the rail was added, {@code false} otherwise
+     */
+    default boolean addRail(Player player) {
+        if (getRailOwners().contains(player) || (player.getRails().size() > 0
+                && getConnectedEdges().stream().noneMatch(e -> e.getRailOwners().contains(player)))
+                || (player.getRails().size() == 0 && !Collections.disjoint(getHexGrid().getStartingCities().keySet(),
+                        getAdjacentTilePositions()))) {
+            return false;
+        }
+        return getRailOwnersProperty().getValue().add(player);
+    }
+
+    /**
+     * Removes the rail of the given player from this edge.
+     *
+     * @param player the player to remove the rail for
+     * @return {@code true} if the rail was removed, {@code false} otherwise
+     */
+    default boolean removeRail(Player player) {
+        return getRailOwnersProperty().getValue().remove(player);
     }
 
     /**

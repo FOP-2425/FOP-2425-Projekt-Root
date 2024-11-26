@@ -293,17 +293,6 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
-    @StudentImplementationRequired("H1.3")
-    public boolean addRail(final TilePosition position0, final TilePosition position1, final Player player) {
-        return edges.get(Set.of(position0, position1)).getRailOwnersProperty().getValue().add(player);
-    }
-
-    @Override
-    public boolean removeRail(final TilePosition position0, final TilePosition position1, final Player player) {
-        return edges.get(Set.of(position0, position1)).getRailOwnersProperty().getValue().remove(player);
-    }
-
-    @Override
     public Map<TilePosition, City> getCities() {
         return Collections.unmodifiableMap(cities);
     }
