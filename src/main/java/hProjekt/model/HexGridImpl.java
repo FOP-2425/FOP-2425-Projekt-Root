@@ -287,8 +287,7 @@ public class HexGridImpl implements HexGrid {
     @StudentImplementationRequired("H1.3")
     public Map<Set<TilePosition>, Edge> getRails(final Player player) {
         return Collections.unmodifiableMap(edges.entrySet().stream()
-                .filter(entry -> entry.getValue().hasRail())
-                .filter(entry -> entry.getValue().getRailOwners().equals(player))
+                .filter(entry -> entry.getValue().getRailOwners().contains(player))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
