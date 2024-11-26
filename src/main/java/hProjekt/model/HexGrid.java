@@ -2,6 +2,8 @@ package hProjekt.model;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -130,6 +132,16 @@ public interface HexGrid {
      * @return all cities connected to a rail
      */
     Map<TilePosition, City> getConnectedCities();
+
+    /**
+     * Returns all cities that are stating cities.
+     *
+     * @return all cities that are stating cities.
+     */
+    default Map<TilePosition, City> getStartingCities() {
+        return getCities().values().stream().filter(City::isStartingCity)
+                .collect(Collectors.toMap(City::getPosition, Function.identity()));
+    }
 
     /**
      * Returns all rails of the given player.
