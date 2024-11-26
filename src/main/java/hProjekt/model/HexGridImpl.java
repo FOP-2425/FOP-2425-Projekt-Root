@@ -308,12 +308,4 @@ public class HexGridImpl implements HexGrid {
                         .anyMatch(edge -> edge.getAdjacentTilePositions().contains(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
-
-    @Override
-    public Map<TilePosition, City> getConnectedCities() {
-        return Collections.unmodifiableMap(cities.entrySet().stream()
-                .filter(entry -> edges.values().stream().filter(edge -> edge.hasRail())
-                        .anyMatch(edge -> edge.getAdjacentTilePositions().contains(entry.getKey())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-    }
 }

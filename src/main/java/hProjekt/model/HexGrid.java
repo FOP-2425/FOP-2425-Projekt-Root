@@ -144,13 +144,6 @@ public interface HexGrid {
     }
 
     /**
-     * Returns all cities connected to a rail.
-     *
-     * @return all cities connected to a rail
-     */
-    Map<TilePosition, City> getConnectedCities();
-
-    /**
      * Returns all rails of the given player.
      *
      * @param player the player to get the rails of
