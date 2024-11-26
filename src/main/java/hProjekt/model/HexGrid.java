@@ -125,16 +125,6 @@ public interface HexGrid {
     City getCityAt(TilePosition position);
 
     /**
-     * Returns the city with the given roll number or {@code null} if no city has
-     * the given roll number.
-     *
-     * @param rollNumber the roll number of the city
-     * @return the city with the given roll number or {@code null} if no city has
-     *         the given roll number
-     */
-    City getCityWithRollNumber(int rollNumber);
-
-    /**
      * Returns all cities connected to a rail.
      *
      * @return all cities connected to a rail
