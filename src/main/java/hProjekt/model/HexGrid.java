@@ -2,10 +2,11 @@ package hProjekt.model;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
-import hProjekt.model.TilePosition.EdgeDirection;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableDoubleValue;
 
@@ -126,14 +127,21 @@ public interface HexGrid {
     City getCityAt(TilePosition position);
 
     /**
-     * Returns the city with the given roll number or {@code null} if no city has
-     * the given roll number.
+     * Returns all cities connected to a rail.
      *
-     * @param rollNumber the roll number of the city
-     * @return the city with the given roll number or {@code null} if no city has
-     *         the given roll number
+     * @return all cities connected to a rail
      */
-    City getCityWithRollNumber(int rollNumber);
+    Map<TilePosition, City> getConnectedCities();
+
+    /**
+     * Returns all cities that are stating cities.
+     *
+     * @return all cities that are stating cities.
+     */
+    default Map<TilePosition, City> getStartingCities() {
+        return getCities().values().stream().filter(City::isStartingCity)
+                .collect(Collectors.toMap(City::getPosition, Function.identity()));
+    }
 
     /**
      * Returns all cities connected to a rail.
@@ -149,51 +157,4 @@ public interface HexGrid {
      * @return all rails of the given player
      */
     Map<Set<TilePosition>, Edge> getRails(Player player);
-
-    /**
-     * Adds the given rail to the grid. Does not check or remove the player's
-     * credits.
-     *
-     * @param position0 the first position of the rail
-     * @param position1 the second position of the rail
-     * @param player    the player that owns the rail
-     * @return whether the rail was added
-     */
-    boolean addRail(TilePosition position0, TilePosition position1, Player player);
-
-    /**
-     * Adds the given rail to the grid relative to the given tile.
-     * See {@link HexGrid#addRail(TilePosition, TilePosition, Player)}
-     * for details.
-     *
-     * @param tile          the tile the rail is next to
-     * @param edgeDirection the direction of the tile the rail runs to
-     * @param player        the player that owns the rail
-     * @return whether the rail was added
-     */
-    default boolean addRail(final Tile tile, final EdgeDirection edgeDirection, final Player player) {
-        return tile.addRail(edgeDirection, player);
-    }
-
-    /**
-     * Removes the rail between the given positions.
-     *
-     * @param position0 the first position
-     * @param position1 the second position
-     * @param player    the player that owns the rail
-     * @return whether the rail was removed
-     */
-    boolean removeRail(TilePosition position0, TilePosition position1, Player player);
-
-    /**
-     * Removes the rail at the given edge.
-     *
-     * @param rail   (the edge of) the rail to remove
-     * @param player the player that owns the rail
-     * @return {@code true}, if the rail has been successfully removed,
-     *         {@code false} otherwise
-     */
-    default boolean removeRail(final Edge rail, Player player) {
-        return removeRail(rail.getPosition1(), rail.getPosition2(), player);
-    }
 }

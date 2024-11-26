@@ -17,15 +17,17 @@ import javafx.scene.text.Text;
 import javafx.util.Builder;
 
 public class MainMenuBuilder implements Builder<Region> {
-    private final Runnable loadGameSceneAction;
+    private final Runnable loadSetupGameScene;
+    //private final Runnable loadGameSceneAction;
     private final Runnable loadMapEditorAction;
     private final Runnable loadSettingsAction;
     private final Runnable loadAboutSceneAction;
     private final Runnable quitAction;
 
-    public MainMenuBuilder(Runnable loadGameSceneAction, Runnable loadMapEditorAction, Runnable loadSettingsAction,
+    public MainMenuBuilder(Runnable loadSetupGameScene, Runnable loadMapEditorAction, Runnable loadSettingsAction,
             Runnable quitAction, Runnable loadAboutSceneAction) {
-        this.loadGameSceneAction = loadGameSceneAction;
+        this.loadSetupGameScene = loadSetupGameScene;
+        //this.loadGameSceneAction = loadGameSceneAction;
         this.loadMapEditorAction = loadMapEditorAction;
         this.loadSettingsAction = loadSettingsAction;
         this.quitAction = quitAction;
@@ -57,11 +59,12 @@ public class MainMenuBuilder implements Builder<Region> {
         logo.setPreserveRatio(true);
 
         // Create Start Game Button
-        Button startGameButton = new Button("Start Game");
+        Button startGameButton = new Button("Create Game");
         startGameButton.setMinWidth(200);
         startGameButton.setOnAction(event -> {
             mediaPlayer.stop();
-            loadGameSceneAction.run();
+            //loadGameSceneAction.run();
+            loadSetupGameScene.run();
         });
         startGameButton.getStyleClass().add("button");
 

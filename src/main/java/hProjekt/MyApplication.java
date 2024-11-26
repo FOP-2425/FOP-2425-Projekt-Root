@@ -9,6 +9,10 @@ import hProjekt.controller.gui.SceneSwitcher;
 import hProjekt.controller.gui.SceneSwitcher.SceneType;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import java.awt.Taskbar;
+import java.awt.Toolkit;
+import java.awt.Taskbar.Feature;
 
 /**
  * The main application of the game.
@@ -36,6 +40,19 @@ public class MyApplication extends Application {
         stage.setMinHeight(520);
         stage.setWidth(1280);
         stage.setHeight(720);
+
+        // Set custom icon in the task bar
+        var appIcon = new Image("/images/stage-icon.png");
+        stage.getIcons().add(appIcon);
+        if(Taskbar.isTaskbarSupported()){
+            var taskbar = Taskbar.getTaskbar();
+            if(taskbar.isSupported(Feature.ICON_IMAGE)){
+                final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+                var dockIcon = defaultToolkit.getImage(getClass().getResource("/images/stage-icon.png"));
+                taskbar.setIconImage(dockIcon);
+            }
+        }
+        stage.show();
 
         // TODO: Uncomment when implemented
         SceneSwitcher.getInstance(stage, (gc) -> {

@@ -9,7 +9,7 @@ public class MainMenuSceneController implements SceneController {
 
     public MainMenuSceneController() {
         builder = new MainMenuBuilder(
-                SceneController::loadGameScene,
+                SceneController::loadSetupGameScene,
                 SceneController::loadMapEditorScene,
                 SceneController::loadSettingsScene,
                 SceneController::quit,

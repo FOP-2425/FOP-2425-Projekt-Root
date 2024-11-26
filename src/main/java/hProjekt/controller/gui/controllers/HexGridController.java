@@ -110,7 +110,7 @@ public class HexGridController implements Controller {
         }
         pane.setScaleX(pane.getScaleX() + event.getDeltaY() / 500);
         pane.setScaleY(pane.getScaleY() + event.getDeltaY() / 500);
-    }
+    }    
 
     /**
      * Returns the edge controllers.

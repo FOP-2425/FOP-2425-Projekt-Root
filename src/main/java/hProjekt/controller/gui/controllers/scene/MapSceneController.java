@@ -23,7 +23,7 @@ public class MapSceneController implements SceneController {
 
     @Override
     public String getTitle() {
-        return "Karte";
+        return "Map";
     }
 
 }

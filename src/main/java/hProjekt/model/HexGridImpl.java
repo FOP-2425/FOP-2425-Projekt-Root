@@ -287,20 +287,8 @@ public class HexGridImpl implements HexGrid {
     @StudentImplementationRequired("H1.3")
     public Map<Set<TilePosition>, Edge> getRails(final Player player) {
         return Collections.unmodifiableMap(edges.entrySet().stream()
-                .filter(entry -> entry.getValue().hasRail())
-                .filter(entry -> entry.getValue().getRailOwners().equals(player))
+                .filter(entry -> entry.getValue().getRailOwners().contains(player))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-    }
-
-    @Override
-    @StudentImplementationRequired("H1.3")
-    public boolean addRail(final TilePosition position0, final TilePosition position1, final Player player) {
-        return edges.get(Set.of(position0, position1)).getRailOwnersProperty().getValue().add(player);
-    }
-
-    @Override
-    public boolean removeRail(final TilePosition position0, final TilePosition position1, final Player player) {
-        return edges.get(Set.of(position0, position1)).getRailOwnersProperty().getValue().remove(player);
     }
 
     @Override
@@ -314,8 +302,11 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
-    public City getCityWithRollNumber(int rollNumber) {
-        return cities.values().stream().filter(c -> c.getRollNumbers().contains(rollNumber)).findFirst().orElse(null);
+    public Map<TilePosition, City> getConnectedCities() {
+        return Collections.unmodifiableMap(cities.entrySet().stream()
+                .filter(entry -> edges.values().stream().filter(edge -> edge.hasRail())
+                        .anyMatch(edge -> edge.getAdjacentTilePositions().contains(entry.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
     @Override

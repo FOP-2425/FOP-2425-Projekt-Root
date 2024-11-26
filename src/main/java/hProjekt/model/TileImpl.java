@@ -66,11 +66,6 @@ public record TileImpl(
     }
 
     @Override
-    public boolean addRail(final EdgeDirection direction, final Player owner) {
-        return this.hexGrid.addRail(this.position, TilePosition.neighbour(this.position, direction), owner);
-    }
-
-    @Override
     public boolean hasCity() {
         return getHexGrid().getCityAt(position) != null;
     }
