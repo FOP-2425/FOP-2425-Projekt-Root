@@ -32,6 +32,8 @@ public class PlayerController {
 
     private PlayerObjective playerObjective;
 
+    private int buildingBudget = 0; // Budget during building phase
+
     /**
      * Creates a new {@link PlayerController} with the given {@link GameController}
      * and {@link Player}.
@@ -95,6 +97,15 @@ public class PlayerController {
     @DoNotTouch
     public void setPlayerObjective(final PlayerObjective nextObjective) {
         playerObjective = nextObjective;
+    }
+
+    /**
+     * Sets the building budget during the building phase,
+     *
+     * @param amount the anount to set the building budget to
+     */
+    public void setBuildingBudget(int amount) {
+        buildingBudget = amount;
     }
 
     /**
