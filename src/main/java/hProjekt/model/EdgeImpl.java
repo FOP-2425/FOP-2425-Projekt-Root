@@ -52,8 +52,14 @@ public record EdgeImpl(
     }
 
     @Override
-    public int getCost(Player player) {
+    public int getBuildingCost() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCost'");
+        throw new UnsupportedOperationException("Unimplemented method 'getBuildingCost'");
+    }
+
+    @Override
+    public int getParallelCost() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getParallelCost'");
     }
 }

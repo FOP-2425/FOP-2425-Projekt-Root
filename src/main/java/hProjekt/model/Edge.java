@@ -134,5 +134,30 @@ public interface Edge {
      */
     Set<Edge> getConnectedRails(Player player);
 
-    int getCost(Player player);
+    /**
+     * Returns the cost of building a rail on this edge.
+     *
+     * @return the cost of building a rail on this edge
+     */
+    int getBuildingCost();
+
+    /**
+     * Returns the cost that needs to be paid to each player that has already built
+     * on this edge.
+     *
+     * @return the cost that needs to be paid to each player that has already built
+     *         on this edge
+     */
+    int getParallelCost();
+
+    /**
+     * Returns the total cost the player has to pay to build a rail on this edge.
+     * The total cost is the sum of the building cost and the parallel cost times
+     * the number of players that have already built on this edge.
+     *
+     * @return the total cost the player has to pay to build a rail on this edge
+     */
+    default int getTotalCost() {
+        return getBuildingCost() + getParallelCost() * getRailOwners().size();
+    }
 }
