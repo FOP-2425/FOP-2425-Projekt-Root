@@ -3,8 +3,10 @@ package hProjekt.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import hProjekt.Config;
 import javafx.beans.property.Property;
 
 /**
@@ -139,25 +141,49 @@ public interface Edge {
      *
      * @return the cost of building a rail on this edge
      */
-    int getBuildingCost();
+    default int getBuildingCost() {
+        return Config.TILE_TYPE_TO_COST_MAP.get(getAdjacentTilePositions().stream()
+                .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
+    }
 
     /**
      * Returns the cost that needs to be paid to each player that has already built
      * on this edge.
      *
+     * @param player the player to calculate the parallel cost for
      * @return the cost that needs to be paid to each player that has already built
      *         on this edge
      */
-    int getParallelCost();
+    default int getParallelCost(Player player) {
+        if (!getRailOwners().isEmpty()) {
+            if (Collections.disjoint(getHexGrid().getCities().keySet(), getAdjacentTilePositions())) {
+                return 5;
+            }
+            return 3;
+        }
+
+        if (getAdjacentTilePositions().stream()
+                .anyMatch(position -> {
+                    Set<Player> owners = getHexGrid().getTileAt(position).getEdges().stream()
+                            .filter(Predicate.not(this::equals)).flatMap(edge -> edge.getRailOwners().stream())
+                            .collect(Collectors.toSet());
+                    return !owners.isEmpty() && !owners.contains(player);
+                })) {
+            return 1;
+        }
+
+        return 0;
+    }
 
     /**
      * Returns the total cost the player has to pay to build a rail on this edge.
      * The total cost is the sum of the building cost and the parallel cost times
      * the number of players that have already built on this edge.
      *
+     * @param player the player to calculate the total cost for
      * @return the total cost the player has to pay to build a rail on this edge
      */
-    default int getTotalCost() {
-        return getBuildingCost() + getParallelCost() * getRailOwners().size();
+    default int getTotalCost(Player player) {
+        return getBuildingCost() + getParallelCost(player) * getRailOwners().size();
     }
 }

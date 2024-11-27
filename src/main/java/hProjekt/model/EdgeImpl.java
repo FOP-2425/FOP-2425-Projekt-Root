@@ -50,16 +50,4 @@ public record EdgeImpl(
                 .filter(edge -> edge.getRailOwnersProperty().getValue().contains(player))
                 .collect(Collectors.toUnmodifiableSet());
     }
-
-    @Override
-    public int getBuildingCost() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBuildingCost'");
-    }
-
-    @Override
-    public int getParallelCost() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getParallelCost'");
-    }
 }

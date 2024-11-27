@@ -5,8 +5,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.IntStream;
+
+import hProjekt.model.Tile;
 
 public class Config {
     /**
@@ -85,6 +89,10 @@ public class Config {
      * The scale of the map, bigger values mean a bigger map.
      */
     public static final int MAP_SCALE = 15;
+
+    public static final Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_COST_MAP = Map.of(
+            Set.of(Tile.Type.PLAIN, Tile.Type.PLAIN), 1, Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 3,
+            Set.of(Tile.Type.MOUNTAIN, Tile.Type.MOUNTAIN), 5);
 
     /**
      * The iterator to generate roll numbers for the cities.
