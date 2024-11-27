@@ -83,6 +83,16 @@ public class PlayerController {
     }
 
     /**
+     * Updates the {@link #playerStateProperty} with the current
+     * {@link PlayerState}.
+     */
+    @DoNotTouch
+    private void updatePlayerState() {
+        playerStateProperty
+                .setValue(new PlayerState(getBuildableRails(), getPlayerObjective()));
+    }
+
+    /**
      * Returns the current {@link PlayerObjective}
      *
      * @return the current {@link PlayerObjective}
@@ -169,7 +179,7 @@ public class PlayerController {
     @DoNotTouch
     public PlayerAction waitForNextAction() {
         try {
-            // updatePlayerState();
+            updatePlayerState();
             // blocking, waiting for viewing thread
             final PlayerAction action = blockingGetNextAction();
 
