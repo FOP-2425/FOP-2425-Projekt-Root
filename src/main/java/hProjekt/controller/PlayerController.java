@@ -213,9 +213,9 @@ public class PlayerController {
     public boolean canBuildRail(Edge edge) {
         if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
             return edge.getBuildingCost() <= buildingBudget
-                    && edge.getParallelCost() <= player.getCredits();
+                    && edge.getTotalParallelCost(player) <= player.getCredits();
         }
-        return edge.getTotalCost() <= player.getCredits();
+        return edge.getTotalCost(player) <= player.getCredits();
     }
 
     /**
@@ -249,11 +249,21 @@ public class PlayerController {
         if (!edge.addRail(player)) {
             throw new IllegalActionException("Cannot build rail on the given edge");
         }
+
+        if (edge.getParallelCost(player) > 0) {
+            for (Player owner : edge.getRailOwners()) {
+                if (owner.equals(this.player)) {
+                    continue;
+                }
+                owner.addCredits(edge.getParallelCost(owner));
+            }
+        }
+
         if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
             buildingBudget -= edge.getBuildingCost();
-            player.removeCredits(edge.getParallelCost());
+            player.removeCredits(edge.getTotalParallelCost(player));
             return;
         }
-        player.removeCredits(edge.getTotalCost());
+        player.removeCredits(edge.getTotalCost(player));
     }
 }
