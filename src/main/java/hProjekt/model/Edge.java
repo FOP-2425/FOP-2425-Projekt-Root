@@ -155,7 +155,7 @@ public interface Edge {
      *         on this edge
      */
     default int getParallelCost(Player player) {
-        if (!getRailOwners().isEmpty()) {
+        if (!getRailOwners().isEmpty() && !(getRailOwners().size() == 1 && getRailOwners().contains(player))) {
             if (Collections.disjoint(getHexGrid().getCities().keySet(), getAdjacentTilePositions())) {
                 return 5;
             }
@@ -176,6 +176,17 @@ public interface Edge {
     }
 
     /**
+     * Returns the total cost that needs to be paid by the player to build a rail on
+     * this edge if other players have already built on this edge.
+     *
+     * @param player the player to calculate the total parallel cost for
+     * @return the total cost that needs to be paid by the player to build a rail
+     */
+    default int getTotalParallelCost(Player player) {
+        return getParallelCost(player) * getRailOwners().size();
+    }
+
+    /**
      * Returns the total cost the player has to pay to build a rail on this edge.
      * The total cost is the sum of the building cost and the parallel cost times
      * the number of players that have already built on this edge.
@@ -184,6 +195,6 @@ public interface Edge {
      * @return the total cost the player has to pay to build a rail on this edge
      */
     default int getTotalCost(Player player) {
-        return getBuildingCost() + getParallelCost(player) * getRailOwners().size();
+        return getBuildingCost() + getTotalParallelCost(player);
     }
 }
