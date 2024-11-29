@@ -1,9 +1,13 @@
 package hProjekt.controller.gui.controllers.scene;
 
+import java.util.List;
+
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.gui.SceneSwitcher;
 import hProjekt.controller.gui.controllers.Controller;
+import hProjekt.model.GameState;
+import hProjekt.model.Player;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
@@ -83,4 +87,15 @@ public interface SceneController extends Controller {
     static void loadAboutScene() {
         SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.ABOUT);
     }
+
+    /**
+     * 
+     * Loads the end screen scene with the given GameState.
+     *
+     * @param players the players to display on the end screen.
+     */
+    static void loadEndScreenScene(List<Player> players) {
+        SceneSwitcher.getInstance().loadEndScreenScene(players);;
+    }
+
 }

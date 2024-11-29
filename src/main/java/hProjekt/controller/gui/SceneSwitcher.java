@@ -1,5 +1,6 @@
 package hProjekt.controller.gui;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -7,11 +8,13 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.GameController;
 import hProjekt.controller.gui.controllers.scene.AboutSceneController;
+import hProjekt.controller.gui.controllers.scene.EndScreenSceneController;
 import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
 import hProjekt.controller.gui.controllers.scene.MapSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
 import hProjekt.model.GameState;
+import hProjekt.model.Player;
 import hProjekt.view.menus.AboutBuilder;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -119,8 +122,8 @@ public class SceneSwitcher {
         });
     }
         
-        
 
+    
     public void loadScene(final SceneController sceneController) {
         System.out.println("Loading scene: " + sceneController.getTitle());
         final Scene scene = new Scene(sceneController.buildView());
@@ -129,4 +132,14 @@ public class SceneSwitcher {
         stage.setTitle(sceneController.getTitle());
         stage.show();
     }
+
+    public void loadEndScreenScene(List<Player> players) {
+    Platform.runLater(() -> {
+        EndScreenSceneController controller = new EndScreenSceneController(players);
+        Region newRoot = controller.buildView();
+        stage.getScene().setRoot(newRoot);
+        stage.setTitle(controller.getTitle());
+    });
+}
+
 }
