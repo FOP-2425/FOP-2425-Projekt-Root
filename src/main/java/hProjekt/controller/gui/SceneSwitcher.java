@@ -1,5 +1,6 @@
 package hProjekt.controller.gui;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -7,13 +8,22 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.GameController;
 import hProjekt.controller.gui.controllers.scene.AboutSceneController;
+import hProjekt.controller.gui.controllers.scene.EndScreenSceneController;
 import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
 import hProjekt.controller.gui.controllers.scene.MapSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
+import hProjekt.model.GameState;
+import hProjekt.model.Player;
 import hProjekt.view.menus.AboutBuilder;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * A SceneSwitcher is responsible for switching between the different
@@ -97,12 +107,39 @@ public class SceneSwitcher {
      */
     @DoNotTouch
     public void loadScene(final SceneType sceneType) {
-        System.out.println("Loading scene: " + sceneType);
-        final SceneController controller = sceneType.controller.get();
-        final Scene scene = new Scene(controller.buildView());
+        Platform.runLater(() -> {
+            final SceneController newController = sceneType.controller.get();
+            System.out.println("Loading scene: " + sceneType);
+            Region newRoot = newController.buildView();
+                if (stage.getScene() == null) {
+                Scene initialScene = new Scene(new StackPane(), 800, 600); // Default
+                initialScene.setFill(javafx.scene.paint.Color.web("#1f1f2e"));
+                stage.setScene(initialScene);
+            }
+                stage.getScene().setFill(javafx.scene.paint.Color.web("#1f1f2e"));
+                stage.getScene().setRoot(newRoot);
+                stage.setTitle(newController.getTitle());
+        });
+    }
+        
+
+    
+    public void loadScene(final SceneController sceneController) {
+        System.out.println("Loading scene: " + sceneController.getTitle());
+        final Scene scene = new Scene(sceneController.buildView());
         scene.getStylesheets().add("css/hexmap.css");
         stage.setScene(scene);
-        stage.setTitle(controller.getTitle());
+        stage.setTitle(sceneController.getTitle());
         stage.show();
     }
+
+    public void loadEndScreenScene(List<Player> players) {
+    Platform.runLater(() -> {
+        EndScreenSceneController controller = new EndScreenSceneController(players);
+        Region newRoot = controller.buildView();
+        stage.getScene().setRoot(newRoot);
+        stage.setTitle(controller.getTitle());
+    });
+}
+
 }

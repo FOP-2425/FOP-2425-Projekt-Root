@@ -37,6 +37,10 @@ public class GameController {
         this.dice = dice;
     }
 
+    public GameController(GameState state){
+        this(state, () -> Config.RANDOM.nextInt(1, Config.DICE_SIDES + 1));
+    }
+
     public GameController() {
         this(new GameState(new HexGridImpl(Config.TOWN_NAMES), new ArrayList<>()),
                 () -> Config.RANDOM.nextInt(1, Config.DICE_SIDES + 1));

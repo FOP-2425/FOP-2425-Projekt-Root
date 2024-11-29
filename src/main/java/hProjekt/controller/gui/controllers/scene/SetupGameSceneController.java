@@ -1,12 +1,19 @@
 package hProjekt.controller.gui.controllers.scene;
 
-import java.util.List;
-
+import hProjekt.Config;
+import hProjekt.controller.GameController;
+import hProjekt.controller.gui.SceneSwitcher;
 import hProjekt.model.GameSetup;
 import hProjekt.model.GameSetupImpl;
+import hProjekt.model.GameState;
+import hProjekt.model.HexGridImpl;
 import hProjekt.view.menus.SetupGameBuilder;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
+import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetupGameSceneController implements SceneController {
     private final Builder<Region> builder;
@@ -16,7 +23,7 @@ public class SetupGameSceneController implements SceneController {
         this.gameSetup = new GameSetupImpl();
 
         builder = new SetupGameBuilder(
-            () -> loadGameSceneWithSetupData(), 
+            this::loadGameSceneWithSetupData, 
             SceneController::loadMainMenuScene,
             gameSetup
         );
@@ -36,10 +43,23 @@ public class SetupGameSceneController implements SceneController {
      * Loads the game scene with the setup data.
      */
     private void loadGameSceneWithSetupData() {
-        // Here utilize gameSetup to pass any setup data to the game logic
-
         System.out.println("Starting game with setup: ");
         List<String> playerNames = gameSetup.getPlayerNames();
+        GameState gameState = new GameState(new HexGridImpl(Config.TOWN_NAMES), new ArrayList<>());
+        GameController gameController = new GameController(gameState);
+
+        // Use GameState's newPlayer method to add players
+        for (int i = 0; i < playerNames.size(); i++) {
+            String playerName = playerNames.get(i);
+            boolean isAi = gameSetup.isPlayerAi(i);
+            String colorHex = gameSetup.getPlayerColor(i);
+            Color playerColor = Color.web(colorHex);
+
+            // Create a new player and add it to the GameState
+            gameController.getState().newPlayer(playerName, playerColor, isAi);
+        }
+
+        // Print players for debugging
         StringBuilder playersInfo = new StringBuilder("  - Players:\n");
         for (int i = 0; i < playerNames.size(); i++) {
             boolean isAi = gameSetup.isPlayerAi(i);
@@ -60,7 +80,8 @@ public class SetupGameSceneController implements SceneController {
         System.out.println(playersInfo);
         System.out.println("  - Selected Map: " + gameSetup.getMapSelection());
 
-        // Call actual game loading logic
-        SceneController.loadGameScene();
+        // Call the game scene with the existing GameState
+        SceneSwitcher.getInstance().loadScene(new MapSceneController(gameController.getState()));
     }
+
 }
