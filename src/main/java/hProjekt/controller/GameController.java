@@ -62,6 +62,10 @@ public class GameController {
         return currentDiceRoll;
     }
 
+    public int getCurrentDiceRoll() {
+        return currentDiceRoll.get();
+    }
+
     public IntegerProperty roundCounterProperty() {
         return roundCounter;
     }
@@ -93,6 +97,7 @@ public class GameController {
                     playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
                     () -> {
                         getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
+                        getActivePlayerController().setBuildingBudget(getCurrentDiceRoll());
 
                         getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
                         for (int i = 0; i < state.getPlayers().size(); i++) {
@@ -100,6 +105,7 @@ public class GameController {
                                     .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
                             final PlayerController pc = playerControllers.get(player);
                             withActivePlayer(pc, () -> {
+                                pc.setBuildingBudget(getCurrentDiceRoll());
                                 pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
                             });
                         }

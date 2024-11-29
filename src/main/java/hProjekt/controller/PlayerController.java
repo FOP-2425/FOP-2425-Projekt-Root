@@ -1,12 +1,16 @@
 package hProjekt.controller;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.actions.IllegalActionException;
 import hProjekt.controller.actions.PlayerAction;
+import hProjekt.model.Edge;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
 import javafx.beans.property.Property;
@@ -31,6 +35,8 @@ public class PlayerController {
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
 
     private PlayerObjective playerObjective;
+
+    private int buildingBudget = 0; // Budget during building phase
 
     /**
      * Creates a new {@link PlayerController} with the given {@link GameController}
@@ -77,6 +83,16 @@ public class PlayerController {
     }
 
     /**
+     * Updates the {@link #playerStateProperty} with the current
+     * {@link PlayerState}.
+     */
+    @DoNotTouch
+    private void updatePlayerState() {
+        playerStateProperty
+                .setValue(new PlayerState(getBuildableRails(), getPlayerObjective()));
+    }
+
+    /**
      * Returns the current {@link PlayerObjective}
      *
      * @return the current {@link PlayerObjective}
@@ -95,6 +111,15 @@ public class PlayerController {
     @DoNotTouch
     public void setPlayerObjective(final PlayerObjective nextObjective) {
         playerObjective = nextObjective;
+    }
+
+    /**
+     * Sets the building budget during the building phase,
+     *
+     * @param amount the anount to set the building budget to
+     */
+    public void setBuildingBudget(int amount) {
+        buildingBudget = amount;
     }
 
     /**
@@ -154,7 +179,7 @@ public class PlayerController {
     @DoNotTouch
     public PlayerAction waitForNextAction() {
         try {
-            // updatePlayerState();
+            updatePlayerState();
             // blocking, waiting for viewing thread
             final PlayerAction action = blockingGetNextAction();
 
@@ -174,5 +199,71 @@ public class PlayerController {
         } catch (final InterruptedException e) {
             throw new RuntimeException("Main thread was interrupted!", e);
         }
+    }
+
+    /**
+     * Determines if the player can build a rail on the given edge.
+     * Checks if the player has enough credits. If the player's objective is
+     * {@PlayerObjective.PLACE_RAIL}, the building cost is checked against the
+     * building budget and not the players credits.
+     *
+     * @param edge the edge to check
+     * @return {@code true} if the player can build a rail on the given edge,
+     */
+    public boolean canBuildRail(Edge edge) {
+        if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
+            return edge.getBuildingCost() <= buildingBudget
+                    && edge.getTotalParallelCost(player) <= player.getCredits();
+        }
+        return edge.getTotalCost(player) <= player.getCredits();
+    }
+
+    /**
+     * Returns all edges the player can build a rail on.
+     *
+     * @return all edges the player can build a rail on
+     */
+    public Set<Edge> getBuildableRails() {
+        Collection<Edge> ownedRails = gameController.getState().getGrid().getRails(player).values();
+        Set<Edge> possibleConnections = ownedRails.stream()
+                .flatMap(rail -> rail.getConnectedEdges().stream()
+                        .filter(edge -> !edge.getRailOwners().contains(player)))
+                .filter(this::canBuildRail)
+                .collect(Collectors.toSet());
+        return possibleConnections;
+    }
+
+    /**
+     * Tries to build a rail on the given edge.
+     * Also removes the cost of building the rail from the player's credits or
+     * building budget if the player's objective is {@PlayerObjective.PLACE_RAIL}.
+     *
+     * @param edge the edge to build the rail on
+     * @throws IllegalActionException if the player cannot build a rail on the given
+     *                                edge
+     */
+    public void buildRail(final Edge edge) throws IllegalActionException {
+        if (getBuildableRails().isEmpty() || !getBuildableRails().contains(edge)) {
+            throw new IllegalActionException("Cannot build rail");
+        }
+        if (!edge.addRail(player)) {
+            throw new IllegalActionException("Cannot build rail on the given edge");
+        }
+
+        if (edge.getParallelCost(player) > 0) {
+            for (Player owner : edge.getRailOwners()) {
+                if (owner.equals(this.player)) {
+                    continue;
+                }
+                owner.addCredits(edge.getParallelCost(owner));
+            }
+        }
+
+        if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
+            buildingBudget -= edge.getBuildingCost();
+            player.removeCredits(edge.getTotalParallelCost(player));
+            return;
+        }
+        player.removeCredits(edge.getTotalCost(player));
     }
 }

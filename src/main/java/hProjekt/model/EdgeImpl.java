@@ -50,10 +50,4 @@ public record EdgeImpl(
                 .filter(edge -> edge.getRailOwnersProperty().getValue().contains(player))
                 .collect(Collectors.toUnmodifiableSet());
     }
-
-    @Override
-    public int getCost(Player player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCost'");
-    }
 }
