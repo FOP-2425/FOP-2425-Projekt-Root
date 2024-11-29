@@ -62,11 +62,11 @@ public class HighScoreController {
                 String content = Files.readString(Path.of(HIGHSCORE_FILE)).trim();
                 highScore = Integer.parseInt(content);
             } else {
-                highScore = 0;
+                highScore = -1;
             }
         } catch (IOException | NumberFormatException e) {
             System.err.println("Failed to load high score: " + e.getMessage());
-            highScore = 0;
+            highScore = -1;
         }
     }
 
