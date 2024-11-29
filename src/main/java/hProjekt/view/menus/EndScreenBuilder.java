@@ -2,6 +2,7 @@ package hProjekt.view.menus;
 
 import hProjekt.controller.HighScoreController;
 import hProjekt.model.Player;
+import hProjekt.util.Confetti;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,8 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Builder;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 public class EndScreenBuilder implements Builder<Region> {
     private final Runnable loadMainMenuAction;
     private final List<Player> players;
+    private final int CREDITS_PER_STAR = 200; // Determines how many credits are required for a star
 
     public EndScreenBuilder(Runnable loadMainMenuAction, List<Player> players) {
         this.loadMainMenuAction = loadMainMenuAction;
@@ -31,6 +33,7 @@ public class EndScreenBuilder implements Builder<Region> {
 
     @Override
     public Region build() {
+
         // Sort players by credits (descending)
         List<Player> sortedPlayers = new ArrayList<>(players);
         sortedPlayers.sort(Comparator.comparingInt(Player::getCredits).reversed());
@@ -45,55 +48,54 @@ public class EndScreenBuilder implements Builder<Region> {
         }
 
         // Root container for the entire screen
-        BorderPane rootContainer = new BorderPane();
-        rootContainer.setStyle("-fx-background-color: #1f1f2e;"); // Dark background
-        rootContainer.setPadding(new Insets(20));
+        StackPane rootContainer = new StackPane();
+        rootContainer.setStyle("-fx-background-color: #1f1f2e;");
+
+        // Add confetti background
+        Pane confettiPane = createConfettiBackground();
+        confettiPane.setPickOnBounds(false);
+        rootContainer.getChildren().add(confettiPane);
 
         // Leaderboard container
-        VBox leaderboard = new VBox(20); // Reduced vertical spacing
+        VBox leaderboard = new VBox(20);
         leaderboard.setAlignment(Pos.CENTER_LEFT);
-        leaderboard.setPadding(new Insets(0, 0, 0, 150)); // Extra left padding to shift leaderboard to the right
+        leaderboard.setPadding(new Insets(0, 0, 0, 150));
         leaderboard.setMaxWidth(850);
         leaderboard.setMinWidth(850);
 
         // Leaderboard title
-        Label title = new Label("Leaderboard");
-        title.setStyle("""
-                -fx-font-size: 36px;
-                -fx-text-fill: #ffffff;
-                -fx-font-family: "Arial Black", sans-serif;
-                -fx-padding: 15px 0;
-                -fx-alignment: center;
-                """);
+        Label title = new Label("Congratulations, " + sortedPlayers.get(0).getName() + "!");
+        title.setStyle("-fx-font-size: 36px; -fx-text-fill: #ffffff; -fx-font-family: Arial, sans-serif; -fx-padding: 15px 0; -fx-alignment: center;");
         title.setAlignment(Pos.CENTER);
 
-        // Highscore Label (Top-right corner)
+        StackPane.setAlignment(title, Pos.TOP_CENTER);
+        StackPane.setMargin(title, new Insets(40, 0, 0, 0));
+        rootContainer.getChildren().add(title);
+
+        // Highscore Label
         HBox highscoreBox = new HBox();
         highscoreBox.setAlignment(Pos.CENTER);
         highscoreBox.setPadding(new Insets(10));
-        highscoreBox.setStyle("""
-                -fx-background-color: rgba(0, 0, 0, 0.35);
-                -fx-background-radius: 10px;
-                """);
-        highscoreBox.setPrefWidth(200); // Fixed width for the highscore box
+        highscoreBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.35); -fx-background-radius: 10px;");
+        highscoreBox.setPrefWidth(200);
         highscoreBox.setMaxWidth(200);
         highscoreBox.setPrefHeight(40);
         highscoreBox.setMaxHeight(40);
 
         Label highscoreLabel = new Label("Highscore: " + currentHighscore);
-        highscoreLabel.setFont(new Font("Arial", 18)); // Same font size as player names
+        highscoreLabel.setFont(new Font("Arial", 18));
         highscoreLabel.setTextFill(Color.WHITE);
         highscoreBox.getChildren().add(highscoreLabel);
 
         // Align highscoreBox to the top-right corner
-        StackPane topRightContainer = new StackPane(highscoreBox);
         StackPane.setAlignment(highscoreBox, Pos.TOP_RIGHT);
-        StackPane.setMargin(highscoreBox, new Insets(20, 20, 0, 0)); // Add some margin from the top-right corner
+        StackPane.setMargin(highscoreBox, new Insets(40, 40, 0, 0));
+        rootContainer.getChildren().add(highscoreBox);
 
         // Table settings
         double rankWidth = 70;
-        double namePlaceholderWidth = 150; // Placeholder for names
-        double scorePlaceholderWidth = 60; // Smaller width for scores
+        double namePlaceholderWidth = 150;
+        double scorePlaceholderWidth = 60;
 
         // Add players to the leaderboard
         for (int i = 0; i < sortedPlayers.size(); i++) {
@@ -102,7 +104,7 @@ public class EndScreenBuilder implements Builder<Region> {
             HBox row = new HBox(20);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setPrefWidth(850);
-            row.setMinHeight(30); // Consistent height for rows
+            row.setMinHeight(30);
             row.setMaxHeight(30);
 
             // Rank column
@@ -136,7 +138,7 @@ public class EndScreenBuilder implements Builder<Region> {
 
             // Star rating
             int credits = player.getCredits();
-            int stars = Math.max(1, Math.min(credits / 500, 5));
+            int stars = Math.max(1, Math.min(credits / CREDITS_PER_STAR, 5));
             HBox starsBox = new HBox(5);
             starsBox.setAlignment(Pos.CENTER_LEFT);
             for (int j = 0; j < stars; j++) {
@@ -168,41 +170,31 @@ public class EndScreenBuilder implements Builder<Region> {
         Button backToMenuButton = new Button("Back to Main Menu");
         backToMenuButton.setFont(new Font("Arial", 18));
         backToMenuButton.setOnAction(event -> loadMainMenuAction.run());
-        backToMenuButton.setStyle("""
-                -fx-background-color: linear-gradient(to bottom, #0078d7, #005bb5);
-                -fx-text-fill: white;
-                -fx-background-radius: 10px;
-                -fx-padding: 10;
-                -fx-cursor: hand;
-                """);
-        backToMenuButton.setOnMouseEntered(event -> backToMenuButton.setStyle("""
-                -fx-background-color: linear-gradient(to bottom, #005bb5, #003f8a);
-                -fx-text-fill: white;
-                -fx-background-radius: 10px;
-                -fx-padding: 10;
-                -fx-cursor: hand;
-                """));
-        backToMenuButton.setOnMouseExited(event -> backToMenuButton.setStyle("""
-                -fx-background-color: linear-gradient(to bottom, #0078d7, #005bb5);
-                -fx-text-fill: white;
-                -fx-background-radius: 10px;
-                -fx-padding: 10;
-                """));
+        backToMenuButton.setStyle("-fx-background-color: #2a2a3b; -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-family: Arial, sans-serif; -fx-padding: 10px 20px; -fx-background-radius: 12px; -fx-border-radius: 12px; -fx-border-color: transparent; -fx-cursor: hand;");
+        backToMenuButton.setOnMouseEntered(event -> backToMenuButton.setStyle("-fx-background-color: #3a3a4f;-fx-text-fill: #ffffff;-fx-font-size: 16px;-fx-font-family: Arial, sans-serif;-fx-padding: 10px 20px;-fx-background-radius: 12px;-fx-border-radius: 12px;-fx-border-color: transparent;-fx-cursor: hand;"));
+        backToMenuButton.setOnMouseExited(event -> backToMenuButton.setStyle("-fx-background-color: #2a2a3b;-fx-text-fill: #ffffff;-fx-font-size: 16px;-fx-font-family: Arial, sans-serif;-fx-padding: 10px 20px;-fx-background-radius: 12px;-fx-border-radius: 12px;-fx-border-color: transparent;-fx-cursor: hand;"));
 
-        // Place elements into the layout
-        BorderPane.setAlignment(title, Pos.TOP_CENTER);
-        BorderPane.setMargin(title, new Insets(20, 0, 0, 0));
-
-        BorderPane.setAlignment(leaderboard, Pos.CENTER);
-        BorderPane.setMargin(leaderboard, new Insets(0, 0, 100, 0));
-
-        BorderPane.setAlignment(backToMenuButton, Pos.BOTTOM_CENTER);
-        BorderPane.setMargin(backToMenuButton, new Insets(0, 0, 20, 0));
-
-        rootContainer.setTop(new StackPane(title, topRightContainer));
-        rootContainer.setCenter(leaderboard);
-        rootContainer.setBottom(backToMenuButton);
+        StackPane.setAlignment(backToMenuButton, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(backToMenuButton, new Insets(20));
+        rootContainer.getChildren().addAll(leaderboard, backToMenuButton);
 
         return rootContainer;
+    }
+
+    // Returns an animated confetti background
+    private Pane createConfettiBackground() {
+        Pane confettiPane = new Pane();
+        confettiPane.setPickOnBounds(false); 
+        for (int i = 0; i < 1000; i++) {
+            Confetti confetti = new Confetti(randomColor(), 800, 600);
+            confetti.animate();
+            confettiPane.getChildren().add(confetti);
+        }
+        return confettiPane;
+    }
+
+    // Returns a random color
+    private Color randomColor() {
+        return Color.color(Math.random(), Math.random(), Math.random());
     }
 }
