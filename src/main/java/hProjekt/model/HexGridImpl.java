@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -179,14 +178,8 @@ public class HexGridImpl implements HexGrid {
                     startingCitiesAdded++;
                 }
 
-                Set<Integer> rollNumbers = new HashSet<>();
-                rollNumbers.add(Config.ROLL_NUMBER_ITERATOR.next());
-                if (isStartingCity) {
-                    rollNumbers.add(Config.ROLL_NUMBER_ITERATOR.next());
-                }
-
                 final City city = new CityImpl(tile.getPosition(), nameGenerator.generateName(10), isStartingCity,
-                        rollNumbers, this);
+                        this);
                 this.cities.put(tile.getPosition(), city);
             }
         }

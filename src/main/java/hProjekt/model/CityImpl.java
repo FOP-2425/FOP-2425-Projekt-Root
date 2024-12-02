@@ -1,8 +1,5 @@
 package hProjekt.model;
 
-import java.util.Collections;
-import java.util.Set;
-
 /**
  * Represents a city on the board.
  *
@@ -12,7 +9,9 @@ import java.util.Set;
  * @param rollNumbers    the roll numbers that belong to the city
  * @param hexGrid        the HexGrid instance this city is placed in
  */
-public record CityImpl(TilePosition position, String name, boolean isStartingCity, Set<Integer> rollNumbers,
+public record CityImpl(
+        TilePosition position, String name,
+        boolean isStartingCity,
         HexGrid hexGrid) implements City {
 
     @Override
@@ -34,10 +33,4 @@ public record CityImpl(TilePosition position, String name, boolean isStartingCit
     public boolean isStartingCity() {
         return isStartingCity;
     }
-
-    @Override
-    public Set<Integer> getRollNumbers() {
-        return Collections.unmodifiableSet(rollNumbers);
-    }
-
 }

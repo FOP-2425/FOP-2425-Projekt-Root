@@ -1,7 +1,5 @@
 package hProjekt.model;
 
-import java.util.Set;
-
 /**
  * Represents a city on the board.
  */
@@ -19,13 +17,6 @@ public interface City {
      * @return the position of the city
      */
     TilePosition getPosition();
-
-    /**
-     * Returns the roll numbers that belong to the city.
-     *
-     * @return the roll numbers that belong to the city
-     */
-    Set<Integer> getRollNumbers();
 
     /**
      * Returns the HexGrid instance this city is placed in.
