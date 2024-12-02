@@ -2,6 +2,7 @@ package hProjekt.controller;
 
 import java.util.Set;
 
+import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.PlayerAction;
 
 /**
@@ -10,7 +11,7 @@ import hProjekt.controller.actions.PlayerAction;
  * objective.
  */
 public enum PlayerObjective {
-    PLACE_RAIL(Set.of()),
+    PLACE_RAIL(Set.of(BuildRailAction.class)),
     ROLL_DICE(Set.of()),
     IDLE(Set.of());
 
