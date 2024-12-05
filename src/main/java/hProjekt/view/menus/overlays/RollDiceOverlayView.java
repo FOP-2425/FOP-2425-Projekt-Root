@@ -99,4 +99,12 @@ public class RollDiceOverlayView extends StackPane {
 
         timeline.play();
     }
+
+    public void enableRollDiceButton() {
+        rollDiceButton.setDisable(false);
+    }
+
+    public void disableRollDiceButton() {
+        rollDiceButton.setDisable(true);
+    }
 }
