@@ -9,21 +9,16 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import hProjekt.controller.GameController;
 import hProjekt.controller.gui.controllers.scene.AboutSceneController;
 import hProjekt.controller.gui.controllers.scene.EndScreenSceneController;
+import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
-import hProjekt.controller.gui.controllers.scene.MapSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
-import hProjekt.model.GameState;
 import hProjekt.model.Player;
-import hProjekt.view.menus.AboutBuilder;
-import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 /**
  * A SceneSwitcher is responsible for switching between the different
@@ -83,10 +78,19 @@ public class SceneSwitcher {
      * The different types of scenes that can be loaded.
      */
     public enum SceneType {
-        MAP(MapSceneController::new),
+        GAME_BOARD(() -> {
+            getInstance().gameLoopStarter.accept(getInstance().gameController);
+            return new GameBoardController(getInstance().gameController.getState(),
+                    getInstance().gameController.activePlayerControllerProperty(),
+                    getInstance().gameController.currentDiceRollProperty(),
+                    getInstance().gameController.roundCounterProperty());
+        }),
         MAIN_MENU(MainMenuSceneController::new),
         ABOUT(AboutSceneController::new),
-        SETUP_GAME_MENU(SetupGameSceneController::new);
+        SETUP_GAME_MENU(() -> {
+            getInstance().gameController = new GameController();
+            return new SetupGameSceneController(getInstance().gameController.getState());
+        });
 
         private final Supplier<SceneController> controller;
 
@@ -111,19 +115,17 @@ public class SceneSwitcher {
             final SceneController newController = sceneType.controller.get();
             System.out.println("Loading scene: " + sceneType);
             Region newRoot = newController.buildView();
-                if (stage.getScene() == null) {
+            if (stage.getScene() == null) {
                 Scene initialScene = new Scene(new StackPane(), 800, 600); // Default
                 initialScene.setFill(javafx.scene.paint.Color.web("#1f1f2e"));
                 stage.setScene(initialScene);
             }
-                stage.getScene().setFill(javafx.scene.paint.Color.web("#1f1f2e"));
-                stage.getScene().setRoot(newRoot);
-                stage.setTitle(newController.getTitle());
+            stage.getScene().setFill(javafx.scene.paint.Color.web("#1f1f2e"));
+            stage.getScene().setRoot(newRoot);
+            stage.setTitle(newController.getTitle());
         });
     }
-        
 
-    
     public void loadScene(final SceneController sceneController) {
         System.out.println("Loading scene: " + sceneController.getTitle());
         final Scene scene = new Scene(sceneController.buildView());
@@ -134,12 +136,12 @@ public class SceneSwitcher {
     }
 
     public void loadEndScreenScene(List<Player> players) {
-    Platform.runLater(() -> {
-        EndScreenSceneController controller = new EndScreenSceneController(players);
-        Region newRoot = controller.buildView();
-        stage.getScene().setRoot(newRoot);
-        stage.setTitle(controller.getTitle());
-    });
-}
+        Platform.runLater(() -> {
+            EndScreenSceneController controller = new EndScreenSceneController(players);
+            Region newRoot = controller.buildView();
+            stage.getScene().setRoot(newRoot);
+            stage.setTitle(controller.getTitle());
+        });
+    }
 
 }

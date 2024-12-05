@@ -2,7 +2,9 @@ package hProjekt.controller;
 
 import java.util.Set;
 
+import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.PlayerAction;
+import hProjekt.controller.actions.RollDiceAction;
 
 /**
  * This enum represents the different objectives a player can have and what
@@ -10,8 +12,8 @@ import hProjekt.controller.actions.PlayerAction;
  * objective.
  */
 public enum PlayerObjective {
-    PLACE_RAIL(Set.of()),
-    ROLL_DICE(Set.of()),
+    PLACE_RAIL(Set.of(BuildRailAction.class)),
+    ROLL_DICE(Set.of(RollDiceAction.class)),
     IDLE(Set.of());
 
     final Set<Class<? extends PlayerAction>> allowedActions;

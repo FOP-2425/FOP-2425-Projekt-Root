@@ -6,7 +6,6 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.gui.SceneSwitcher;
 import hProjekt.controller.gui.controllers.Controller;
-import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -50,7 +49,7 @@ public interface SceneController extends Controller {
      * Loads the create game scene.
      */
     static void loadCreateGameScene() {
-        // SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.CREATE_GAME);
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.SETUP_GAME_MENU);
     }
 
     /**
@@ -78,7 +77,7 @@ public interface SceneController extends Controller {
      * Loads the game scene.
      */
     static void loadGameScene() {
-        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.MAP);
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.GAME_BOARD);
     }
 
     /**
@@ -89,13 +88,13 @@ public interface SceneController extends Controller {
     }
 
     /**
-     * 
+     *
      * Loads the end screen scene with the given GameState.
      *
      * @param players the players to display on the end screen.
      */
     static void loadEndScreenScene(List<Player> players) {
-        SceneSwitcher.getInstance().loadEndScreenScene(players);;
+        SceneSwitcher.getInstance().loadEndScreenScene(players);
     }
 
 }

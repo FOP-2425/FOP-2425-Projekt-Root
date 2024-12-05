@@ -1,7 +1,9 @@
 package hProjekt.model;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,6 +30,12 @@ public final class GameState {
      * The {@link Player}s of this {@link GameState}.
      */
     private final List<Player> players;
+
+    /**
+     * The position of the {@link Player}s on the {@link HexGrid}. Only relevant for
+     * the driving phase.
+     */
+    private final Map<Player, TilePosition> playerPositions = new HashMap<>();
 
     /**
      * The game over flag.
@@ -64,6 +72,10 @@ public final class GameState {
      */
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
+    }
+
+    public Map<Player, TilePosition> getPlayerPositions() {
+        return Collections.unmodifiableMap(playerPositions);
     }
 
     /**

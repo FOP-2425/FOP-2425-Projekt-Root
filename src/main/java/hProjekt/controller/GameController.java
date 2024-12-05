@@ -80,8 +80,10 @@ public class GameController {
     }
 
     private void initPlayerControllers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'initPlayerControllers'");
+        for (Player player : state.getPlayers()) {
+            playerControllers.put(player, new PlayerController(this, player));
+            // TODO: Add AI player controller
+        }
     }
 
     public void startGame() {
