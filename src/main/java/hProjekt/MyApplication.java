@@ -1,31 +1,32 @@
 package hProjekt;
 
+import java.awt.Taskbar;
+import java.awt.Taskbar.Feature;
+import java.awt.Toolkit;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.function.Consumer;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
+import hProjekt.controller.GameController;
 import hProjekt.controller.gui.SceneSwitcher;
 import hProjekt.controller.gui.SceneSwitcher.SceneType;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import javafx.scene.image.Image;
-import java.awt.Taskbar;
-import java.awt.Toolkit;
-import java.awt.Taskbar.Feature;
+import javafx.stage.Stage;
 
 /**
  * The main application of the game.
  */
 @DoNotTouch
 public class MyApplication extends Application {
-    // TODO: Uncomment when implemented
-    // private final Consumer<GameController> gameLoopStart = gc -> {
-    // final Thread gameLoopThread = new Thread(gc::startGame);
-    // gameLoopThread.setName("GameLoopThread");
-    // gameLoopThread.setDaemon(true);
-    // gameLoopThread.start();
-    // };
+    private final Consumer<GameController> gameLoopStart = gc -> {
+        final Thread gameLoopThread = new Thread(gc::startGame);
+        gameLoopThread.setName("GameLoopThread");
+        gameLoopThread.setDaemon(true);
+        gameLoopThread.start();
+    };
 
     @Override
     public void start(final Stage stage) throws Exception {
@@ -44,9 +45,9 @@ public class MyApplication extends Application {
         // Set custom icon in the task bar
         var appIcon = new Image("/images/stage-icon.png");
         stage.getIcons().add(appIcon);
-        if(Taskbar.isTaskbarSupported()){
+        if (Taskbar.isTaskbarSupported()) {
             var taskbar = Taskbar.getTaskbar();
-            if(taskbar.isSupported(Feature.ICON_IMAGE)){
+            if (taskbar.isSupported(Feature.ICON_IMAGE)) {
                 final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
                 var dockIcon = defaultToolkit.getImage(getClass().getResource("/images/stage-icon.png"));
                 taskbar.setIconImage(dockIcon);
@@ -55,8 +56,7 @@ public class MyApplication extends Application {
         stage.show();
 
         // TODO: Uncomment when implemented
-        SceneSwitcher.getInstance(stage, (gc) -> {
-        }).loadScene(SceneType.MAIN_MENU);
+        SceneSwitcher.getInstance(stage, gameLoopStart).loadScene(SceneType.MAIN_MENU);
     }
 
     /**

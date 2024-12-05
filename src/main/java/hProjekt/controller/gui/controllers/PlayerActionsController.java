@@ -15,6 +15,7 @@ import hProjekt.model.PlayerState;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 import javafx.util.Subscription;
@@ -126,6 +127,16 @@ public class PlayerActionsController implements Controller {
     @DoNotTouch
     private Player getPlayer() {
         return getPlayerController().getPlayer();
+    }
+
+    /**
+     * The action that is triggered when the roll dice button is clicked.
+     *
+     * @param event the event that triggered the action
+     */
+    @DoNotTouch
+    public void rollDiceButtonAction(final ActionEvent event) {
+        getPlayerController().triggerAction(new RollDiceAction());
     }
 
     @Override
