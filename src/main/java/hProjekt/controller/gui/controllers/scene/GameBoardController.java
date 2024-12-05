@@ -18,7 +18,7 @@ import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
 public class GameBoardController implements SceneController {
-    private final HexGridController controller;
+    private final HexGridController hexGridController;
     private final Builder<Region> builder;
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
@@ -27,12 +27,13 @@ public class GameBoardController implements SceneController {
     public GameBoardController(final GameState gameState,
             final Property<PlayerController> activePlayerControllerProperty, final IntegerProperty diceRollProperty,
             final IntegerProperty roundCounterProperty) {
-        PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty);
-        this.controller = new HexGridController(gameState.getGrid());
+        this.hexGridController = new HexGridController(gameState.getGrid());
         this.gameInfoOverlayView = new GameInfoOverlayView();
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
-        this.rollDiceOverlayView = new RollDiceOverlayView(playerActionsController::rollDiceButtonAction);
-        this.builder = new GameBoardBuilder(controller.buildView(), gameInfoOverlayView, playerOverlayView,
+        PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
+                this);
+        this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
+        this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
                 rollDiceOverlayView, event -> {
                     List<Player> players = gameState.getPlayers();
                     SceneController.loadEndScreenScene(players);
@@ -62,6 +63,15 @@ public class GameBoardController implements SceneController {
                 rollDiceOverlayView.rollDice(newValue.intValue());
             });
         });
+    }
+
+    /**
+     * Returns the hex grid controller.
+     *
+     * @return the hex grid controller
+     */
+    public HexGridController getHexGridController() {
+        return hexGridController;
     }
 
     @Override
