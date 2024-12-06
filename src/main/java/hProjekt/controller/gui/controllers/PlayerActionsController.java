@@ -92,9 +92,8 @@ public class PlayerActionsController implements Controller {
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
-        updatePlayerInformation();
         removeAllHighlights();
-        getHexGridController().drawEdges();
+        updatePlayerInformation();
 
         if (getPlayer().isAi()) {
             return;
@@ -191,8 +190,6 @@ public class PlayerActionsController implements Controller {
                 .map(edge -> getHexGridController().getEdgeControllersMap().get(edge)).forEach(ec -> ec
                         .highlight(e -> {
                             getPlayerController().triggerAction(new BuildRailAction(ec.getEdge()));
-                            removeAllHighlights();
-                            getHexGridController().drawEdges();
                         }));
     }
 
