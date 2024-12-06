@@ -93,6 +93,8 @@ public class PlayerActionsController implements Controller {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
         updatePlayerInformation();
+        removeAllHighlights();
+        getHexGridController().drawEdges();
 
         if (getPlayer().isAi()) {
             return;
