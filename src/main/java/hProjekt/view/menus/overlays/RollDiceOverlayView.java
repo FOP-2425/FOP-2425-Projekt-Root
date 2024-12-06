@@ -78,8 +78,6 @@ public class RollDiceOverlayView extends StackPane {
      * @param gameController the GameController to retrieve the final dice roll
      */
     public void rollDice(int rolledNumber) {
-        rollDiceButton.setDisable(true);
-
         // Animation to simulate rolling dice
         Timeline timeline = new Timeline();
         for (int i = 0; i < 15; i++) {
@@ -94,7 +92,6 @@ public class RollDiceOverlayView extends StackPane {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(750), event -> {
             String finalDiceImagePath = "/images/dice/dice" + rolledNumber + ".png";
             diceImageView.setImage(new Image(getClass().getResourceAsStream(finalDiceImagePath)));
-            rollDiceButton.setDisable(false);
         }));
 
         timeline.play();
