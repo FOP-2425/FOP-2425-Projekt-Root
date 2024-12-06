@@ -23,10 +23,12 @@ public class GameBoardController implements SceneController {
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
     private final RollDiceOverlayView rollDiceOverlayView;
+    private final GameState gameState;
 
     public GameBoardController(final GameState gameState,
             final Property<PlayerController> activePlayerControllerProperty, final IntegerProperty diceRollProperty,
             final IntegerProperty roundCounterProperty) {
+        this.gameState = gameState;
         this.hexGridController = new HexGridController(gameState.getGrid());
         this.gameInfoOverlayView = new GameInfoOverlayView();
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
@@ -42,9 +44,10 @@ public class GameBoardController implements SceneController {
             if (newValue == null) {
                 return;
             }
+            System.out.println("Active player: " + newValue.getPlayer().getName());
             Platform.runLater(() -> {
                 gameInfoOverlayView.setPlayerStatus(newValue.getPlayer());
-                playerOverlayView.updatePlayerCredits(gameState.getPlayers());
+                updatePlayerInformation();
             });
         });
         roundCounterProperty.subscribe((oldValue, newValue) -> {
@@ -72,6 +75,12 @@ public class GameBoardController implements SceneController {
      */
     public HexGridController getHexGridController() {
         return hexGridController;
+    }
+
+    public void updatePlayerInformation() {
+        Platform.runLater(() -> {
+            playerOverlayView.updatePlayerCredits(gameState.getPlayers());
+        });
     }
 
     @Override
