@@ -84,6 +84,7 @@ public class PlayerActionsController implements Controller {
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
+        updatePlayerInformation();
 
         if (getPlayer().isAi()) {
             return;
@@ -96,6 +97,14 @@ public class PlayerActionsController implements Controller {
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
         }
+    }
+
+    /**
+     * Updates the player information in the game board.
+     */
+    @DoNotTouch
+    private void updatePlayerInformation() {
+        gameBoardController.updatePlayerInformation();
     }
 
     /**
