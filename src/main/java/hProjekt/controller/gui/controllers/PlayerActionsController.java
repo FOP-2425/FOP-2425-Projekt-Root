@@ -71,6 +71,14 @@ public class PlayerActionsController implements Controller {
         Platform.runLater(() -> {
             this.playerControllerProperty.setValue(playerControllerProperty.getValue());
         });
+
+        playerStateProperty.subscribe((oldValue, newValue) -> {
+            updateUIBasedOnObjective(newValue.playerObjective());
+        });
+
+        if (getPlayerController() != null) {
+            updateUIBasedOnObjective(getPlayerObjective());
+        }
     }
 
     /**
