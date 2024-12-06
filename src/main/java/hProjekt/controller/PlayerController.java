@@ -34,7 +34,7 @@ public class PlayerController {
 
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
 
-    private PlayerObjective playerObjective;
+    private PlayerObjective playerObjective = PlayerObjective.IDLE;
 
     private int buildingBudget = 0; // Budget during building phase
 
