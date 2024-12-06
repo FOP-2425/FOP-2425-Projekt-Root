@@ -113,6 +113,10 @@ public class PlayerController {
         playerObjective = nextObjective;
     }
 
+    public int getBuildingBudget() {
+        return buildingBudget;
+    }
+
     /**
      * Sets the building budget during the building phase,
      *
