@@ -25,6 +25,7 @@ public class PlayerImpl implements Player {
         this.id = id;
         this.name = name;
         this.ai = ai;
+        this.credits = Config.STARTING_CREDITS;
     }
 
     @Override
