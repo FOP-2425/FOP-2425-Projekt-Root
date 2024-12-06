@@ -100,7 +100,7 @@ public class PlayerActionsController implements Controller {
 
         final Set<Class<? extends PlayerAction>> allowedActions = getPlayerObjective().getAllowedActions();
         if (allowedActions.contains(BuildRailAction.class)) {
-
+            updateBuildableEdges();
         }
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
