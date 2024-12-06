@@ -72,7 +72,8 @@ public record TileImpl(
 
     @Override
     public Set<Edge> getEdges() {
-        return Collections.unmodifiableSet(EdgeDirection.stream().map(this::getEdge).collect(Collectors.toSet()));
+        return Collections.unmodifiableSet(
+                EdgeDirection.stream().map(this::getEdge).filter(edge -> edge != null).collect(Collectors.toSet()));
     }
 
     @Override
