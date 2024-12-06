@@ -74,7 +74,7 @@ public interface Edge {
      * @return whether a player has placed a rail on this edge
      */
     default boolean hasRail() {
-        return getRailOwnersProperty().getValue() != null || !getRailOwnersProperty().getValue().isEmpty();
+        return getRailOwnersProperty().getValue() != null && !getRailOwnersProperty().getValue().isEmpty();
     }
 
     /**
