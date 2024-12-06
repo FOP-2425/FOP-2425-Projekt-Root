@@ -225,7 +225,15 @@ public class PlayerController {
      */
     public Set<Edge> getBuildableRails() {
         Collection<Edge> ownedRails = gameController.getState().getGrid().getRails(player).values();
-        Set<Edge> possibleConnections = ownedRails.stream()
+        Set<Edge> possibleConnections;
+        if (ownedRails.isEmpty()) {
+            possibleConnections = gameController.getState().getGrid().getStartingCities().keySet().stream()
+                    .flatMap(position -> gameController.getState().getGrid().getTileAt(position).getEdges().stream())
+                    .filter(this::canBuildRail)
+                    .collect(Collectors.toSet());
+            return possibleConnections;
+        }
+        possibleConnections = ownedRails.stream()
                 .flatMap(rail -> rail.getConnectedEdges().stream()
                         .filter(edge -> !edge.getRailOwners().contains(player)))
                 .filter(this::canBuildRail)
