@@ -95,7 +95,7 @@ public interface Edge {
     default boolean addRail(Player player) {
         if (getRailOwners().contains(player) || (player.getRails().size() > 0
                 && getConnectedEdges().stream().noneMatch(e -> e.getRailOwners().contains(player)))
-                || (player.getRails().size() == 0 && !Collections.disjoint(getHexGrid().getStartingCities().keySet(),
+                || (player.getRails().size() == 0 && Collections.disjoint(getHexGrid().getStartingCities().keySet(),
                         getAdjacentTilePositions()))) {
             return false;
         }
