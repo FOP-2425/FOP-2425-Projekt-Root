@@ -108,14 +108,15 @@ public class GameController {
                         getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
                         getActivePlayerController().setBuildingBudget(getCurrentDiceRoll());
 
-                        getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
                         for (int i = 0; i < state.getPlayers().size(); i++) {
                             final Player player = state.getPlayers()
                                     .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
                             final PlayerController pc = playerControllers.get(player);
                             withActivePlayer(pc, () -> {
                                 pc.setBuildingBudget(getCurrentDiceRoll());
-                                pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                                while (pc.getBuildingBudget() > 0) {
+                                    pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                                }
                             });
                         }
                     });
