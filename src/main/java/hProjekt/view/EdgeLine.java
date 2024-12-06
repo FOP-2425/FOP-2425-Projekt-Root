@@ -76,10 +76,13 @@ public class EdgeLine extends Line {
     public void init(final double dashScale) {
         this.distance = new Point2D(getStartX(), getStartY()).distance(getEndX(), getEndY());
         setStrokeWidth(strokeWidth);
-        setStroke(Color.TRANSPARENT);
+        setStroke(edge.hasRail() ? edge.getRailOwners().getFirst().getColor() : Color.TRANSPARENT);
         setStrokeDashOffset(-positionOffset / 2);
         getStrokeDashArray().clear();
         getStrokeDashArray().add((distance - positionOffset) * dashScale);
+        if (edge.hasRail()) {
+            outline.setStroke(Color.BLACK);
+        }
     }
 
     /**
