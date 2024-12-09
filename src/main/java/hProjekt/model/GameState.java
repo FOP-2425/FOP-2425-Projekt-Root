@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
+import hProjekt.controller.GamePhase;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
@@ -41,6 +42,11 @@ public final class GameState {
      * The game over flag.
      */
     private final Property<Player> winnerProperty = new SimpleObjectProperty<>();
+
+    /**
+     * The current {@link GamePhase}.
+     */
+    private final Property<GamePhase> gamePhaseProperty = new SimpleObjectProperty<>(GamePhase.BUILDING_PHASE);
 
     /**
      * Creates a new {@link GameState} with the given {@link HexGrid} and
@@ -85,6 +91,15 @@ public final class GameState {
      */
     public Property<Player> getWinnerProperty() {
         return winnerProperty;
+    }
+
+    /**
+     * Returns the {@link Property} containing the current {@link GamePhase}.
+     *
+     * @return the {@link Property} containing the current {@link GamePhase}
+     */
+    public Property<GamePhase> getGamePhaseProperty() {
+        return gamePhaseProperty;
     }
 
     /**
