@@ -1,15 +1,13 @@
 package hProjekt.view;
 
 import hProjekt.model.Tile;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.util.Builder;
 
 /**
@@ -69,19 +67,6 @@ public class TileBuilder implements Builder<Region> {
         stackPane.setBackground(Background.fill(tile.getType().color));
     }
 
-    private void printComputedStyles(Region node) {
-        System.out.println("Computed styles for node:");
-        for (String styleClass : node.getStyleClass()) {
-            System.out.println("Style class: " + styleClass);
-            node.applyCss(); // Ensure CSS is applied
-            for (CssMetaData<? extends Styleable, ?> metaData : node.getCssMetaData()) {
-                StyleableProperty<?> styleableProperty = ((CssMetaData<Styleable, ?>) metaData)
-                        .getStyleableProperty(node);
-                System.out.println(metaData.getProperty() + ": " + styleableProperty.getValue());
-            }
-        }
-    }
-
     /**
      * Creates a VBox with labels for the position, resource and roll number of the
      * tile.
@@ -92,8 +77,10 @@ public class TileBuilder implements Builder<Region> {
         final VBox labelBox = new VBox();
         final Label positionLabel = new Label(tile.getPosition().toString());
         positionLabel.getStyleClass().add("highlighted-label");
+        positionLabel.setFont(new Font(4));
         final Label resourceLabel = new Label(tile.getType().toString());
         resourceLabel.getStyleClass().add("highlighted-label");
+        // labelBox.getChildren().addAll(positionLabel);
 
         labelBox.setAlignment(Pos.CENTER);
         return labelBox;
