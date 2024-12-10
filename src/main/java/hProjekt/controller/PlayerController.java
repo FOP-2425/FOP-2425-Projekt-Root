@@ -1,6 +1,7 @@
 package hProjekt.controller;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -34,7 +35,7 @@ public class PlayerController {
 
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
 
-    private PlayerObjective playerObjective;
+    private PlayerObjective playerObjective = PlayerObjective.IDLE;
 
     private int buildingBudget = 0; // Budget during building phase
 
@@ -111,6 +112,10 @@ public class PlayerController {
     @DoNotTouch
     public void setPlayerObjective(final PlayerObjective nextObjective) {
         playerObjective = nextObjective;
+    }
+
+    public int getBuildingBudget() {
+        return buildingBudget;
     }
 
     /**
@@ -190,7 +195,7 @@ public class PlayerController {
                         action, getPlayerObjective().getAllowedActions()));
             }
             action.execute(this);
-            // updatePlayerState();
+            updatePlayerState();
             return action;
         } catch (final IllegalActionException e) {
             // Ignore and keep going
@@ -215,7 +220,7 @@ public class PlayerController {
             return edge.getBuildingCost() <= buildingBudget
                     && edge.getTotalParallelCost(player) <= player.getCredits();
         }
-        return edge.getTotalCost(player) <= player.getCredits();
+        return edge.getTotalBuildingCost(player) <= player.getCredits();
     }
 
     /**
@@ -225,7 +230,15 @@ public class PlayerController {
      */
     public Set<Edge> getBuildableRails() {
         Collection<Edge> ownedRails = gameController.getState().getGrid().getRails(player).values();
-        Set<Edge> possibleConnections = ownedRails.stream()
+        Set<Edge> possibleConnections;
+        if (ownedRails.isEmpty()) {
+            possibleConnections = gameController.getState().getGrid().getStartingCities().keySet().stream()
+                    .flatMap(position -> gameController.getState().getGrid().getTileAt(position).getEdges().stream())
+                    .filter(this::canBuildRail)
+                    .collect(Collectors.toSet());
+            return possibleConnections;
+        }
+        possibleConnections = ownedRails.stream()
                 .flatMap(rail -> rail.getConnectedEdges().stream()
                         .filter(edge -> !edge.getRailOwners().contains(player)))
                 .filter(this::canBuildRail)
@@ -243,27 +256,30 @@ public class PlayerController {
      *                                edge
      */
     public void buildRail(final Edge edge) throws IllegalActionException {
-        if (getBuildableRails().isEmpty() || !getBuildableRails().contains(edge)) {
+        Set<Edge> buildableRails = getBuildableRails();
+
+        if (buildableRails.isEmpty() || !buildableRails.contains(edge)) {
             throw new IllegalActionException("Cannot build rail");
         }
+
         if (!edge.addRail(player)) {
             throw new IllegalActionException("Cannot build rail on the given edge");
         }
 
-        if (edge.getParallelCost(player) > 0) {
-            for (Player owner : edge.getRailOwners()) {
-                if (owner.equals(this.player)) {
-                    continue;
-                }
-                owner.addCredits(edge.getParallelCost(owner));
+        int totalParallelCost = edge.getTotalParallelCost(player);
+
+        if (totalParallelCost > 0) {
+            Map<Player, Integer> parallelCost = edge.getParallelCost(player);
+            for (Map.Entry<Player, Integer> entry : parallelCost.entrySet()) {
+                entry.getKey().addCredits(entry.getValue());
             }
         }
 
         if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
             buildingBudget -= edge.getBuildingCost();
-            player.removeCredits(edge.getTotalParallelCost(player));
+            player.removeCredits(totalParallelCost);
             return;
         }
-        player.removeCredits(edge.getTotalCost(player));
+        player.removeCredits(edge.getTotalBuildingCost(player));
     }
 }

@@ -39,6 +39,7 @@ public class CityBuilder implements Builder<Region> {
         final Circle circle = new Circle(10);
         marker = circle;
         circle.setStroke(Color.BLACK);
+        circle.setFill(city.isStartingCity() ? Color.RED : Color.BLACK);
         pane.getChildren().add(circle);
 
         final Label text = new Label(city.getName());
@@ -48,8 +49,7 @@ public class CityBuilder implements Builder<Region> {
 
         pane.setAlignment(Pos.CENTER);
         // pane.setBackground(Background.fill(Color.WHITE));
-
+        pane.setMouseTransparent(true);
         return pane;
     }
-
 }

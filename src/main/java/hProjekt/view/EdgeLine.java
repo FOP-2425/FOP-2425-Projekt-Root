@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import hProjekt.model.Edge;
 import hProjekt.model.EdgeImpl;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -35,9 +34,8 @@ public class EdgeLine extends Line {
         outline.strokeDashOffsetProperty().bind(strokeDashOffsetProperty());
         outline.setStrokeWidth(strokeWidth * 1.4);
         outline.setStroke(Color.TRANSPARENT);
-        getStrokeDashArray().addListener((ListChangeListener<Double>) change -> {
-            outline.getStrokeDashArray().clear();
-            outline.getStrokeDashArray().addAll(change.getList());
+        getStrokeDashArray().subscribe(() -> {
+            outline.getStrokeDashArray().setAll(getStrokeDashArray());
         });
     }
 
@@ -76,10 +74,13 @@ public class EdgeLine extends Line {
     public void init(final double dashScale) {
         this.distance = new Point2D(getStartX(), getStartY()).distance(getEndX(), getEndY());
         setStrokeWidth(strokeWidth);
-        setStroke(Color.TRANSPARENT);
+        setStroke(edge.hasRail() ? edge.getRailOwners().getFirst().getColor() : Color.TRANSPARENT);
         setStrokeDashOffset(-positionOffset / 2);
         getStrokeDashArray().clear();
         getStrokeDashArray().add((distance - positionOffset) * dashScale);
+        if (edge.hasRail()) {
+            outline.setStroke(Color.BLACK);
+        }
     }
 
     /**

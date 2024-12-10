@@ -71,6 +71,14 @@ public class PlayerActionsController implements Controller {
         Platform.runLater(() -> {
             this.playerControllerProperty.setValue(playerControllerProperty.getValue());
         });
+
+        playerStateProperty.subscribe((oldValue, newValue) -> {
+            updateUIBasedOnObjective(newValue.playerObjective());
+        });
+
+        if (getPlayerController() != null) {
+            updateUIBasedOnObjective(getPlayerObjective());
+        }
     }
 
     /**
@@ -84,6 +92,8 @@ public class PlayerActionsController implements Controller {
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
+        removeAllHighlights();
+        updatePlayerInformation();
 
         if (getPlayer().isAi()) {
             return;
@@ -91,11 +101,19 @@ public class PlayerActionsController implements Controller {
 
         final Set<Class<? extends PlayerAction>> allowedActions = getPlayerObjective().getAllowedActions();
         if (allowedActions.contains(BuildRailAction.class)) {
-
+            updateBuildableEdges();
         }
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
         }
+    }
+
+    /**
+     * Updates the player information in the game board.
+     */
+    @DoNotTouch
+    private void updatePlayerInformation() {
+        gameBoardController.updatePlayerInformation();
     }
 
     /**
@@ -172,8 +190,6 @@ public class PlayerActionsController implements Controller {
                 .map(edge -> getHexGridController().getEdgeControllersMap().get(edge)).forEach(ec -> ec
                         .highlight(e -> {
                             getPlayerController().triggerAction(new BuildRailAction(ec.getEdge()));
-                            removeAllHighlights();
-                            getHexGridController().drawEdges();
                         }));
     }
 

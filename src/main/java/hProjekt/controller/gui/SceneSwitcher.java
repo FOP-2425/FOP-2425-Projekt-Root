@@ -79,11 +79,12 @@ public class SceneSwitcher {
      */
     public enum SceneType {
         GAME_BOARD(() -> {
-            getInstance().gameLoopStarter.accept(getInstance().gameController);
-            return new GameBoardController(getInstance().gameController.getState(),
+            final GameBoardController controller = new GameBoardController(getInstance().gameController.getState(),
                     getInstance().gameController.activePlayerControllerProperty(),
                     getInstance().gameController.currentDiceRollProperty(),
                     getInstance().gameController.roundCounterProperty());
+            getInstance().gameLoopStarter.accept(getInstance().gameController);
+            return controller;
         }),
         MAIN_MENU(MainMenuSceneController::new),
         ABOUT(AboutSceneController::new),

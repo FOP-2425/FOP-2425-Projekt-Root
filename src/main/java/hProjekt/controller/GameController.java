@@ -37,7 +37,7 @@ public class GameController {
         this.dice = dice;
     }
 
-    public GameController(GameState state){
+    public GameController(GameState state) {
         this(state, () -> Config.RANDOM.nextInt(1, Config.DICE_SIDES + 1));
     }
 
@@ -95,28 +95,33 @@ public class GameController {
         }
 
         // Bauphase
-
+        getState().getGamePhaseProperty().setValue(GamePhase.BUILDING_PHASE);
         while (state.getGrid().getCities().values().size() - state.getGrid().getConnectedCities().size() > 3) {
-            roundCounter.add(1);
+            roundCounter.set(roundCounter.get() + 1);
             final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
+            System.out.println("Round " + roundCounter.get());
             withActivePlayer(
                     playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
                     () -> {
+                        System.out.println("Player " + getActivePlayerController().getPlayer().getName()
+                                + " is rolling the dice");
                         getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
                         getActivePlayerController().setBuildingBudget(getCurrentDiceRoll());
 
-                        getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
                         for (int i = 0; i < state.getPlayers().size(); i++) {
                             final Player player = state.getPlayers()
                                     .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
                             final PlayerController pc = playerControllers.get(player);
                             withActivePlayer(pc, () -> {
                                 pc.setBuildingBudget(getCurrentDiceRoll());
-                                pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                                while (pc.getBuildingBudget() > 0) {
+                                    pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                                }
                             });
                         }
                     });
         }
+        getState().getGamePhaseProperty().setValue(GamePhase.DRIVING_PHASE);
     }
 
     /**

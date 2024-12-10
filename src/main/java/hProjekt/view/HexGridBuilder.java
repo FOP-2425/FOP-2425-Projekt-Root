@@ -12,9 +12,6 @@ import hProjekt.model.HexGrid;
 import hProjekt.model.Tile;
 import hProjekt.model.TilePosition;
 import javafx.beans.binding.Bindings;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
 import javafx.event.Event;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
@@ -92,19 +89,6 @@ public class HexGridBuilder implements Builder<Region> {
                         .getX(),
                 calculatePositionTranslation(new TilePosition(0, reduceTiles.apply(TilePosition::r, Integer::min)))
                         .getY());
-    }
-
-    private void printComputedStyles(Region node) {
-        System.out.println("Computed styles for node:");
-        for (String styleClass : node.getStyleClass()) {
-            System.out.println("Style class: " + styleClass);
-            node.applyCss(); // Ensure CSS is applied
-            for (CssMetaData<? extends Styleable, ?> metaData : node.getCssMetaData()) {
-                StyleableProperty<?> styleableProperty = ((CssMetaData<Styleable, ?>) metaData)
-                        .getStyleableProperty(node);
-                System.out.println(metaData.getProperty() + ": " + styleableProperty.getValue());
-            }
-        }
     }
 
     @Override
