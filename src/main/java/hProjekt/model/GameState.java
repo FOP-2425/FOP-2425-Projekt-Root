@@ -49,6 +49,11 @@ public final class GameState {
     private final Property<GamePhase> gamePhaseProperty = new SimpleObjectProperty<>(GamePhase.BUILDING_PHASE);
 
     /**
+     * The cities that have already been driven to.
+     */
+    private final Set<City> chosenCities = Set.of();
+
+    /**
      * Creates a new {@link GameState} with the given {@link HexGrid} and
      * {@link Player}s.
      *
@@ -82,6 +87,25 @@ public final class GameState {
 
     public Map<Player, TilePosition> getPlayerPositions() {
         return Collections.unmodifiableMap(playerPositions);
+    }
+
+    /**
+     * Returns an unmodifiable set of all cities that have already been driven to.
+     *
+     * @return an unmodifiable set of all cities that have already been driven to.
+     */
+    public Set<City> getChosenCities() {
+        return Collections.unmodifiableSet(chosenCities);
+    }
+
+    /**
+     * Adds the given {@link City} to the set of cities that have already been
+     * driven to.
+     *
+     * @param city the {@link City} to add
+     */
+    public void addChosenCity(final City city) {
+        chosenCities.add(city);
     }
 
     /**
