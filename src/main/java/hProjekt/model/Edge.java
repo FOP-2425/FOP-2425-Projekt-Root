@@ -145,7 +145,7 @@ public interface Edge {
      * @return the cost of building a rail on this edge
      */
     default int getBuildingCost() {
-        return Config.TILE_TYPE_TO_COST_MAP.get(getAdjacentTilePositions().stream()
+        return Config.TILE_TYPE_TO_BUILDING_COST.get(getAdjacentTilePositions().stream()
                 .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
     }
 
@@ -203,7 +203,17 @@ public interface Edge {
      * @param player the player to calculate the total cost for
      * @return the total cost the player has to pay to build a rail on this edge
      */
-    default int getTotalCost(Player player) {
+    default int getTotalBuildingCost(Player player) {
         return getBuildingCost() + getTotalParallelCost(player);
+    }
+
+    /**
+     * Returns the cost of driving along this edge.
+     *
+     * @return the cost of driving along this edge
+     */
+    default int getDrivingCost() {
+        return Config.TILE_TYPE_TO_DRIVING_COST.get(getAdjacentTilePositions().stream()
+                .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
     }
 }

@@ -88,9 +88,12 @@ public class Config {
      */
     public static final int MAP_SCALE = 15;
 
-    public static final Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_COST_MAP = Map.of(
+    public static final Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_BUILDING_COST = Map.of(
             Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 3,
             Set.of(Tile.Type.MOUNTAIN), 5);
+
+    public static final Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_DRIVING_COST = Map.of(
+            Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 2, Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.MOUNTAIN), 1);
 
     public static final String[] TOWN_NAMES;
 

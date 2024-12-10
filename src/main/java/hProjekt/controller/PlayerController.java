@@ -220,7 +220,7 @@ public class PlayerController {
             return edge.getBuildingCost() <= buildingBudget
                     && edge.getTotalParallelCost(player) <= player.getCredits();
         }
-        return edge.getTotalCost(player) <= player.getCredits();
+        return edge.getTotalBuildingCost(player) <= player.getCredits();
     }
 
     /**
@@ -280,6 +280,6 @@ public class PlayerController {
             player.removeCredits(totalParallelCost);
             return;
         }
-        player.removeCredits(edge.getTotalCost(player));
+        player.removeCredits(edge.getTotalBuildingCost(player));
     }
 }
