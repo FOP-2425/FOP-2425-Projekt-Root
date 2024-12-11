@@ -1,6 +1,7 @@
 package hProjekt.controller;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
@@ -14,6 +15,8 @@ import hProjekt.controller.actions.PlayerAction;
 import hProjekt.model.Edge;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
+import hProjekt.model.Tile;
+import hProjekt.model.TilePosition;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -281,5 +284,46 @@ public class PlayerController {
             return;
         }
         player.removeCredits(edge.getTotalBuildingCost(player));
+    }
+
+    /**
+     * Calculates the tiles the player can drive to with the current dice roll.
+     * If the player can reach the target city, it is the only tile returned.
+     *
+     * @return the tiles the player can drive to with the current dice roll
+     */
+    public Set<Tile> getDrivableTiles() {
+        final TilePosition startNode = gameController.getStartingCity().getPosition();
+        final Set<TilePosition> visitedNodes = Set.of(startNode);
+        final List<TilePosition> positionQueue = List.of(startNode);
+        final List<Integer> distanceQueue = List.of(0);
+        final Set<Tile> drivableTiles = Set.of();
+        while (!positionQueue.isEmpty()) {
+            final TilePosition currentPosition = positionQueue.removeFirst();
+            final int currentDistance = distanceQueue.removeFirst();
+            for (Tile tile : gameController.getState().getGrid().getTileAt(currentPosition).getNeighbours()) {
+                if (visitedNodes.contains(tile.getPosition())) {
+                    continue;
+                }
+
+                if (gameController.getTargetCity().getPosition().equals(tile.getPosition())) {
+                    return Set.of(tile);
+                }
+
+                final int drivingCost = gameController.getState().getGrid().getEdge(currentPosition, tile.getPosition())
+                        .getDrivingCost();
+                int newDistance = currentDistance + drivingCost;
+
+                if (newDistance == gameController.getCurrentDiceRoll()) {
+                    drivableTiles.add(tile);
+                    continue;
+                } else if (newDistance < gameController.getCurrentDiceRoll()) {
+                    positionQueue.add(tile.getPosition());
+                    distanceQueue.add(newDistance);
+                }
+            }
+            visitedNodes.add(currentPosition);
+        }
+        return Set.of();
     }
 }
