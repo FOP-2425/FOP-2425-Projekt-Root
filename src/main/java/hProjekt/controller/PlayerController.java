@@ -208,15 +208,15 @@ public class PlayerController {
 
     /**
      * Determines if the player can build a rail on the given edge.
-     * Checks if the player has enough credits. If the player's objective is
-     * {@PlayerObjective.PLACE_RAIL}, the building cost is checked against the
+     * Checks if the player has enough credits. If the game is in the building
+     * phase, the building cost is checked against the
      * building budget and not the players credits.
      *
      * @param edge the edge to check
      * @return {@code true} if the player can build a rail on the given edge,
      */
     public boolean canBuildRail(Edge edge) {
-        if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
+        if (gameController.getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             return edge.getBuildingCost() <= buildingBudget
                     && edge.getTotalParallelCost(player) <= player.getCredits();
         }
@@ -249,7 +249,7 @@ public class PlayerController {
     /**
      * Tries to build a rail on the given edge.
      * Also removes the cost of building the rail from the player's credits or
-     * building budget if the player's objective is {@PlayerObjective.PLACE_RAIL}.
+     * building budget if the game is in the building phase.
      *
      * @param edge the edge to build the rail on
      * @throws IllegalActionException if the player cannot build a rail on the given
@@ -275,7 +275,7 @@ public class PlayerController {
             }
         }
 
-        if (playerObjective.equals(PlayerObjective.PLACE_RAIL)) {
+        if (gameController.getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             buildingBudget -= edge.getBuildingCost();
             player.removeCredits(totalParallelCost);
             return;
