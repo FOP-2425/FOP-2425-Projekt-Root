@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
+import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGridImpl;
 import hProjekt.model.Player;
@@ -28,6 +29,8 @@ public class GameController {
     private final Supplier<Integer> dice;
     private final IntegerProperty currentDiceRoll = new SimpleIntegerProperty(0);
     private final IntegerProperty roundCounter = new SimpleIntegerProperty(0);
+    private City startingCity = null;
+    private City targetCity = null;
 
     private final Property<PlayerController> activePlayerController = new SimpleObjectProperty<>();
 
@@ -72,6 +75,14 @@ public class GameController {
 
     public IntegerProperty roundCounterProperty() {
         return roundCounter;
+    }
+
+    public City getStartingCity() {
+        return startingCity;
+    }
+
+    public City getTargetCity() {
+        return targetCity;
     }
 
     public int castDice() {
