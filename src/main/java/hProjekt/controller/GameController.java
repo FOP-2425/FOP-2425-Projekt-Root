@@ -2,8 +2,10 @@ package hProjekt.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -132,7 +134,43 @@ public class GameController {
                         }
                     });
         }
+
+        // Fahrphase
         getState().getGamePhaseProperty().setValue(GamePhase.DRIVING_PHASE);
+        roundCounter.set(0);
+        while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
+            roundCounter.set(roundCounter.get() + 1);
+
+            if (roundCounter.get() % 3 == 0) {
+                getState().getPlayers().stream().sorted((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()))
+                        .forEachOrdered((player) -> {
+                            withActivePlayer(playerControllers.get(player), () -> {
+                                getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
+                            });
+                        });
+            }
+
+            final List<City> tempCities = getState().getGrid().getCities().values().stream()
+                    .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
+            startingCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+            tempCities.remove(startingCity);
+            getState().addChosenCity(startingCity);
+            targetCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+            getState().addChosenCity(targetCity);
+
+            for (Player player : getState().getPlayers()) {
+                withActivePlayer(playerControllers.get(player), () -> {
+                    getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                });
+            }
+
+            for (Player player : getState().getDrivingPlayers()) {
+                withActivePlayer(playerControllers.get(player), () -> {
+                    getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
+                    getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
+                });
+            }
+        }
     }
 
     /**
