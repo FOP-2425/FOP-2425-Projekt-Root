@@ -33,6 +33,12 @@ public final class GameState {
     private final List<Player> players;
 
     /**
+     * The {@link Player}s that are currently driving. Only relevant for the driving
+     * phase.
+     */
+    private final List<Player> dirvingPlayers = List.of();
+
+    /**
      * The position of the {@link Player}s on the {@link HexGrid}. Only relevant for
      * the driving phase.
      */
@@ -85,8 +91,61 @@ public final class GameState {
         return Collections.unmodifiableList(players);
     }
 
+    /**
+     * Returns an unmodifiable map of all positions of the {@link Player}s currently
+     * driving.
+     *
+     * @return an unmodifiable map of all positions of the {@link Player}s currently
+     *         driving.
+     */
     public Map<Player, TilePosition> getPlayerPositions() {
         return Collections.unmodifiableMap(playerPositions);
+    }
+
+    /**
+     * Sets the position of the given {@link Player} to the given
+     * {@link TilePosition}.
+     *
+     * @param player   the {@link Player} to set the position for
+     * @param position the {@link TilePosition} to set the position to
+     */
+    public void setPlayerPositon(final Player player, final TilePosition position) {
+        playerPositions.put(player, position);
+    }
+
+    /**
+     * Resets the positions of all {@link Player}s currently driving.
+     */
+    public void resetPlayerPositions() {
+        playerPositions.clear();
+    }
+
+    /**
+     * Returns an unmodifiable list of all {@link Player}s that are currently
+     * driving.
+     *
+     * @return an unmodifiable list of all {@link Player}s that are currently
+     *         driving.
+     */
+    public List<Player> getDrivingPlayers() {
+        return Collections.unmodifiableList(dirvingPlayers);
+    }
+
+    /**
+     * Adds the given {@link Player} to the list of {@link Player}s that are
+     * currently driving.
+     *
+     * @param player the {@link Player} to add
+     */
+    public void addDrivingPlayer(final Player player) {
+        dirvingPlayers.add(player);
+    }
+
+    /**
+     * Resets the list of all {@link Player}s currently driving.
+     */
+    public void resetDrivingPlayers() {
+        dirvingPlayers.clear();
     }
 
     /**
