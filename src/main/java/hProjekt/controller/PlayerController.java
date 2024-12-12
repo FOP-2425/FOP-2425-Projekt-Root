@@ -117,6 +117,11 @@ public class PlayerController {
         playerObjective = nextObjective;
     }
 
+    /**
+     * Returns the building budget during the building phase.
+     *
+     * @return the building budget during the building phase
+     */
     public int getBuildingBudget() {
         return buildingBudget;
     }
@@ -324,6 +329,6 @@ public class PlayerController {
             }
             visitedNodes.add(currentPosition);
         }
-        return Set.of();
+        return drivableTiles;
     }
 }
