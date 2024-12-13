@@ -92,7 +92,7 @@ public class LeaderboardBuilder implements Builder<Region> {
         playerColumn.setCellValueFactory(cellData -> cellData.getValue().playerNameProperty());
         playerColumn.setPrefWidth(0.3); // 30% width
 
-        TableColumn<LeaderboardEntry, Boolean> aiColumn = new TableColumn<>("AI");
+        TableColumn<LeaderboardEntry, Boolean> aiColumn = new TableColumn<>("CPU AI");
         aiColumn.setCellValueFactory(cellData -> cellData.getValue().aiProperty());
         aiColumn.setPrefWidth(0.2); // 20% width
 
