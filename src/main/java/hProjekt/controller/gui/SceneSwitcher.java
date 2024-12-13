@@ -10,6 +10,7 @@ import hProjekt.controller.GameController;
 import hProjekt.controller.gui.controllers.scene.AboutSceneController;
 import hProjekt.controller.gui.controllers.scene.EndScreenSceneController;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
+import hProjekt.controller.gui.controllers.scene.LeaderboardSceneController;
 import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
@@ -91,7 +92,8 @@ public class SceneSwitcher {
         SETUP_GAME_MENU(() -> {
             getInstance().gameController = new GameController();
             return new SetupGameSceneController(getInstance().gameController.getState());
-        });
+        }),
+        LEADERBOARD(LeaderboardSceneController::new);
 
         private final Supplier<SceneController> controller;
 

@@ -69,8 +69,8 @@ public interface SceneController extends Controller {
     /**
      * Loads the map editor scene.
      */
-    static void loadMapEditorScene() {
-        // SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.MAP_EDITOR);
+    static void loadLeaderboardScene() {
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.LEADERBOARD);
     }
 
     /**

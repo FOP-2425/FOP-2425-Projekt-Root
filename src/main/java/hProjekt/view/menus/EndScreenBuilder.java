@@ -1,6 +1,7 @@
 package hProjekt.view.menus;
 
 import hProjekt.controller.HighScoreController;
+import hProjekt.controller.LeaderboardController;
 import hProjekt.model.Player;
 import hProjekt.util.Confetti;
 import javafx.geometry.Insets;
@@ -45,6 +46,12 @@ public class EndScreenBuilder implements Builder<Region> {
         if (newScore > currentHighscore) {
             highScoreController.updateHighScore(newScore);
             currentHighscore = newScore;
+        }
+
+        // Add all players to leaderboard
+        for(int i = 0; i < sortedPlayers.size(); i++){
+            Player player = sortedPlayers.get(i);
+            LeaderboardController.savePlayerData(player.getName(), player.getCredits(), player.isAi());
         }
 
         // Root container for the entire screen

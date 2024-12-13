@@ -14,18 +14,18 @@ import javafx.util.Builder;
 
 public class MainMenuBuilder implements Builder<Region> {
     private final Runnable loadSetupGameScene;
-    private final Runnable loadMapEditorAction;
     private final Runnable loadSettingsAction;
     private final Runnable loadAboutSceneAction;
+    private final Runnable loadLeaderboardAction;
     private final Runnable quitAction;
 
-    public MainMenuBuilder(Runnable loadSetupGameScene, Runnable loadMapEditorAction, Runnable loadSettingsAction,
+    public MainMenuBuilder(Runnable loadSetupGameScene, Runnable loadLeaderboardAction, Runnable loadSettingsAction,
             Runnable quitAction, Runnable loadAboutSceneAction) {
         this.loadSetupGameScene = loadSetupGameScene;
-        this.loadMapEditorAction = loadMapEditorAction;
         this.loadSettingsAction = loadSettingsAction;
         this.quitAction = quitAction;
         this.loadAboutSceneAction = loadAboutSceneAction;
+        this.loadLeaderboardAction = loadLeaderboardAction;
     }
 
     @Override
@@ -59,13 +59,13 @@ public class MainMenuBuilder implements Builder<Region> {
         });
         startGameButton.getStyleClass().add("button");
 
-        // Create Map Editor Button
-        Button mapEditorButton = new Button("Leaderboard");
-        mapEditorButton.setMinWidth(200);
-        mapEditorButton.setOnAction(event -> {
-            loadMapEditorAction.run();
+        // Create Leaderboard Button
+        Button leaderboardButton = new Button("Leaderboard");
+        leaderboardButton.setMinWidth(200);
+        leaderboardButton.setOnAction(event -> {
+            loadLeaderboardAction.run();
         });
-        mapEditorButton.getStyleClass().add("button");
+        leaderboardButton.getStyleClass().add("button");
 
         // Create Settings Button
         Button settingsButton = new Button("Settings");
@@ -76,7 +76,7 @@ public class MainMenuBuilder implements Builder<Region> {
         settingsButton.getStyleClass().add("button");
 
         // Add them to the box in the middle
-        centerBox.getChildren().addAll(logo, startGameButton, mapEditorButton, settingsButton);
+        centerBox.getChildren().addAll(logo, startGameButton, leaderboardButton, settingsButton);
 
         // Create box for Exit Button
         HBox bottomBox = new HBox();
