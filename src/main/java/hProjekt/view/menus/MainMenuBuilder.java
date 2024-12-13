@@ -60,7 +60,7 @@ public class MainMenuBuilder implements Builder<Region> {
         startGameButton.getStyleClass().add("button");
 
         // Create Map Editor Button
-        Button mapEditorButton = new Button("Map Editor");
+        Button mapEditorButton = new Button("Leaderboard");
         mapEditorButton.setMinWidth(200);
         mapEditorButton.setOnAction(event -> {
             loadMapEditorAction.run();
