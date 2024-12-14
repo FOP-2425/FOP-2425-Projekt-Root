@@ -5,6 +5,7 @@ import java.util.Set;
 import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
+import hProjekt.controller.actions.SpinCityAction;
 
 /**
  * This enum represents the different objectives a player can have and what
@@ -14,6 +15,7 @@ import hProjekt.controller.actions.RollDiceAction;
 public enum PlayerObjective {
     PLACE_RAIL(Set.of(BuildRailAction.class)),
     ROLL_DICE(Set.of(RollDiceAction.class)),
+    SPIN_CITY(Set.of(SpinCityAction.class)),
     IDLE(Set.of());
 
     final Set<Class<? extends PlayerAction>> allowedActions;

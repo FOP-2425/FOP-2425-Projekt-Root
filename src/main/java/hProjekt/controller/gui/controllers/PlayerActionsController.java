@@ -1,5 +1,6 @@
 package hProjekt.controller.gui.controllers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
@@ -10,9 +11,11 @@ import hProjekt.controller.PlayerObjective;
 import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
+import hProjekt.controller.actions.SpinCityAction;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
+import hProjekt.view.menus.overlays.CityOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -27,6 +30,7 @@ public class PlayerActionsController implements Controller {
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
     private Subscription playerStateSubscription = Subscription.EMPTY;
     private final RollDiceOverlayView rollDiceOverlayView;
+    private final CityOverlayView spinCityOverlayView;
     private final GameBoardController gameBoardController;
 
     /**
@@ -49,6 +53,7 @@ public class PlayerActionsController implements Controller {
             GameBoardController gameBoardController) {
         this.gameBoardController = gameBoardController;
         this.rollDiceOverlayView = new RollDiceOverlayView(this::rollDiceButtonAction);
+        this.spinCityOverlayView = new CityOverlayView(this::spinCityButtonAction);
         this.playerControllerProperty.subscribe((oldValue, newValue) -> {
             Platform.runLater(() -> {
                 playerStateSubscription.unsubscribe();
@@ -106,6 +111,9 @@ public class PlayerActionsController implements Controller {
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
         }
+        if (allowedActions.contains(SpinCityAction.class)){
+            spinCityOverlayView.enableSpinButton();
+        }
     }
 
     /**
@@ -115,6 +123,11 @@ public class PlayerActionsController implements Controller {
     private void updatePlayerInformation() {
         gameBoardController.updatePlayerInformation();
     }
+
+    public void updateCityOverlay(String fromCity, String toCity, List<String> allCityNames) {
+        spinCityOverlayView.spinCities(fromCity, toCity, allCityNames);
+    }
+
 
     /**
      * Returns the player controller that is currently active.
@@ -175,6 +188,10 @@ public class PlayerActionsController implements Controller {
         return rollDiceOverlayView;
     }
 
+    public CityOverlayView getSpinCityOverlayView(){
+        return spinCityOverlayView;
+    }
+
     /**
      * The action that is triggered when the roll dice button is clicked.
      *
@@ -183,6 +200,10 @@ public class PlayerActionsController implements Controller {
     @DoNotTouch
     public void rollDiceButtonAction(final ActionEvent event) {
         getPlayerController().triggerAction(new RollDiceAction());
+    }
+
+    public void spinCityButtonAction(final ActionEvent event){
+        getPlayerController().triggerAction(new SpinCityAction());
     }
 
     public void updateBuildableEdges() {

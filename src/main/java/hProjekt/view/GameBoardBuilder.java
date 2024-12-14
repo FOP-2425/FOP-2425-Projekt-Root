@@ -18,13 +18,15 @@ public class GameBoardBuilder implements Builder<Region> {
     private Region gameInfoOverlay;
     private Region playerOverlay;
     private Region rollDiceOverlay;
+    private Region spinCityOverlay;
 
     public GameBoardBuilder(final Region map, final Region gameInfoOverlay, final Region playerOverlay,
-            final Region rollDiceOverlay, Consumer<ActionEvent> endButtonAction) {
+            final Region rollDiceOverlay, final Region spinCityOverlay, Consumer<ActionEvent> endButtonAction) {
         this.map = map;
         this.gameInfoOverlay = gameInfoOverlay;
         this.playerOverlay = playerOverlay;
         this.rollDiceOverlay = rollDiceOverlay;
+        this.spinCityOverlay = spinCityOverlay;
         this.endButtonAction = endButtonAction;
     }
 
@@ -69,7 +71,7 @@ public class GameBoardBuilder implements Builder<Region> {
 
         // Root layout
         StackPane root = new StackPane();
-        root.getChildren().addAll(mapRoot, playerOverlayContainer, gameInfoOverlayContainer, rollDiceOverlay,
+        root.getChildren().addAll(mapRoot, playerOverlayContainer, gameInfoOverlayContainer, rollDiceOverlay, spinCityOverlay,
                 topRightContainer);
 
         // Position the overlays
@@ -77,12 +79,14 @@ public class GameBoardBuilder implements Builder<Region> {
         StackPane.setAlignment(gameInfoOverlayContainer, Pos.TOP_CENTER);
         StackPane.setAlignment(rollDiceOverlay, Pos.BOTTOM_CENTER);
         StackPane.setAlignment(topRightContainer, Pos.TOP_RIGHT); // Fix alignment for the top-right container
+        StackPane.setAlignment(spinCityOverlay, Pos.BOTTOM_RIGHT);
 
         // Allow the map to process mouse events when overlays don't consume them
         makeOverlayTransparentForMouseEvents(playerOverlayContainer);
         makeOverlayTransparentForMouseEvents(gameInfoOverlayContainer);
         makeOverlayTransparentForMouseEvents(rollDiceOverlay);
         makeOverlayTransparentForMouseEvents(topRightContainer);
+        makeOverlayTransparentForMouseEvents(spinCityOverlay);
 
         return root;
     }

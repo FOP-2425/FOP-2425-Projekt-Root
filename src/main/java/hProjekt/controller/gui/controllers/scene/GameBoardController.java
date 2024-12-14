@@ -8,12 +8,14 @@ import hProjekt.controller.gui.controllers.PlayerActionsController;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import hProjekt.view.GameBoardBuilder;
+import hProjekt.view.menus.overlays.CityOverlayView;
 import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
@@ -23,6 +25,7 @@ public class GameBoardController implements SceneController {
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
     private final RollDiceOverlayView rollDiceOverlayView;
+    private final CityOverlayView spinCityOverlayView;
     private final GameState gameState;
 
     public GameBoardController(final GameState gameState,
@@ -34,9 +37,10 @@ public class GameBoardController implements SceneController {
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
+        this.spinCityOverlayView = playerActionsController.getSpinCityOverlayView();
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
-                rollDiceOverlayView, event -> {
+                rollDiceOverlayView, spinCityOverlayView, event -> {
                     List<Player> players = gameState.getPlayers();
                     SceneController.loadEndScreenScene(players);
                 });
