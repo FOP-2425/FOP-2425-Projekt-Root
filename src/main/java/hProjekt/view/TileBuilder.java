@@ -50,7 +50,7 @@ public class TileBuilder implements Builder<Region> {
         final Label resourceLabel = createResourceLabel();
 
         // Add labels for debugging
-        mainBox.getChildren().addAll(positionLabel, resourceLabel);
+        //mainBox.getChildren().addAll(positionLabel, resourceLabel);
         pane.getChildren().addAll(mainBox);
 
         return pane;

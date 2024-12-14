@@ -249,12 +249,9 @@ public class HexGridBuilder implements Builder<Region> {
  * Adds a demo of the PlayerAnimationController for testing purposes.
  */
 private void addPlayerAnimationDemo() {
-        // Lila Kreis erstellen und zum HexGridPane hinzufügen
-        Circle demoCircle = new Circle(20, Color.PURPLE);
-        hexGridPane.getChildren().add(demoCircle);
-    
+        
         // PlayerAnimationController initialisieren
-        PlayerAnimationController animationController = new PlayerAnimationController(this, Color.RED);
+        PlayerAnimationController animationController = new PlayerAnimationController(this, Color.BLUEVIOLET);
         
         // Demo-Pfad basierend auf Koordinaten (TilePositionen)
         List<TilePosition> demoPathPositions = List.of(
@@ -276,7 +273,7 @@ private void addPlayerAnimationDemo() {
                 .toList();
     
         // Animation ausführen
-        animationController.animatePlayer(demoPathTiles, Color.RED);
+        animationController.animatePlayer(demoPathTiles);
     }
     
 
