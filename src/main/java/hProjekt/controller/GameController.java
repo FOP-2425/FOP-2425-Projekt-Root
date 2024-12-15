@@ -159,6 +159,7 @@ public class GameController {
             getState().addChosenCity(targetCity);
 
             for (Player player : getState().getPlayers()) {
+                getState().setPlayerPositon(player, startingCity.getPosition());
                 withActivePlayer(playerControllers.get(player), () -> {
                     getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
                 });
