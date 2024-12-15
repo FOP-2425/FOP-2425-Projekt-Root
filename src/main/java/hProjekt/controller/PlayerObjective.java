@@ -3,6 +3,7 @@ package hProjekt.controller;
 import java.util.Set;
 
 import hProjekt.controller.actions.BuildRailAction;
+import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
 import hProjekt.controller.actions.SpinCityAction;
@@ -16,6 +17,8 @@ public enum PlayerObjective {
     PLACE_RAIL(Set.of(BuildRailAction.class)),
     ROLL_DICE(Set.of(RollDiceAction.class)),
     SPIN_CITY(Set.of(SpinCityAction.class)),
+    DRIVE(Set.of(DriveAction.class)),
+    CHOOSE_PATH(Set.of()),
     IDLE(Set.of());
 
     final Set<Class<? extends PlayerAction>> allowedActions;
