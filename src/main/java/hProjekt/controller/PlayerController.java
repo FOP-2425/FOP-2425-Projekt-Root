@@ -298,7 +298,7 @@ public class PlayerController {
      * @return the tiles the player can drive to with the current dice roll
      */
     public Set<Tile> getDrivableTiles() {
-        final TilePosition startNode = gameController.getStartingCity().getPosition();
+        final TilePosition startNode = gameController.getState().getPlayerPositions().get(getPlayer());
         final Set<TilePosition> visitedNodes = Set.of(startNode);
         final List<TilePosition> positionQueue = List.of(startNode);
         final List<Integer> distanceQueue = List.of(0);
