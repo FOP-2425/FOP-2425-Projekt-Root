@@ -1,9 +1,14 @@
-package hProjekt.controller;
+package hProjekt.controller.gui.controllers;
+
+import java.util.List;
 
 import hProjekt.model.Tile;
 import hProjekt.model.TilePosition;
 import hProjekt.view.HexGridBuilder;
-import javafx.animation.*;
+import javafx.animation.Interpolator;
+import javafx.animation.PathTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,10 +20,9 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
-import java.util.List;
-
 /**
- * Controls the player animation, moving a circle along a path of Tiles with a train icon inside.
+ * Controls the player animation, moving a circle along a path of Tiles with a
+ * train icon inside.
  */
 public class PlayerAnimationController {
 
@@ -57,8 +61,8 @@ public class PlayerAnimationController {
     /**
      * Animates the playerCircle along the given list of Tiles.
      *
-     * @param tiles       the list of Tiles to follow
-     * @param red 
+     * @param tiles the list of Tiles to follow
+     * @param red
      */
     public void animatePlayer(List<Tile> tiles) {
         if (tiles == null || tiles.size() < 2) {
