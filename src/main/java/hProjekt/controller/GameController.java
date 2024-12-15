@@ -2,12 +2,15 @@ package hProjekt.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
+import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGridImpl;
 import hProjekt.model.Player;
@@ -28,6 +31,8 @@ public class GameController {
     private final Supplier<Integer> dice;
     private final IntegerProperty currentDiceRoll = new SimpleIntegerProperty(0);
     private final IntegerProperty roundCounter = new SimpleIntegerProperty(0);
+    private City startingCity = null;
+    private City targetCity = null;
 
     private final Property<PlayerController> activePlayerController = new SimpleObjectProperty<>();
 
@@ -72,6 +77,14 @@ public class GameController {
 
     public IntegerProperty roundCounterProperty() {
         return roundCounter;
+    }
+
+    public City getStartingCity() {
+        return startingCity;
+    }
+
+    public City getTargetCity() {
+        return targetCity;
     }
 
     public int castDice() {
@@ -121,7 +134,44 @@ public class GameController {
                         }
                     });
         }
+
+        // Fahrphase
         getState().getGamePhaseProperty().setValue(GamePhase.DRIVING_PHASE);
+        roundCounter.set(0);
+        while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
+            roundCounter.set(roundCounter.get() + 1);
+
+            if (roundCounter.get() % 3 == 0) {
+                getState().getPlayers().stream().sorted((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()))
+                        .forEachOrdered((player) -> {
+                            withActivePlayer(playerControllers.get(player), () -> {
+                                getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
+                            });
+                        });
+            }
+
+            final List<City> tempCities = getState().getGrid().getCities().values().stream()
+                    .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
+            startingCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+            tempCities.remove(startingCity);
+            getState().addChosenCity(startingCity);
+            targetCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+            getState().addChosenCity(targetCity);
+
+            for (Player player : getState().getPlayers()) {
+                getState().setPlayerPositon(player, startingCity.getPosition());
+                withActivePlayer(playerControllers.get(player), () -> {
+                    getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                });
+            }
+
+            for (Player player : getState().getDrivingPlayers()) {
+                withActivePlayer(playerControllers.get(player), () -> {
+                    getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
+                    getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
+                });
+            }
+        }
     }
 
     /**
