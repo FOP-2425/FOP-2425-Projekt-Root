@@ -1,6 +1,9 @@
 package hProjekt.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +23,7 @@ import hProjekt.model.Tile;
 import hProjekt.model.TilePosition;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.Pair;
 
 /**
  * The PlayerController class represents a controller for a {@link Player} in
@@ -300,44 +304,62 @@ public class PlayerController {
         player.removeCredits(edge.getTotalBuildingCost(player));
     }
 
+    public boolean canDrive() {
+        if (getState().getDrivingPlayers().contains(player)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Calculates the tiles the player can drive to with the current dice roll.
      * If the player can reach the target city, it is the only tile returned.
      *
      * @return the tiles the player can drive to with the current dice roll
      */
-    public Set<Tile> getDrivableTiles() {
-        final TilePosition startNode = gameController.getState().getPlayerPositions().get(getPlayer());
-        final Set<TilePosition> visitedNodes = Set.of(startNode);
-        final List<TilePosition> positionQueue = List.of(startNode);
-        final List<Integer> distanceQueue = List.of(0);
-        final Set<Tile> drivableTiles = Set.of();
+    public Map<Tile, List<Tile>> getDrivableTiles() {
+        if (!canDrive()) {
+            return Map.of();
+        }
+
+        final Tile startNode = getState().getGrid().getTileAt(getState().getPlayerPositions().get(getPlayer()));
+        final Set<Tile> visitedNodes = new HashSet<>(Set.of(startNode));
+        final List<Pair<Tile, List<Tile>>> positionQueue = new ArrayList<>(List.of(new Pair<>(startNode, List.of())));
+        final List<Integer> distanceQueue = new ArrayList<>(List.of(0));
+        final Map<Tile, List<Tile>> drivableTiles = new HashMap<>();
+
         while (!positionQueue.isEmpty()) {
-            final TilePosition currentPosition = positionQueue.removeFirst();
+            final Pair<Tile, List<Tile>> currentPair = positionQueue.removeFirst();
+            final TilePosition currentPosition = currentPair.getKey().getPosition();
             final int currentDistance = distanceQueue.removeFirst();
-            for (Tile tile : gameController.getState().getGrid().getTileAt(currentPosition).getNeighbours()) {
-                if (visitedNodes.contains(tile.getPosition())) {
+            for (Tile tile : currentPair.getKey().getNeighbours()) {
+                if (visitedNodes.contains(tile)) {
                     continue;
                 }
 
-                if (gameController.getTargetCity().getPosition().equals(tile.getPosition())) {
-                    return Set.of(tile);
-                }
-
-                final int drivingCost = gameController.getState().getGrid().getEdge(currentPosition, tile.getPosition())
+                final int drivingCost = getState().getGrid().getEdge(currentPosition, tile.getPosition())
                         .getDrivingCost();
                 int newDistance = currentDistance + drivingCost;
 
-                if (newDistance == gameController.getCurrentDiceRoll()) {
-                    drivableTiles.add(tile);
-                    continue;
-                } else if (newDistance < gameController.getCurrentDiceRoll()) {
-                    positionQueue.add(tile.getPosition());
-                    distanceQueue.add(newDistance);
+                if (newDistance <= gameController.getCurrentDiceRoll()) {
+                    List<Tile> path = new ArrayList<>(currentPair.getValue());
+                    path.add(currentPair.getKey());
+
+                    if (gameController.getTargetCity().getPosition().equals(tile.getPosition())) {
+                        return Map.of(tile, path);
+                    }
+
+                    if (newDistance < gameController.getCurrentDiceRoll()) {
+                        positionQueue.add(new Pair<>(tile, path));
+                        distanceQueue.add(newDistance);
+                    } else {
+                        drivableTiles.put(tile, path);
+                    }
                 }
             }
-            visitedNodes.add(currentPosition);
+            visitedNodes.add(currentPair.getKey());
         }
         return drivableTiles;
     }
+
 }
