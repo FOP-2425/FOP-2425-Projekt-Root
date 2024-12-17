@@ -13,6 +13,7 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import hProjekt.controller.actions.IllegalActionException;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.model.Edge;
+import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
 import hProjekt.model.Tile;
@@ -65,6 +66,10 @@ public class PlayerController {
     @DoNotTouch
     public Player getPlayer() {
         return player;
+    }
+
+    private GameState getState() {
+        return gameController.getState();
     }
 
     /**
@@ -228,7 +233,7 @@ public class PlayerController {
      * @return {@code true} if the player can build a rail on the given edge,
      */
     public boolean canBuildRail(Edge edge) {
-        if (gameController.getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
+        if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             return edge.getBuildingCost() <= buildingBudget
                     && edge.getTotalParallelCost(player) <= player.getCredits();
         }
@@ -241,11 +246,11 @@ public class PlayerController {
      * @return all edges the player can build a rail on
      */
     public Set<Edge> getBuildableRails() {
-        Collection<Edge> ownedRails = gameController.getState().getGrid().getRails(player).values();
+        Collection<Edge> ownedRails = getState().getGrid().getRails(player).values();
         Set<Edge> possibleConnections;
         if (ownedRails.isEmpty()) {
-            possibleConnections = gameController.getState().getGrid().getStartingCities().keySet().stream()
-                    .flatMap(position -> gameController.getState().getGrid().getTileAt(position).getEdges().stream())
+            possibleConnections = getState().getGrid().getStartingCities().keySet().stream()
+                    .flatMap(position -> getState().getGrid().getTileAt(position).getEdges().stream())
                     .filter(this::canBuildRail)
                     .collect(Collectors.toSet());
             return possibleConnections;
@@ -287,7 +292,7 @@ public class PlayerController {
             }
         }
 
-        if (gameController.getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
+        if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             buildingBudget -= edge.getBuildingCost();
             player.removeCredits(totalParallelCost);
             return;
