@@ -1,7 +1,9 @@
 package hProjekt.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +38,7 @@ public final class GameState {
      * The {@link Player}s that are currently driving. Only relevant for the driving
      * phase.
      */
-    private final List<Player> dirvingPlayers = List.of();
+    private final List<Player> dirvingPlayers = new ArrayList<>();
 
     /**
      * The position of the {@link Player}s on the {@link HexGrid}. Only relevant for
@@ -57,7 +59,7 @@ public final class GameState {
     /**
      * The cities that have already been driven to.
      */
-    private final Set<City> chosenCities = Set.of();
+    private final Set<City> chosenCities = new HashSet<>();
 
     /**
      * Creates a new {@link GameState} with the given {@link HexGrid} and
