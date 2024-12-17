@@ -9,9 +9,9 @@ import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.PlayerObjective;
 import hProjekt.controller.actions.BuildRailAction;
+import hProjekt.controller.actions.ChooseCitiesAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
-import hProjekt.controller.actions.SpinCityAction;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
@@ -30,7 +30,7 @@ public class PlayerActionsController implements Controller {
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
     private Subscription playerStateSubscription = Subscription.EMPTY;
     private final RollDiceOverlayView rollDiceOverlayView;
-    private final CityOverlayView spinCityOverlayView;
+    private final CityOverlayView cityOverlayView;
     private final GameBoardController gameBoardController;
 
     /**
@@ -53,7 +53,7 @@ public class PlayerActionsController implements Controller {
             GameBoardController gameBoardController) {
         this.gameBoardController = gameBoardController;
         this.rollDiceOverlayView = new RollDiceOverlayView(this::rollDiceButtonAction);
-        this.spinCityOverlayView = new CityOverlayView(this::spinCityButtonAction);
+        this.cityOverlayView = new CityOverlayView(this::chooseCitiesButtonAction);
         this.playerControllerProperty.subscribe((oldValue, newValue) -> {
             Platform.runLater(() -> {
                 playerStateSubscription.unsubscribe();
@@ -97,6 +97,7 @@ public class PlayerActionsController implements Controller {
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
+        cityOverlayView.disableSpinButton();
         removeAllHighlights();
         updatePlayerInformation();
 
@@ -111,8 +112,8 @@ public class PlayerActionsController implements Controller {
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
         }
-        if (allowedActions.contains(SpinCityAction.class)){
-            spinCityOverlayView.enableSpinButton();
+        if (allowedActions.contains(ChooseCitiesAction.class)) {
+            cityOverlayView.enableSpinButton();
         }
     }
 
@@ -125,9 +126,8 @@ public class PlayerActionsController implements Controller {
     }
 
     public void updateCityOverlay(String fromCity, String toCity, List<String> allCityNames) {
-        spinCityOverlayView.spinCities(fromCity, toCity, allCityNames);
+        cityOverlayView.spinCities(fromCity, toCity, allCityNames);
     }
-
 
     /**
      * Returns the player controller that is currently active.
@@ -188,8 +188,8 @@ public class PlayerActionsController implements Controller {
         return rollDiceOverlayView;
     }
 
-    public CityOverlayView getSpinCityOverlayView(){
-        return spinCityOverlayView;
+    public CityOverlayView getCityOverlayView() {
+        return cityOverlayView;
     }
 
     /**
@@ -202,8 +202,8 @@ public class PlayerActionsController implements Controller {
         getPlayerController().triggerAction(new RollDiceAction());
     }
 
-    public void spinCityButtonAction(final ActionEvent event){
-        getPlayerController().triggerAction(new SpinCityAction());
+    public void chooseCitiesButtonAction(final ActionEvent event) {
+        getPlayerController().triggerAction(new ChooseCitiesAction());
     }
 
     public void updateBuildableEdges() {

@@ -15,7 +15,6 @@ import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
@@ -37,7 +36,7 @@ public class GameBoardController implements SceneController {
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
-        this.spinCityOverlayView = playerActionsController.getSpinCityOverlayView();
+        this.spinCityOverlayView = playerActionsController.getCityOverlayView();
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
                 rollDiceOverlayView, spinCityOverlayView, event -> {
