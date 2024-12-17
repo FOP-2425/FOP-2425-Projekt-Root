@@ -1,8 +1,11 @@
 package hProjekt.view.menus.overlays;
 
+import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,10 +21,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
-import java.util.List;
-import java.util.Random;
-import java.util.function.Consumer;
-
 /**
  * Overlay for selecting random cities (From -> To) with a spinning animation.
  */
@@ -34,9 +33,10 @@ public class CityOverlayView extends StackPane {
     /**
      * Constructor for the CityOverlayView.
      *
-     * @param spinCityAction the action to execute when the Spin button is clicked
+     * @param chooseCitiesAction the action to execute when the Spin button is
+     *                           clicked
      */
-    public CityOverlayView(final Consumer<ActionEvent> spinCityAction) {
+    public CityOverlayView(final Consumer<ActionEvent> chooseCitiesAction) {
         // Configure the main container
         VBox container = new VBox(15); // Adjust spacing
         container.setAlignment(Pos.CENTER);
@@ -45,7 +45,7 @@ public class CityOverlayView extends StackPane {
                 Color.rgb(42, 42, 59, 0.8), new CornerRadii(8), Insets.EMPTY)));
         container.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-background-radius: 10; -fx-padding: 10;");
         container.setMaxWidth(300);
-        container.setMaxHeight(100); 
+        container.setMaxHeight(100);
 
         // Ensure the overlay does not block interactions outside
         this.setPickOnBounds(false);
@@ -59,7 +59,7 @@ public class CityOverlayView extends StackPane {
         fromCityLabel.setTextFill(Color.WHITE);
         fromCityLabel.setFont(new Font("Arial", 14));
         fromCityLabel.setStyle("-fx-background-color: #333; -fx-padding: 5px; -fx-background-radius: 5px;");
-        fromCityLabel.setMinWidth(120); 
+        fromCityLabel.setMinWidth(120);
         fromCityLabel.setAlignment(Pos.CENTER);
 
         // To label
@@ -71,7 +71,7 @@ public class CityOverlayView extends StackPane {
         toCityLabel.setTextFill(Color.WHITE);
         toCityLabel.setFont(new Font("Arial", 14));
         toCityLabel.setStyle("-fx-background-color: #333; -fx-padding: 5px; -fx-background-radius: 5px;");
-        toCityLabel.setMinWidth(120); 
+        toCityLabel.setMinWidth(120);
         toCityLabel.setAlignment(Pos.CENTER);
 
         // Arrow
@@ -86,10 +86,10 @@ public class CityOverlayView extends StackPane {
 
         // Add the labels to the GridPane
         citySelectionPane.add(fromLabel, 0, 0); // "From:" label in the first column
-        citySelectionPane.add(toLabel, 2, 0);   // "To:" label in the third column
+        citySelectionPane.add(toLabel, 2, 0); // "To:" label in the third column
         citySelectionPane.add(fromCityLabel, 0, 1); // From city label in the first column
-        citySelectionPane.add(arrowLabel, 1, 1);    // Arrow in the second column
-        citySelectionPane.add(toCityLabel, 2, 1);   // To city label in the third column
+        citySelectionPane.add(arrowLabel, 1, 1); // Arrow in the second column
+        citySelectionPane.add(toCityLabel, 2, 1); // To city label in the third column
 
         citySelectionPane.setAlignment(Pos.CENTER);
 
@@ -99,7 +99,7 @@ public class CityOverlayView extends StackPane {
         spinButton.setTextFill(Color.WHITE);
         spinButton.setStyle("-fx-background-color: #0078d7; -fx-background-radius: 10px; -fx-padding: 8px 15px;");
         spinButton.setDisable(true); // Disabled by default
-        spinButton.setOnAction(spinCityAction::accept); // Set action for the button
+        spinButton.setOnAction(chooseCitiesAction::accept); // Set action for the button
 
         // Add components to the container
         container.getChildren().addAll(citySelectionPane, spinButton);
@@ -107,54 +107,52 @@ public class CityOverlayView extends StackPane {
         // Add the container to the overlay
         this.getChildren().add(container);
         this.setAlignment(Pos.BOTTOM_RIGHT);
-        this.setPadding(new Insets(10)); 
+        this.setPadding(new Insets(10));
     }
 
-
-/**
- * Spins and randomly selects From and To cities.
- *
- * @param fromCity     The "From" city name for the final selection.
- * @param toCity       The "To" city name for the final selection.
- * @param cityNames    The list of all available city names for the animation.
- */
-public void spinCities(String fromCity, String toCity, List<String> cityNames) {
-    if (cityNames.size() < 2) {
-        System.out.println("Not enough cities to spin.");
-        return;
-    }
-
-    Random random = new Random();
-    Timeline timeline = new Timeline();
-    int iterations = 15;
-
-    // Animation for spinning effect
-    for (int i = 0; i < iterations; i++) {
-        int indexFrom = random.nextInt(cityNames.size());
-        int indexTo = random.nextInt(cityNames.size());
-        while (indexFrom == indexTo) {
-            indexTo = random.nextInt(cityNames.size());
+    /**
+     * Spins and randomly selects From and To cities.
+     *
+     * @param fromCity  The "From" city name for the final selection.
+     * @param toCity    The "To" city name for the final selection.
+     * @param cityNames The list of all available city names for the animation.
+     */
+    public void spinCities(String fromCity, String toCity, List<String> cityNames) {
+        if (cityNames.size() < 2) {
+            System.out.println("Not enough cities to spin.");
+            return;
         }
 
-        int finalIndexFrom = indexFrom;
-        int finalIndexTo = indexTo;
+        Random random = new Random();
+        Timeline timeline = new Timeline();
+        int iterations = 15;
 
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(i * 50), event -> {
-            fromCityLabel.setText(cityNames.get(finalIndexFrom));
-            toCityLabel.setText(cityNames.get(finalIndexTo));
+        // Animation for spinning effect
+        for (int i = 0; i < iterations; i++) {
+            int indexFrom = random.nextInt(cityNames.size());
+            int indexTo = random.nextInt(cityNames.size());
+            while (indexFrom == indexTo) {
+                indexTo = random.nextInt(cityNames.size());
+            }
+
+            int finalIndexFrom = indexFrom;
+            int finalIndexTo = indexTo;
+
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(i * 50), event -> {
+                fromCityLabel.setText(cityNames.get(finalIndexFrom));
+                toCityLabel.setText(cityNames.get(finalIndexTo));
+            }));
+        }
+
+        // Final selection
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(iterations * 50), event -> {
+            fromCityLabel.setText(fromCity);
+            toCityLabel.setText(toCity);
+            System.out.println("Final From: " + fromCity + ", To: " + toCity);
         }));
+
+        timeline.play();
     }
-
-    // Final selection
-    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(iterations * 50), event -> {
-        fromCityLabel.setText(fromCity);
-        toCityLabel.setText(toCity);
-        System.out.println("Final From: " + fromCity + ", To: " + toCity);
-    }));
-
-    timeline.play();
-}
-
 
     /**
      * Enables the Spin button.
