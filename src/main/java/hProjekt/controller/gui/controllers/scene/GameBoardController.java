@@ -5,6 +5,7 @@ import java.util.List;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.gui.controllers.HexGridController;
 import hProjekt.controller.gui.controllers.PlayerActionsController;
+import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import hProjekt.view.GameBoardBuilder;
@@ -15,8 +16,10 @@ import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
+import javafx.util.Pair;
 
 public class GameBoardController implements SceneController {
     private final HexGridController hexGridController;
@@ -29,7 +32,7 @@ public class GameBoardController implements SceneController {
 
     public GameBoardController(final GameState gameState,
             final Property<PlayerController> activePlayerControllerProperty, final IntegerProperty diceRollProperty,
-            final IntegerProperty roundCounterProperty) {
+            final IntegerProperty roundCounterProperty, final ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty) {
         this.gameState = gameState;
         this.hexGridController = new HexGridController(gameState.getGrid());
         this.gameInfoOverlayView = new GameInfoOverlayView();
@@ -67,6 +70,15 @@ public class GameBoardController implements SceneController {
             }
             Platform.runLater(() -> {
                 rollDiceOverlayView.rollDice(newValue.intValue());
+            });
+        });
+        chosenCitiesProperty.subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+            Platform.runLater(() -> {
+                spinCityOverlayView.spinCities(newValue.getKey().getName(), newValue.getValue().getName(),
+                        gameState.getGrid().getCities().values().stream().map(City::getName).toList());
             });
         });
     }

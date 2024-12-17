@@ -142,6 +142,10 @@ public class PlayerController {
         gameController.castDice();
     }
 
+    public void chooseCities() {
+        gameController.chooseCities();
+    }
+
     // Process Actions
 
     /**
