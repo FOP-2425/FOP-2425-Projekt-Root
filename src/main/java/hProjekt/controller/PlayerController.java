@@ -2,6 +2,7 @@ package hProjekt.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,12 +10,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
+import hProjekt.Config;
 import hProjekt.controller.actions.IllegalActionException;
 import hProjekt.controller.actions.PlayerAction;
+import hProjekt.model.City;
 import hProjekt.model.Edge;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
@@ -283,6 +287,12 @@ public class PlayerController {
             throw new IllegalActionException("Cannot build rail");
         }
 
+        final boolean connectsUnconnectedCity = !Collections.disjoint(
+                getState().getGrid().getUnconnectedCities().values().stream()
+                        .filter(Predicate.not(City::isStartingCity))
+                        .map(City::getPosition).toList(),
+                edge.getAdjacentTilePositions());
+
         if (!edge.addRail(player)) {
             throw new IllegalActionException("Cannot build rail on the given edge");
         }
@@ -294,6 +304,10 @@ public class PlayerController {
             for (Map.Entry<Player, Integer> entry : parallelCost.entrySet()) {
                 entry.getKey().addCredits(entry.getValue());
             }
+        }
+
+        if (connectsUnconnectedCity) {
+            player.addCredits(Config.CITY_CONNECTION_BONUS);
         }
 
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {

@@ -134,6 +134,13 @@ public interface HexGrid {
     Map<TilePosition, City> getConnectedCities();
 
     /**
+     * Returns all cities that are not connected to a rail.
+     *
+     * @return all cities that are not connected to a rail
+     */
+    Map<TilePosition, City> getUnconnectedCities();
+
+    /**
      * Returns all cities that are stating cities.
      *
      * @return all cities that are stating cities.
