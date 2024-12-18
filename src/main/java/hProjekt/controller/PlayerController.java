@@ -318,6 +318,39 @@ public class PlayerController {
         player.removeCredits(edge.getTotalBuildingCost(player));
     }
 
+    public Set<Edge> getChooseableEdges() {
+        if (player.getCredits() == 0 || !getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
+            return Set.of();
+        }
+
+        Set<Edge> builtEdges = getState().getGrid().getRails(player).values().stream().collect(Collectors.toSet());
+        Set<Edge> chooseableEdges = new HashSet<>();
+        chooseableEdges.addAll(builtEdges.stream()
+                .flatMap(edge -> edge.getConnectedEdges().stream().filter(e -> !e.getRailOwners().contains(player)))
+                .distinct().toList());
+
+        if (chooseableEdges.isEmpty()) {
+            return chooseableEdges;
+        }
+
+        final List<Pair<Edge, Integer>> edgeQueue = new ArrayList<>(
+                chooseableEdges.stream().map(edge -> new Pair<>(edge, 1)).toList());
+        while (!edgeQueue.isEmpty()) {
+            final Pair<Edge, Integer> currentPair = edgeQueue.removeFirst();
+            for (Edge edge : currentPair.getKey().getConnectedEdges().stream()
+                    .filter(edge -> !edge.getRailOwners().contains(player))
+                    .filter(Predicate.not(chooseableEdges::contains)).toList()) {
+                int newDistance = currentPair.getValue() + 1;
+                if (newDistance <= player.getCredits()) {
+                    edgeQueue.add(new Pair<>(edge, newDistance));
+                    chooseableEdges.add(edge);
+                }
+            }
+        }
+
+        return chooseableEdges;
+    }
+
     public boolean canDrive() {
         if (getState().getDrivingPlayers().contains(player)) {
             return true;
