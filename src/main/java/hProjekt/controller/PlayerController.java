@@ -341,7 +341,7 @@ public class PlayerController {
                     .filter(edge -> !edge.getRailOwners().contains(player))
                     .filter(Predicate.not(chooseableEdges::contains)).toList()) {
                 int newDistance = currentPair.getValue() + 1;
-                if (newDistance <= player.getCredits()) {
+                if (newDistance <= Math.min(player.getCredits(), 10)) {
                     edgeQueue.add(new Pair<>(edge, newDistance));
                     chooseableEdges.add(edge);
                 }
