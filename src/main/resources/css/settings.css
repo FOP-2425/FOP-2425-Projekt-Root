@@ -30,6 +30,16 @@
     -fx-background-color: #005f99;
 }
 
+.text-title {
+    -fx-font-size: 36px;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Arial Black", sans-serif;
+    -fx-padding: 15px 0;
+    -fx-alignment: center;
+    -fx-translate-y: -20px;
+}
+
+
 .label {
     -fx-text-fill: white;
 }

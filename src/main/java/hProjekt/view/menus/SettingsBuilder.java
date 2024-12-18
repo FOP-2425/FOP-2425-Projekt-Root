@@ -41,9 +41,17 @@ public class SettingsBuilder implements Builder<Region> {
         });
         resetButton.getStyleClass().add("button");
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        topButtons.getChildren().addAll(backButton, spacer, resetButton);
+        Label titleLabel = new Label("Settings");
+        titleLabel.getStyleClass().add("text-title");
+        titleLabel.setAlignment(Pos.CENTER);
+
+        Region leftSpacer = new Region();
+        Region rightSpacer = new Region();
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+        
+        // Add all elements
+        topButtons.getChildren().addAll(backButton, leftSpacer, titleLabel, rightSpacer, resetButton);
         root.setTop(topButtons);
 
         // Main Layout: Grid Pane for 3x2 matrix

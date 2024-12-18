@@ -47,7 +47,6 @@ public class SettingsController {
      */
 
      public void applySettings() {
-    System.out.println("Saving settings...");
 
     // Game Settings
     Config.DICE_SIDES = diceSides.get();
@@ -83,13 +82,14 @@ public class SettingsController {
     drivingCostMap.put(Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), plainToMountainDrivingCost.get());
     drivingCostMap.put(Set.of(Tile.Type.MOUNTAIN), mountainToMountainDrivingCost.get());
     Config.TILE_TYPE_TO_DRIVING_COST = Collections.unmodifiableMap(drivingCostMap);
+
+    System.out.println("Settings saved successfully");
 }
 
     /**
      * Resets all properties to their original default values.
      */
     public void resetToDefaults() {
-        System.out.println("Resetting settings...");
 
         // Reset Game Settings
         diceSides.set(6);
@@ -121,5 +121,8 @@ public class SettingsController {
         plainToPlainDrivingCost.set(1);
         plainToMountainDrivingCost.set(2);
         mountainToMountainDrivingCost.set(1);
+
+        System.out.println("Settings resetted successfully");
+
     }
 }
