@@ -1,5 +1,6 @@
 package hProjekt.view.menus;
 
+import hProjekt.controller.LeaderboardController;
 import hProjekt.controller.LeaderboardEntry;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,7 +59,8 @@ public class LeaderboardBuilder implements Builder<Region> {
         TableView<LeaderboardEntry> tableView = new TableView<>();
         tableView.getStyleClass().add("leaderboard-table");
         setupTableColumns(tableView);
-        loadLeaderboardData(tableView);
+        ObservableList<LeaderboardEntry> entries = FXCollections.observableArrayList(LeaderboardController.loadLeaderboardData());
+        tableView.setItems(entries);
 
         // VBox to center content (title and table)
         VBox contentContainer = new VBox(20);
@@ -109,41 +111,5 @@ public class LeaderboardBuilder implements Builder<Region> {
 
         // Add columns to the table
         tableView.getColumns().addAll(playerColumn, aiColumn, timestampColumn, scoreColumn);
-    }
-
-    /**
-     * Loads leaderboard data from the CSV file and populates the table.
-     *
-     * @param tableView The {@link TableView} to populate with leaderboard data.
-     */
-    private void loadLeaderboardData(TableView<LeaderboardEntry> tableView) {
-        ObservableList<LeaderboardEntry> entries = FXCollections.observableArrayList();
-
-        Path csvFile = Paths.get("src/main/resources/leaderboard.csv");
-        if (Files.exists(csvFile)) {
-            try (BufferedReader reader = Files.newBufferedReader(csvFile)) {
-                String line;
-                boolean skipHeader = true; // Skip the header line
-                while ((line = reader.readLine()) != null) {
-                    if (skipHeader) {
-                        skipHeader = false;
-                        continue;
-                    }
-                    String[] data = line.split(",");
-                    if (data.length == 4) {
-                        entries.add(new LeaderboardEntry(
-                            data[0], // Player Name
-                            Boolean.parseBoolean(data[1]), // AI
-                            data[2], // Timestamp
-                            Integer.parseInt(data[3]) // Score
-                        ));
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        tableView.setItems(entries);
     }
 }
