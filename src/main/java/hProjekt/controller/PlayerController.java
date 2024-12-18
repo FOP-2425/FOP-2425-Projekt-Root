@@ -352,9 +352,14 @@ public class PlayerController {
     }
 
     public boolean canDrive() {
+        if (!getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
+            return false;
+        }
+
         if (getState().getDrivingPlayers().contains(player)) {
             return true;
         }
+
         return false;
     }
 
