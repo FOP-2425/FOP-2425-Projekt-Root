@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -50,6 +51,10 @@ public class PlayerController {
     private PlayerObjective playerObjective = PlayerObjective.IDLE;
 
     private int buildingBudget = 0; // Budget during building phase
+
+    private Set<Edge> rentedEdges = new HashSet<>();
+
+    private boolean hasPath = false;
 
     /**
      * Creates a new {@link PlayerController} with the given {@link GameController}
@@ -349,6 +354,62 @@ public class PlayerController {
         }
 
         return chooseableEdges;
+    }
+
+    public void chooseEdges(final Set<Edge> edges) throws IllegalActionException {
+        Set<Edge> chooseableEdges = getChooseableEdges();
+
+        if (chooseableEdges.isEmpty() || !chooseableEdges.containsAll(edges)) {
+            throw new IllegalActionException("Cannot choose edges");
+        }
+
+        Set<Edge> allAvailableEdges = List.of(chooseableEdges, edges).stream().flatMap(set -> set.stream())
+                .filter(Edge::hasRail).collect(Collectors.toSet());
+        PriorityQueue<Pair<TilePosition, Integer>> positionQueue = new PriorityQueue<>(
+                (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()) * -1);
+        Map<TilePosition, TilePosition> previous = new HashMap<>();
+        Map<TilePosition, Integer> distance = new HashMap<>();
+        TilePosition start = gameController.getStartingCity().getPosition();
+        TilePosition target = gameController.getTargetCity().getPosition();
+        positionQueue.add(new Pair<>(start, 0));
+        previous.put(start, start);
+        distance.put(start, 0);
+
+        while (!positionQueue.isEmpty()) {
+            TilePosition current = positionQueue.poll().getKey();
+            if (current.equals(target)) {
+                break;
+            }
+            for (TilePosition next : getState().getGrid().getTileAt(current).getEdges().stream()
+                    .filter(allAvailableEdges::contains).flatMap(edge -> edge.getAdjacentTilePositions().stream())
+                    .filter(Predicate.not(current::equals)).toList()) {
+                int newDistance = distance.get(current)
+                        + getState().getGrid().getEdge(next, current).getDrivingCost();
+                if (!distance.containsKey(next) || newDistance < distance.get(next)) {
+                    distance.put(next, newDistance);
+                    previous.put(next, current);
+                    positionQueue.add(new Pair<>(next, newDistance));
+                }
+            }
+        }
+
+        if (!previous.containsKey(target)) {
+            rentedEdges = Set.of();
+            hasPath = false;
+        }
+        hasPath = true;
+
+        TilePosition current = target;
+        Set<Edge> pathEdges = new HashSet<>();
+
+        while (!current.equals(start)) {
+            TilePosition previousPosition = previous.get(current);
+            pathEdges.add(getState().getGrid().getEdge(previousPosition, current));
+            current = previousPosition;
+        }
+
+        rentedEdges = pathEdges.stream().filter(edge -> !edge.getRailOwners().contains(player))
+                .collect(Collectors.toSet());
     }
 
     public boolean canDrive() {
