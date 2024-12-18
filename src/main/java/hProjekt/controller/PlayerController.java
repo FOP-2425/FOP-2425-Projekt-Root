@@ -384,7 +384,11 @@ public class PlayerController {
             final Pair<Tile, List<Tile>> currentPair = positionQueue.removeFirst();
             final TilePosition currentPosition = currentPair.getKey().getPosition();
             final int currentDistance = distanceQueue.removeFirst();
-            for (Tile tile : currentPair.getKey().getNeighbours()) {
+            for (Tile tile : currentPair.getKey().getEdges().stream().filter(Edge::hasRail)
+                    .filter(edge -> edge.getRailOwners().contains(player))
+                    .flatMap(edge -> edge.getAdjacentTilePositions().stream())
+                    .filter(Predicate.not(currentPosition::equals))
+                    .map(position -> getState().getGrid().getTileAt(position)).toList()) {
                 if (visitedNodes.contains(tile)) {
                     continue;
                 }
