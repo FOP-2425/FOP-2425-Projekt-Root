@@ -387,7 +387,8 @@ public class PlayerController {
             throw new IllegalActionException("Cannot choose more than 10 edges");
         }
 
-        Set<Edge> allAvailableEdges = List.of(chooseableEdges, edges).stream().flatMap(set -> set.stream())
+        Set<Edge> allAvailableEdges = List.of(getState().getGrid().getRails(player).values(), edges).stream()
+                .flatMap(set -> set.stream())
                 .filter(Edge::hasRail).collect(Collectors.toSet());
         PriorityQueue<Pair<TilePosition, Integer>> positionQueue = new PriorityQueue<>(
                 (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()) * -1);
