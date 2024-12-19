@@ -4,6 +4,8 @@ import java.util.Set;
 
 import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.ChooseCitiesAction;
+import hProjekt.controller.actions.ChooseRailsAction;
+import hProjekt.controller.actions.ConfirmDrive;
 import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
@@ -18,7 +20,7 @@ public enum PlayerObjective {
     ROLL_DICE(Set.of(RollDiceAction.class)),
     CHOOSE_CITIES(Set.of(ChooseCitiesAction.class)),
     DRIVE(Set.of(DriveAction.class)),
-    CHOOSE_PATH(Set.of()),
+    CHOOSE_PATH(Set.of(ChooseRailsAction.class, ConfirmDrive.class)),
     IDLE(Set.of());
 
     final Set<Class<? extends PlayerAction>> allowedActions;
