@@ -158,11 +158,14 @@ public class GameController {
         roundCounter.set(0);
         while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
             roundCounter.set(roundCounter.get() + 1);
+            getState().resetDrivingPlayers();
 
             if (roundCounter.get() % 3 == 0) {
                 getState().getPlayers().stream().sorted((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()))
                         .forEachOrdered((player) -> {
                             withActivePlayer(playerControllers.get(player), () -> {
+                                // must currently place one rail
+                                // TODO: Should fix
                                 getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
                             });
                         });
@@ -174,9 +177,13 @@ public class GameController {
                     });
 
             for (Player player : getState().getPlayers()) {
+                playerControllers.get(player).resetHasConfirmedPath();
+                playerControllers.get(player).resetHasPath();
                 getState().setPlayerPositon(player, getStartingCity().getPosition());
                 withActivePlayer(playerControllers.get(player), () -> {
-                    getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                    while (!getActivePlayerController().hasConfirmedPath()) {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                    }
                 });
             }
 
