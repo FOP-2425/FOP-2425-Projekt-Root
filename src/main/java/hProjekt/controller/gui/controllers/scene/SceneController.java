@@ -56,7 +56,7 @@ public interface SceneController extends Controller {
      * Loads the settings scene.
      */
     static void loadSettingsScene() {
-        System.out.println("Loading settings");
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.SETTINGS);
     }
 
     /**
