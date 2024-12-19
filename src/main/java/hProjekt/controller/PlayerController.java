@@ -113,7 +113,8 @@ public class PlayerController {
     @DoNotTouch
     private void updatePlayerState() {
         playerStateProperty
-                .setValue(new PlayerState(getBuildableRails(), getPlayerObjective()));
+                .setValue(new PlayerState(getBuildableRails(), getPlayerObjective(), getChooseableEdges(),
+                        getRentedEdges()));
     }
 
     /**
@@ -349,7 +350,8 @@ public class PlayerController {
         Set<Edge> builtEdges = getState().getGrid().getRails(player).values().stream().collect(Collectors.toSet());
         Set<Edge> chooseableEdges = new HashSet<>();
         chooseableEdges.addAll(builtEdges.stream()
-                .flatMap(edge -> edge.getConnectedEdges().stream().filter(e -> !e.getRailOwners().contains(player)))
+                .flatMap(edge -> edge.getConnectedEdges().stream().filter(Edge::hasRail)
+                        .filter(e -> !e.getRailOwners().contains(player)))
                 .distinct().toList());
 
         if (chooseableEdges.isEmpty()) {
@@ -361,6 +363,7 @@ public class PlayerController {
         while (!edgeQueue.isEmpty()) {
             final Pair<Edge, Integer> currentPair = edgeQueue.removeFirst();
             for (Edge edge : currentPair.getKey().getConnectedEdges().stream()
+                    .filter(Edge::hasRail)
                     .filter(edge -> !edge.getRailOwners().contains(player))
                     .filter(Predicate.not(chooseableEdges::contains)).toList()) {
                 int newDistance = currentPair.getValue() + 1;
@@ -379,6 +382,9 @@ public class PlayerController {
 
         if (chooseableEdges.isEmpty() || !chooseableEdges.containsAll(edges)) {
             throw new IllegalActionException("Cannot choose edges");
+        }
+        if (edges.size() > 10) {
+            throw new IllegalActionException("Cannot choose more than 10 edges");
         }
 
         Set<Edge> allAvailableEdges = List.of(chooseableEdges, edges).stream().flatMap(set -> set.stream())

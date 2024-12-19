@@ -15,5 +15,5 @@ import hProjekt.controller.PlayerObjective;
 @DoNotTouch
 public record PlayerState(
         Set<Edge> buildableRailEdges,
-        PlayerObjective playerObjective) {
+        PlayerObjective playerObjective, Set<Edge> choosableEdges, Set<Edge> rentedEdges) {
 }
