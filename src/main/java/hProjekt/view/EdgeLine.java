@@ -121,10 +121,16 @@ public class EdgeLine extends Line {
         init(0.1);
         outline.setStroke(Color.BLACK);
         outline.setStrokeWidth(strokeWidth * 1.6);
+        outline.setStrokeWidth(strokeWidth * 2);
         getStyleClass().add("selectable");
         getStrokeDashArray().add(10.0);
         setStrokeWidth(strokeWidth * 1.2);
         setOnMouseClicked(handler::accept);
+    }
+
+    public void selected(final Consumer<MouseEvent> deselectHandler) {
+        highlight(deselectHandler);
+        outline.setStroke(Color.WHITE);
     }
 
     /**
@@ -132,6 +138,7 @@ public class EdgeLine extends Line {
      */
     public void unhighlight() {
         outline.setStroke(Color.TRANSPARENT);
+        outline.setStrokeWidth(strokeWidth * 1.4);
         setOnMouseClicked(null);
         getStyleClass().remove("selectable");
         init();
