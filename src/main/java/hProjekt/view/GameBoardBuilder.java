@@ -18,13 +18,15 @@ public class GameBoardBuilder implements Builder<Region> {
     private Region gameInfoOverlay;
     private Region playerOverlay;
     private Region rollDiceOverlay;
+    private Region cityOverlay;
 
     public GameBoardBuilder(final Region map, final Region gameInfoOverlay, final Region playerOverlay,
-            final Region rollDiceOverlay, Consumer<ActionEvent> endButtonAction) {
+            final Region rollDiceOverlay, final Region cityOverlay, Consumer<ActionEvent> endButtonAction) {
         this.map = map;
         this.gameInfoOverlay = gameInfoOverlay;
         this.playerOverlay = playerOverlay;
         this.rollDiceOverlay = rollDiceOverlay;
+        this.cityOverlay = cityOverlay;
         this.endButtonAction = endButtonAction;
     }
 
@@ -62,24 +64,40 @@ public class GameBoardBuilder implements Builder<Region> {
         playerOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
         playerOverlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
 
+        VBox cityOverlayContainer = new VBox(cityOverlay);
+        cityOverlayContainer.setPadding(new Insets(10));
+        cityOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
+        cityOverlayContainer.setMaxWidth(playerOverlayContainer.getMaxWidth());
+        cityOverlayContainer.setPrefWidth(playerOverlayContainer.getPrefWidth());
+        cityOverlayContainer.setMinWidth(playerOverlayContainer.getPrefWidth());
+
         VBox gameInfoOverlayContainer = new VBox(gameInfoOverlay);
         gameInfoOverlayContainer.setPadding(new Insets(10));
         gameInfoOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
         gameInfoOverlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
 
+        VBox topLeftContainer = new VBox(10);
+        topLeftContainer.setPadding(new Insets(10));
+        topLeftContainer.setMaxWidth(Region.USE_PREF_SIZE);
+        topLeftContainer.setAlignment(Pos.TOP_LEFT);
+
+        // Füge beide Container hinzu
+        topLeftContainer.getChildren().addAll(playerOverlayContainer, cityOverlayContainer);
+
+
         // Root layout
         StackPane root = new StackPane();
-        root.getChildren().addAll(mapRoot, playerOverlayContainer, gameInfoOverlayContainer, rollDiceOverlay,
-                topRightContainer);
+        root.getChildren().addAll(mapRoot, topLeftContainer, gameInfoOverlayContainer, rollDiceOverlay,topRightContainer);
 
         // Position the overlays
-        StackPane.setAlignment(playerOverlayContainer, Pos.TOP_LEFT);
+        StackPane.setAlignment(topLeftContainer, Pos.TOP_LEFT);
         StackPane.setAlignment(gameInfoOverlayContainer, Pos.TOP_CENTER);
         StackPane.setAlignment(rollDiceOverlay, Pos.BOTTOM_CENTER);
-        StackPane.setAlignment(topRightContainer, Pos.TOP_RIGHT); // Fix alignment for the top-right container
+        StackPane.setAlignment(topRightContainer, Pos.TOP_RIGHT);
 
         // Allow the map to process mouse events when overlays don't consume them
         makeOverlayTransparentForMouseEvents(playerOverlayContainer);
+        makeOverlayTransparentForMouseEvents(cityOverlayContainer);
         makeOverlayTransparentForMouseEvents(gameInfoOverlayContainer);
         makeOverlayTransparentForMouseEvents(rollDiceOverlay);
         makeOverlayTransparentForMouseEvents(topRightContainer);

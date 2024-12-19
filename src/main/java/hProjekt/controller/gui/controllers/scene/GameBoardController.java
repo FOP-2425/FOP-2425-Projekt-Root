@@ -8,6 +8,7 @@ import hProjekt.controller.gui.controllers.PlayerActionsController;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import hProjekt.view.GameBoardBuilder;
+import hProjekt.view.menus.overlays.CityOverlayView;
 import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
@@ -23,6 +24,7 @@ public class GameBoardController implements SceneController {
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
     private final RollDiceOverlayView rollDiceOverlayView;
+    private final CityOverlayView cityOverlayView;
     private final GameState gameState;
 
     public GameBoardController(final GameState gameState,
@@ -32,11 +34,12 @@ public class GameBoardController implements SceneController {
         this.hexGridController = new HexGridController(gameState.getGrid());
         this.gameInfoOverlayView = new GameInfoOverlayView();
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
+        this.cityOverlayView = new CityOverlayView(gameState);
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
-                rollDiceOverlayView, event -> {
+                rollDiceOverlayView, cityOverlayView, event -> {
                     List<Player> players = gameState.getPlayers();
                     SceneController.loadEndScreenScene(players);
                 });
@@ -80,6 +83,12 @@ public class GameBoardController implements SceneController {
     public void updatePlayerInformation() {
         Platform.runLater(() -> {
             playerOverlayView.updatePlayerCredits(gameState.getPlayers());
+        });
+    }
+
+    public void updateCityOverlay(){
+        Platform.runLater(() ->{
+            cityOverlayView.updateCityList(true);
         });
     }
 
