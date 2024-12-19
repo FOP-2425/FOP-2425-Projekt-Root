@@ -56,6 +56,8 @@ public class PlayerController {
 
     private boolean hasPath = false;
 
+    private boolean hasConfirmedPath = false;
+
     /**
      * Creates a new {@link PlayerController} with the given {@link GameController}
      * and {@link Player}.
@@ -151,6 +153,22 @@ public class PlayerController {
      */
     public void setBuildingBudget(int amount) {
         buildingBudget = amount;
+    }
+
+    public boolean hasPath() {
+        return hasPath;
+    }
+
+    public void resetHasPath() {
+        this.hasPath = false;
+    }
+
+    public boolean hasConfirmedPath() {
+        return hasConfirmedPath;
+    }
+
+    public void resetHasConfirmedPath() {
+        this.hasConfirmedPath = false;
     }
 
     /**
@@ -412,6 +430,24 @@ public class PlayerController {
                 .collect(Collectors.toSet());
     }
 
+    private Set<Edge> getRentedEdges() {
+        return Collections.unmodifiableSet(rentedEdges);
+    }
+
+    public void confirmPath(boolean confirm) {
+        if (!confirm) {
+            hasConfirmedPath = false;
+            return;
+        }
+
+        hasConfirmedPath = true;
+        if (hasPath) {
+            getState().addDrivingPlayer(player);
+            return;
+        }
+        rentedEdges.clear();
+    }
+
     public boolean canDrive() {
         if (!getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
             return false;
@@ -478,5 +514,4 @@ public class PlayerController {
         }
         return drivableTiles;
     }
-
 }
