@@ -13,7 +13,8 @@
 }
 
 * {
-    -selected-color: crimson;
+    -selectable-color: gray;
+    -selected-color: white;
     -highlight-color: lime;
     -fx-font-family: "Roboto Merged Icons";
 }
@@ -34,12 +35,16 @@
 }
 
 .selectable {
-    -fx-stroke: -selected-color;
+    -fx-stroke: -selectable-color;
     -fx-border-color: transparent;
 }
 
+.selected {
+    -fx-stroke: -selected-color;
+}
+
 .hex-tile.selectable {
-    -fx-border-color: -selected-color;
+    -fx-border-color: -selectable-color;
 }
 
 .highlighted,
@@ -54,7 +59,7 @@
 
 .selectable.selected,
 .selectable:selected {
-    -fx-border-color: -selected-color;
+    -fx-border-color: -selectable-color;
 }
 
 .highlighted-label.label .text {

@@ -43,6 +43,7 @@ public class EdgeLine extends Line {
         getStrokeDashArray().subscribe(() -> {
             outline.getStrokeDashArray().setAll(getStrokeDashArray());
         });
+        setMouseTransparent(true);
     }
 
     /**
@@ -119,18 +120,21 @@ public class EdgeLine extends Line {
      */
     public void highlight(final Consumer<MouseEvent> handler) {
         init(0.1);
-        outline.setStroke(Color.BLACK);
+        outline.setStroke(Color.GRAY);
         outline.setStrokeWidth(strokeWidth * 1.6);
         outline.setStrokeWidth(strokeWidth * 2);
-        getStyleClass().add("selectable");
+        outline.getStyleClass().add("selectable");
         getStrokeDashArray().add(10.0);
-        setStrokeWidth(strokeWidth * 1.2);
-        setOnMouseClicked(handler::accept);
+        // setStrokeWidth(strokeWidth * 1.2);
+        outline.setOnMouseClicked(handler::accept);
     }
 
     public void selected(final Consumer<MouseEvent> deselectHandler) {
-        highlight(deselectHandler);
-        outline.setStroke(Color.WHITE);
+        highlight(event -> {
+            outline.getStyleClass().remove("selected");
+            deselectHandler.accept(event);
+        });
+        outline.getStyleClass().add("selected");
     }
 
     /**
@@ -139,8 +143,8 @@ public class EdgeLine extends Line {
     public void unhighlight() {
         outline.setStroke(Color.TRANSPARENT);
         outline.setStrokeWidth(strokeWidth * 1.4);
-        setOnMouseClicked(null);
-        getStyleClass().remove("selectable");
+        outline.setOnMouseClicked(null);
+        outline.getStyleClass().clear();
         init();
     }
 }
