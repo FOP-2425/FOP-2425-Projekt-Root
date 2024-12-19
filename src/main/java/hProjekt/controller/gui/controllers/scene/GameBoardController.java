@@ -9,7 +9,7 @@ import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import hProjekt.view.GameBoardBuilder;
-import hProjekt.view.menus.overlays.CityOverlayView;
+import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
@@ -27,7 +27,7 @@ public class GameBoardController implements SceneController {
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
     private final RollDiceOverlayView rollDiceOverlayView;
-    private final CityOverlayView spinCityOverlayView;
+    private final ChosenCitiesOverlayView chosenCitiesOverlayView;
     private final GameState gameState;
 
     public GameBoardController(final GameState gameState,
@@ -39,10 +39,10 @@ public class GameBoardController implements SceneController {
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
-        this.spinCityOverlayView = playerActionsController.getCityOverlayView();
+        this.chosenCitiesOverlayView = playerActionsController.getChosenCitiesOverlayView();
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
-                rollDiceOverlayView, spinCityOverlayView, event -> {
+                rollDiceOverlayView, chosenCitiesOverlayView, event -> {
                     List<Player> players = gameState.getPlayers();
                     SceneController.loadEndScreenScene(players);
                 });
@@ -77,7 +77,7 @@ public class GameBoardController implements SceneController {
                 return;
             }
             Platform.runLater(() -> {
-                spinCityOverlayView.spinCities(newValue.getKey().getName(), newValue.getValue().getName(),
+                chosenCitiesOverlayView.spinCities(newValue.getKey().getName(), newValue.getValue().getName(),
                         gameState.getGrid().getCities().values().stream().map(City::getName).toList());
             });
         });

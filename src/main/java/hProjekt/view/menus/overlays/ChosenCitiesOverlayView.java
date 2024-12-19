@@ -24,7 +24,7 @@ import javafx.util.Duration;
 /**
  * Overlay for selecting random cities (From -> To) with a spinning animation.
  */
-public class CityOverlayView extends StackPane {
+public class ChosenCitiesOverlayView extends StackPane {
 
     private final Label fromCityLabel;
     private final Label toCityLabel;
@@ -36,7 +36,7 @@ public class CityOverlayView extends StackPane {
      * @param chooseCitiesAction the action to execute when the Spin button is
      *                           clicked
      */
-    public CityOverlayView(final Consumer<ActionEvent> chooseCitiesAction) {
+    public ChosenCitiesOverlayView(final Consumer<ActionEvent> chooseCitiesAction) {
         // Configure the main container
         VBox container = new VBox(15); // Adjust spacing
         container.setAlignment(Pos.CENTER);
