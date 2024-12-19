@@ -1,5 +1,6 @@
 package hProjekt.view.menus.overlays;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +42,9 @@ public class CityOverlayView extends VBox {
         unvisitedButton.setToggleGroup(toggleGroup);
         visitedButton.setSelected(true); // Default selection
 
-        visitedButton.setStyle("-fx-background-radius: 15; -fx-padding: 5; -fx-font-size: 12; -fx-text-fill: black;");
-        unvisitedButton.setStyle("-fx-background-radius: 15; -fx-padding: 5; -fx-font-size: 12; -fx-text-fill: black;");
+        visitedButton.getStyleClass().add("toggle-button");
+        unvisitedButton.getStyleClass().add("toggle-button");
+
 
         HBox toggleContainer = new HBox(5, visitedButton, unvisitedButton);
         toggleContainer.setAlignment(Pos.CENTER);
@@ -53,11 +55,8 @@ public class CityOverlayView extends VBox {
         cityListContainer.setPadding(new Insets(10));
         cityListContainer.setAlignment(Pos.TOP_LEFT);
         this.getChildren().add(cityListContainer);
+        this.getStylesheets().add(getClass().getResource("/css/toggle.css").toExternalForm());
 
-        // Populate the initial list with visited cities
-        updateCityList(true);
-
-        // Add toggle button functionality
         visitedButton.setOnAction(e -> updateCityList(true));
         unvisitedButton.setOnAction(e -> updateCityList(false));
     }
@@ -76,7 +75,8 @@ public class CityOverlayView extends VBox {
     public void updateCityList(boolean showVisited) {
         cityListContainer.getChildren().clear();
 
-        Set<City> cities = showVisited ? gameState.getChosenCities() : gameState.getChosenCities();
+        Set<City> cities = showVisited ? gameState.getChosenCities() : gameState.getChosenCities(); // @Per: Bitte noch eine gameState.getUnchosenCities() implementieren (Städte, die noch nicht besucht wurden)
+
         for (City city : cities) {
             Label cityLabel = new Label(city.getName());
             cityLabel.setFont(new javafx.scene.text.Font("Arial", 14));

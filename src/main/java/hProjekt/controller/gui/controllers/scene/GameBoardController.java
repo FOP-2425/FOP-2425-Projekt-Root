@@ -59,6 +59,7 @@ public class GameBoardController implements SceneController {
             }
             Platform.runLater(() -> {
                 gameInfoOverlayView.setRound(newValue.intValue());
+                updateCityOverlay();
             });
         });
         diceRollProperty.subscribe((oldValue, newValue) -> {
@@ -88,6 +89,7 @@ public class GameBoardController implements SceneController {
 
     public void updateCityOverlay(){
         Platform.runLater(() ->{
+            System.out.println("Update City Overlay");
             cityOverlayView.updateCityList(true);
         });
     }
