@@ -11,6 +11,7 @@ import hProjekt.model.Player;
 import hProjekt.view.GameBoardBuilder;
 import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.CityOverlayView;
+import hProjekt.view.menus.overlays.ConfirmationOverlayView;
 import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
@@ -30,6 +31,7 @@ public class GameBoardController implements SceneController {
     private final RollDiceOverlayView rollDiceOverlayView;
     private final ChosenCitiesOverlayView chosenCitiesOverlayView;
     private final CityOverlayView cityOverlayView;
+    private final ConfirmationOverlayView confirmationOverlayView;
     private final GameState gameState;
 
     public GameBoardController(final GameState gameState,
@@ -40,12 +42,13 @@ public class GameBoardController implements SceneController {
         this.gameInfoOverlayView = new GameInfoOverlayView();
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
         this.cityOverlayView = new CityOverlayView(gameState);
+        this.confirmationOverlayView = new ConfirmationOverlayView("Are you sure aslkdjf alöksdj flaksj df", ()-> System.out.println("Yes clicked!"), ()->System.out.println("No clicked!"));
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
         this.chosenCitiesOverlayView = playerActionsController.getChosenCitiesOverlayView();
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
-                rollDiceOverlayView, chosenCitiesOverlayView, cityOverlayView, event -> {
+                rollDiceOverlayView, chosenCitiesOverlayView, cityOverlayView, confirmationOverlayView, event -> {
                     List<Player> players = gameState.getPlayers();
                     SceneController.loadEndScreenScene(players);
                 });
@@ -106,6 +109,14 @@ public class GameBoardController implements SceneController {
         Platform.runLater(() -> {
             System.out.println("Update City Overlay");
             cityOverlayView.updateCityList(true);
+        });
+    }
+
+    public void updateConfirmationOverlay(String message, Runnable onYesAction, Runnable onNoAction){
+        Platform.runLater(()->{
+            confirmationOverlayView.setMessage(message);
+            confirmationOverlayView.setOnYesAction(onYesAction);
+            confirmationOverlayView.setOnNoAction(onNoAction);
         });
     }
 
