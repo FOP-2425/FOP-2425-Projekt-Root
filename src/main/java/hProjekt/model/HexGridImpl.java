@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -300,5 +301,12 @@ public class HexGridImpl implements HexGrid {
                 .filter(entry -> edges.values().stream().filter(edge -> edge.hasRail())
                         .anyMatch(edge -> edge.getAdjacentTilePositions().contains(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    }
+
+    @Override
+    public Map<TilePosition, City> getUnconnectedCities() {
+        Set<TilePosition> cityPositions = new HashSet<>(cities.keySet());
+        cityPositions.removeAll(getConnectedCities().keySet());
+        return Collections.unmodifiableMap(cityPositions.stream().collect(Collectors.toMap(p -> p, cities::get)));
     }
 }

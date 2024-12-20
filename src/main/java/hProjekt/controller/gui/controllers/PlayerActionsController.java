@@ -1,5 +1,6 @@
 package hProjekt.controller.gui.controllers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
@@ -8,11 +9,13 @@ import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.PlayerObjective;
 import hProjekt.controller.actions.BuildRailAction;
+import hProjekt.controller.actions.ChooseCitiesAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
+import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -27,6 +30,7 @@ public class PlayerActionsController implements Controller {
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
     private Subscription playerStateSubscription = Subscription.EMPTY;
     private final RollDiceOverlayView rollDiceOverlayView;
+    private final ChosenCitiesOverlayView cityOverlayView;
     private final GameBoardController gameBoardController;
 
     /**
@@ -49,6 +53,7 @@ public class PlayerActionsController implements Controller {
             GameBoardController gameBoardController) {
         this.gameBoardController = gameBoardController;
         this.rollDiceOverlayView = new RollDiceOverlayView(this::rollDiceButtonAction);
+        this.cityOverlayView = new ChosenCitiesOverlayView(this::chooseCitiesButtonAction);
         this.playerControllerProperty.subscribe((oldValue, newValue) -> {
             Platform.runLater(() -> {
                 playerStateSubscription.unsubscribe();
@@ -92,6 +97,7 @@ public class PlayerActionsController implements Controller {
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
+        cityOverlayView.disableSpinButton();
         removeAllHighlights();
         updatePlayerInformation();
 
@@ -106,6 +112,9 @@ public class PlayerActionsController implements Controller {
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
         }
+        if (allowedActions.contains(ChooseCitiesAction.class)) {
+            cityOverlayView.enableSpinButton();
+        }
     }
 
     /**
@@ -114,6 +123,10 @@ public class PlayerActionsController implements Controller {
     @DoNotTouch
     private void updatePlayerInformation() {
         gameBoardController.updatePlayerInformation();
+    }
+
+    public void updateCityOverlay(String fromCity, String toCity, List<String> allCityNames) {
+        cityOverlayView.spinCities(fromCity, toCity, allCityNames);
     }
 
     /**
@@ -175,6 +188,10 @@ public class PlayerActionsController implements Controller {
         return rollDiceOverlayView;
     }
 
+    public ChosenCitiesOverlayView getChosenCitiesOverlayView() {
+        return cityOverlayView;
+    }
+
     /**
      * The action that is triggered when the roll dice button is clicked.
      *
@@ -183,6 +200,10 @@ public class PlayerActionsController implements Controller {
     @DoNotTouch
     public void rollDiceButtonAction(final ActionEvent event) {
         getPlayerController().triggerAction(new RollDiceAction());
+    }
+
+    public void chooseCitiesButtonAction(final ActionEvent event) {
+        getPlayerController().triggerAction(new ChooseCitiesAction());
     }
 
     public void updateBuildableEdges() {

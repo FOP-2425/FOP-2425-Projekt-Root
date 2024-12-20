@@ -16,8 +16,10 @@ import hProjekt.model.HexGridImpl;
 import hProjekt.model.Player;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.Pair;
 
 /**
  * The GameController class represents the controller for the game logic.
@@ -31,8 +33,7 @@ public class GameController {
     private final Supplier<Integer> dice;
     private final IntegerProperty currentDiceRoll = new SimpleIntegerProperty(0);
     private final IntegerProperty roundCounter = new SimpleIntegerProperty(0);
-    private City startingCity = null;
-    private City targetCity = null;
+    private final Property<Pair<City, City>> chosenCitiesProperty = new SimpleObjectProperty<>();
 
     private final Property<PlayerController> activePlayerController = new SimpleObjectProperty<>();
 
@@ -79,17 +80,34 @@ public class GameController {
         return roundCounter;
     }
 
+    public ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty() {
+        return chosenCitiesProperty;
+    }
+
     public City getStartingCity() {
-        return startingCity;
+        return chosenCitiesProperty.getValue().getKey();
     }
 
     public City getTargetCity() {
-        return targetCity;
+        return chosenCitiesProperty.getValue().getValue();
     }
 
     public int castDice() {
         currentDiceRoll.set(dice.get());
         return currentDiceRoll.get();
+    }
+
+    public void chooseCities() {
+        final List<City> tempCities = getState().getGrid().getCities().values().stream()
+                .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
+
+        City startingCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+        tempCities.remove(startingCity);
+        getState().addChosenCity(startingCity);
+        City targetCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+        getState().addChosenCity(targetCity);
+
+        chosenCitiesProperty.setValue(new Pair<>(startingCity, targetCity));
     }
 
     private void initPlayerControllers() {
@@ -150,16 +168,13 @@ public class GameController {
                         });
             }
 
-            final List<City> tempCities = getState().getGrid().getCities().values().stream()
-                    .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
-            startingCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
-            tempCities.remove(startingCity);
-            getState().addChosenCity(startingCity);
-            targetCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
-            getState().addChosenCity(targetCity);
+            withActivePlayer(playerControllers
+                    .get(getState().getPlayers().get((roundCounter.get() - 1) % state.getPlayers().size())), () -> {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_CITIES);
+                    });
 
             for (Player player : getState().getPlayers()) {
-                getState().setPlayerPositon(player, startingCity.getPosition());
+                getState().setPlayerPositon(player, getStartingCity().getPosition());
                 withActivePlayer(playerControllers.get(player), () -> {
                     getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
                 });

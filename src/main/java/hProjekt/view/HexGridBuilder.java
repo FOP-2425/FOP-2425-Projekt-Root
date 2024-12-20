@@ -1,5 +1,6 @@
 package hProjekt.view;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -7,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.IntBinaryOperator;
 import java.util.function.ToIntFunction;
 
+import hProjekt.controller.gui.controllers.PlayerAnimationController;
 import hProjekt.model.City;
 import hProjekt.model.HexGrid;
 import hProjekt.model.Tile;
@@ -20,6 +22,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.util.Builder;
 
 /**
@@ -110,6 +113,8 @@ public class HexGridBuilder implements Builder<Region> {
 
         edgeLines.forEach(this::placeEdge);
         hexGridPane.getChildren().addAll(cityBuilders.stream().map(this::placeCity).toList());
+
+        addPlayerAnimationDemo();
 
         final StackPane mapPane = new StackPane(hexGridPane);
         mapPane.getStylesheets().add("css/hexmap.css");
@@ -232,7 +237,42 @@ public class HexGridBuilder implements Builder<Region> {
      * @param position The position of the tile.
      * @return The point of the center.
      */
-    private Point2D calculatePositionCenterOffset(final TilePosition position) {
+    public Point2D calculatePositionCenterOffset(final TilePosition position) {
         return calculatePositionTranslationOffset(position).add(grid.getTileWidth() / 2, grid.getTileHeight() / 2);
     }
+
+    /**
+     * Adds a demo of the PlayerAnimationController for testing purposes.
+     */
+    private void addPlayerAnimationDemo() {
+
+        // PlayerAnimationController initialisieren
+        PlayerAnimationController animationController = new PlayerAnimationController(this, Color.BLUEVIOLET);
+
+        // Demo-Pfad basierend auf Koordinaten (TilePositionen)
+        List<TilePosition> demoPathPositions = List.of(
+                new TilePosition(0, 0),
+                new TilePosition(1, 0),
+                new TilePosition(1, -1),
+                new TilePosition(0, -1),
+                new TilePosition(-1, 0),
+                new TilePosition(0, 0),
+                new TilePosition(1, 0),
+                new TilePosition(1, -1),
+                new TilePosition(0, -1));
+
+        // Bestehende Tiles aus dem HexGrid suchen
+        List<Tile> demoPathTiles = demoPathPositions.stream()
+                .map(position -> grid.getTileAt(position)) // Holt das Tile anhand der Koordinaten
+                .filter(tile -> tile != null) // Sicherstellen, dass es nur existierende Tiles sind
+                .toList();
+
+        // Animation ausführen
+        animationController.animatePlayer(demoPathTiles);
+    }
+
+    public Pane getHexGridPane() {
+        return hexGridPane;
+    }
+
 }

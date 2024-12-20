@@ -84,17 +84,19 @@ public class SceneSwitcher {
             final GameBoardController controller = new GameBoardController(getInstance().gameController.getState(),
                     getInstance().gameController.activePlayerControllerProperty(),
                     getInstance().gameController.currentDiceRollProperty(),
-                    getInstance().gameController.roundCounterProperty());
+                    getInstance().gameController.roundCounterProperty(),
+                    getInstance().gameController.chosenCitiesProperty());
             getInstance().gameLoopStarter.accept(getInstance().gameController);
             return controller;
         }),
+
         MAIN_MENU(MainMenuSceneController::new),
         ABOUT(AboutSceneController::new),
         SETUP_GAME_MENU(() -> {
             getInstance().gameController = new GameController();
             return new SetupGameSceneController(getInstance().gameController.getState());
         }),
-        LEADERBOARD(LeaderboardSceneController::new), 
+        LEADERBOARD(LeaderboardSceneController::new),
         SETTINGS(SettingsSceneController::new);
 
         private final Supplier<SceneController> controller;

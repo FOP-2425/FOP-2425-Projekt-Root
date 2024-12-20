@@ -18,14 +18,17 @@ public class GameBoardBuilder implements Builder<Region> {
     private Region gameInfoOverlay;
     private Region playerOverlay;
     private Region rollDiceOverlay;
+    private Region spinCityOverlay;
     private Region cityOverlay;
 
     public GameBoardBuilder(final Region map, final Region gameInfoOverlay, final Region playerOverlay,
-            final Region rollDiceOverlay, final Region cityOverlay, Consumer<ActionEvent> endButtonAction) {
+            final Region rollDiceOverlay, final Region spinCityOverlay, final Region cityOverlay,
+            Consumer<ActionEvent> endButtonAction) {
         this.map = map;
         this.gameInfoOverlay = gameInfoOverlay;
         this.playerOverlay = playerOverlay;
         this.rollDiceOverlay = rollDiceOverlay;
+        this.spinCityOverlay = spinCityOverlay;
         this.cityOverlay = cityOverlay;
         this.endButtonAction = endButtonAction;
     }
@@ -87,13 +90,15 @@ public class GameBoardBuilder implements Builder<Region> {
 
         // Root layout
         StackPane root = new StackPane();
-        root.getChildren().addAll(mapRoot, topLeftContainer, gameInfoOverlayContainer, rollDiceOverlay,topRightContainer);
+        root.getChildren().addAll(mapRoot, topLeftContainer, gameInfoOverlayContainer, rollDiceOverlay, spinCityOverlay,
+                topRightContainer);
 
         // Position the overlays
         StackPane.setAlignment(topLeftContainer, Pos.TOP_LEFT);
         StackPane.setAlignment(gameInfoOverlayContainer, Pos.TOP_CENTER);
         StackPane.setAlignment(rollDiceOverlay, Pos.BOTTOM_CENTER);
         StackPane.setAlignment(topRightContainer, Pos.TOP_RIGHT);
+        StackPane.setAlignment(spinCityOverlay, Pos.BOTTOM_RIGHT);
 
         // Allow the map to process mouse events when overlays don't consume them
         makeOverlayTransparentForMouseEvents(playerOverlayContainer);
@@ -101,6 +106,7 @@ public class GameBoardBuilder implements Builder<Region> {
         makeOverlayTransparentForMouseEvents(gameInfoOverlayContainer);
         makeOverlayTransparentForMouseEvents(rollDiceOverlay);
         makeOverlayTransparentForMouseEvents(topRightContainer);
+        makeOverlayTransparentForMouseEvents(spinCityOverlay);
 
         return root;
     }

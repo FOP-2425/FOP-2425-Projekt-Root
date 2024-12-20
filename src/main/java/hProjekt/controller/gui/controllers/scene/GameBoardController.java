@@ -5,9 +5,11 @@ import java.util.List;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.gui.controllers.HexGridController;
 import hProjekt.controller.gui.controllers.PlayerActionsController;
+import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
 import hProjekt.view.GameBoardBuilder;
+import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.CityOverlayView;
 import hProjekt.view.menus.overlays.GameInfoOverlayView;
 import hProjekt.view.menus.overlays.PlayerOverlayView;
@@ -15,8 +17,10 @@ import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
+import javafx.util.Pair;
 
 public class GameBoardController implements SceneController {
     private final HexGridController hexGridController;
@@ -24,12 +28,13 @@ public class GameBoardController implements SceneController {
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
     private final RollDiceOverlayView rollDiceOverlayView;
+    private final ChosenCitiesOverlayView chosenCitiesOverlayView;
     private final CityOverlayView cityOverlayView;
     private final GameState gameState;
 
     public GameBoardController(final GameState gameState,
             final Property<PlayerController> activePlayerControllerProperty, final IntegerProperty diceRollProperty,
-            final IntegerProperty roundCounterProperty) {
+            final IntegerProperty roundCounterProperty, final ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty) {
         this.gameState = gameState;
         this.hexGridController = new HexGridController(gameState.getGrid());
         this.gameInfoOverlayView = new GameInfoOverlayView();
@@ -37,9 +42,10 @@ public class GameBoardController implements SceneController {
         this.cityOverlayView = new CityOverlayView(gameState);
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
+        this.chosenCitiesOverlayView = playerActionsController.getChosenCitiesOverlayView();
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
-                rollDiceOverlayView, cityOverlayView, event -> {
+                rollDiceOverlayView, chosenCitiesOverlayView, cityOverlayView, event -> {
                     List<Player> players = gameState.getPlayers();
                     SceneController.loadEndScreenScene(players);
                 });
@@ -70,6 +76,15 @@ public class GameBoardController implements SceneController {
                 rollDiceOverlayView.rollDice(newValue.intValue());
             });
         });
+        chosenCitiesProperty.subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+            Platform.runLater(() -> {
+                chosenCitiesOverlayView.spinCities(newValue.getKey().getName(), newValue.getValue().getName(),
+                        gameState.getGrid().getCities().values().stream().map(City::getName).toList());
+            });
+        });
     }
 
     /**
@@ -87,8 +102,8 @@ public class GameBoardController implements SceneController {
         });
     }
 
-    public void updateCityOverlay(){
-        Platform.runLater(() ->{
+    public void updateCityOverlay() {
+        Platform.runLater(() -> {
             System.out.println("Update City Overlay");
             cityOverlayView.updateCityList(true);
         });

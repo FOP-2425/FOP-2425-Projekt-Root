@@ -1,12 +1,18 @@
 package hProjekt.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import hProjekt.model.Edge;
 import hProjekt.model.EdgeImpl;
+import hProjekt.model.Player;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Line;
 
 /**
@@ -73,8 +79,31 @@ public class EdgeLine extends Line {
      */
     public void init(final double dashScale) {
         this.distance = new Point2D(getStartX(), getStartY()).distance(getEndX(), getEndY());
+        if (edge.hasRail()) {
+            final List<Player> railOwners = edge.getRailOwners().stream()
+                    .sorted((p1, p2) -> Integer.compare(p1.getID(), p2.getID())).toList();
+            double offset = 1.0 / railOwners.size();
+            List<Stop> stops = new ArrayList<>();
+            for (int i = 0; i < railOwners.size(); i++) {
+                final Player player = railOwners.get(i);
+                stops.addAll(
+                        List.of(new Stop(i * offset, player.getColor()),
+                                new Stop((i + 1) * offset - 0.02, player.getColor())));
+                if (i < railOwners.size() - 1) {
+                    stops.addAll(List.of(new Stop((i + 1) * offset - 0.02, Color.BLACK),
+                            new Stop((i + 1) * offset, Color.BLACK)));
+                }
+            }
+
+            LinearGradient lg1 = new LinearGradient(
+                    getStartX(), getStartY(), getEndX(), getEndY(),
+                    false,
+                    CycleMethod.NO_CYCLE, stops);
+            setStroke(lg1);
+        } else {
+            setStroke(Color.TRANSPARENT);
+        }
         setStrokeWidth(strokeWidth);
-        setStroke(edge.hasRail() ? edge.getRailOwners().getFirst().getColor() : Color.TRANSPARENT);
         setStrokeDashOffset(-positionOffset / 2);
         getStrokeDashArray().clear();
         getStrokeDashArray().add((distance - positionOffset) * dashScale);

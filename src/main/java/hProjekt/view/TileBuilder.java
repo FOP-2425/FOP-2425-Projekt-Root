@@ -28,7 +28,6 @@ public class TileBuilder implements Builder<Region> {
     public TileBuilder(final Tile tile) {
         this.tile = tile;
         styleAndSizeTile(pane);
-        // printComputedStyles(pane);
     }
 
     /**
@@ -43,19 +42,24 @@ public class TileBuilder implements Builder<Region> {
     @Override
     public Region build() {
         pane.getChildren().clear();
-        final VBox mainBox = new VBox();
-        final StackPane resourcePane = new StackPane();
 
-        mainBox.getChildren().addAll(resourcePane, createLabels());
+        final VBox mainBox = new VBox(5); // Add spacing between labels
         mainBox.setAlignment(Pos.CENTER);
+
+        final Label positionLabel = createPositionLabel();
+        final Label resourceLabel = createResourceLabel();
+
+        // Add labels for debugging
+        //mainBox.getChildren().addAll(positionLabel, resourceLabel);
         pane.getChildren().addAll(mainBox);
+
         return pane;
     }
 
     /**
-     * Styles and resizes the tile so it is rendered as a hexagon via css.
+     * Styles and resizes the tile so it is rendered as a hexagon via CSS.
      *
-     * @param stackPane
+     * @param stackPane the pane to style
      */
     private void styleAndSizeTile(final StackPane stackPane) {
         stackPane.getStylesheets().add("css/hexmap.css");
@@ -68,32 +72,37 @@ public class TileBuilder implements Builder<Region> {
     }
 
     /**
-     * Creates a VBox with labels for the position, resource and roll number of the
-     * tile.
+     * Creates a label displaying the tile's position in the format (q, r, s).
      *
-     * @return the created VBox
+     * @return the position label
      */
-    private VBox createLabels() {
-        final VBox labelBox = new VBox();
+    private Label createPositionLabel() {
         final Label positionLabel = new Label(tile.getPosition().toString());
-        positionLabel.getStyleClass().add("highlighted-label");
-        positionLabel.setFont(new Font(4));
-        final Label resourceLabel = new Label(tile.getType().toString());
-        resourceLabel.getStyleClass().add("highlighted-label");
-        // labelBox.getChildren().addAll(positionLabel);
+        positionLabel.setFont(new Font("Arial", 12));
+        positionLabel.getStyleClass().add("tile-position-label");
+        return positionLabel;
+    }
 
-        labelBox.setAlignment(Pos.CENTER);
-        return labelBox;
+    /**
+     * Creates a label displaying the tile's type (e.g., PLAIN, MOUNTAIN).
+     *
+     * @return the resource label
+     */
+    private Label createResourceLabel() {
+        final Label resourceLabel = new Label(tile.getType().toString());
+        resourceLabel.setFont(new Font("Arial", 12));
+        resourceLabel.getStyleClass().add("tile-resource-label");
+        return resourceLabel;
     }
 
     /**
      * Highlights the tile and sets a handler for mouse clicks.
      *
-     * @param hanlder the handler to call when the tile is clicked
+     * @param handler the handler to call when the tile is clicked
      */
-    public void highlight(final Runnable hanlder) {
+    public void highlight(final Runnable handler) {
         pane.getStyleClass().add("selectable");
-        pane.setOnMouseClicked(e -> hanlder.run());
+        pane.setOnMouseClicked(e -> handler.run());
     }
 
     /**

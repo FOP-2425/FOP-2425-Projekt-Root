@@ -16,15 +16,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Builder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
- * Builder for the Leaderboard view. 
- * It creates the UI for displaying leaderboard entries and provides functionality for returning to the main menu.
+ * Builder for the Leaderboard view.
+ * It creates the UI for displaying leaderboard entries and provides
+ * functionality for returning to the main menu.
  */
 public class LeaderboardBuilder implements Builder<Region> {
 
@@ -32,15 +27,17 @@ public class LeaderboardBuilder implements Builder<Region> {
 
     /**
      * Constructor for the LeaderboardBuilder.
-     * 
-     * @param loadMainMenuAction A {@link Runnable} to handle navigation back to the main menu.
+     *
+     * @param loadMainMenuAction A {@link Runnable} to handle navigation back to the
+     *                           main menu.
      */
     public LeaderboardBuilder(Runnable loadMainMenuAction) {
         this.loadMainMenuAction = loadMainMenuAction;
     }
 
     /**
-     * Builds the leaderboard view with a title, table of entries, and a back button.
+     * Builds the leaderboard view with a title, table of entries, and a back
+     * button.
      *
      * @return The constructed leaderboard view as a {@link Region}.
      */
@@ -59,7 +56,8 @@ public class LeaderboardBuilder implements Builder<Region> {
         TableView<LeaderboardEntry> tableView = new TableView<>();
         tableView.getStyleClass().add("leaderboard-table");
         setupTableColumns(tableView);
-        ObservableList<LeaderboardEntry> entries = FXCollections.observableArrayList(LeaderboardController.loadLeaderboardData());
+        ObservableList<LeaderboardEntry> entries = FXCollections
+                .observableArrayList(LeaderboardController.loadLeaderboardData());
         tableView.setItems(entries);
 
         // VBox to center content (title and table)
