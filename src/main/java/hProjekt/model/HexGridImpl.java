@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -308,5 +309,11 @@ public class HexGridImpl implements HexGrid {
         Set<TilePosition> cityPositions = new HashSet<>(cities.keySet());
         cityPositions.removeAll(getConnectedCities().keySet());
         return Collections.unmodifiableMap(cityPositions.stream().collect(Collectors.toMap(p -> p, cities::get)));
+    }
+
+    @Override
+    public Map<TilePosition, City> getStartingCities() {
+        return getCities().values().stream().filter(City::isStartingCity)
+                .collect(Collectors.toMap(City::getPosition, Function.identity()));
     }
 }
