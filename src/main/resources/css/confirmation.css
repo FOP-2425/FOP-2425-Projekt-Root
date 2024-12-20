@@ -13,7 +13,7 @@
     -fx-text-fill: white;
     -fx-font-size: 14;
     -fx-padding: 5 15;
-    -fx-background-radius: 20;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 4, 0, 0, 2);
 }
@@ -31,7 +31,7 @@
     -fx-text-fill: white;
     -fx-font-size: 14;
     -fx-padding: 5 15;
-    -fx-background-radius: 20;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 4, 0, 0, 2);
 }
