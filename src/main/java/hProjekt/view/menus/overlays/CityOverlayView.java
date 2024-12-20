@@ -1,8 +1,8 @@
 package hProjekt.view.menus.overlays;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import hProjekt.model.City;
 import hProjekt.model.GameState;
@@ -45,7 +45,6 @@ public class CityOverlayView extends VBox {
         visitedButton.getStyleClass().add("toggle-button");
         unvisitedButton.getStyleClass().add("toggle-button");
 
-
         HBox toggleContainer = new HBox(5, visitedButton, unvisitedButton);
         toggleContainer.setAlignment(Pos.CENTER);
         this.getChildren().add(toggleContainer);
@@ -75,7 +74,9 @@ public class CityOverlayView extends VBox {
     public void updateCityList(boolean showVisited) {
         cityListContainer.getChildren().clear();
 
-        Set<City> cities = showVisited ? gameState.getChosenCities() : gameState.getChosenCities(); // @Per: Bitte noch eine gameState.getUnchosenCities() implementieren (Städte, die noch nicht besucht wurden)
+        Set<City> cities = showVisited ? gameState.getChosenCities()
+                : gameState.getGrid().getCities().values().stream().filter(Predicate.not(
+                        gameState.getChosenCities()::contains)).collect(Collectors.toSet());
 
         for (City city : cities) {
             Label cityLabel = new Label(city.getName());
