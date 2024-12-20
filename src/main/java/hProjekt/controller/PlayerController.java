@@ -383,7 +383,7 @@ public class PlayerController {
         if (chooseableEdges.isEmpty() || !chooseableEdges.containsAll(edges)) {
             throw new IllegalActionException("Cannot choose edges");
         }
-        if (edges.size() > 10) {
+        if (edges.size() > Config.MAX_RENTABLE_DISTANCE) {
             throw new IllegalActionException("Cannot choose more than 10 edges");
         }
 

@@ -86,7 +86,9 @@ public class Config {
     /**
      * The scale of the map, bigger values mean a bigger map.
      */
-    public static int MAP_SCALE = 15;
+    public static int MAP_SCALE = 5;
+
+    public static int MAX_RENTABLE_DISTANCE = 10;
 
     public static Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_BUILDING_COST = Map.of(
             Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 3,
