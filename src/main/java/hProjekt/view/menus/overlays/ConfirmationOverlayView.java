@@ -19,34 +19,18 @@ public class ConfirmationOverlayView extends VBox {
 
     public ConfirmationOverlayView(String initialMessage, Runnable onYesAction, Runnable onNoAction) {
         configureOverlayStyle();
-
+        this.getStylesheets().add(ConfirmationOverlayView.class.getResource("/css/confirmation.css").toExternalForm());
         // Label for the message
         messageLabel = new Label(initialMessage);
-        messageLabel.setFont(new javafx.scene.text.Font("Arial", 14));
-        messageLabel.setTextFill(Color.WHITE);
+        messageLabel.getStyleClass().add("label-message");
         this.getChildren().add(messageLabel);
 
         // Buttons for "Yes" and "No"
         yesButton = new Button("Yes");
+        yesButton.getStyleClass().add("button-yes");
         noButton = new Button("No");
+        noButton.getStyleClass().add("button-no");
 
-        yesButton.setStyle(
-            "-fx-background-color: #4CAF50; " +
-            "-fx-text-fill: white; " +
-            "-fx-font-size: 14; " +
-            "-fx-padding: 5 15; " +
-            "-fx-background-radius: 20; " +  // Eckenradius
-            "-fx-cursor: hand;"
-        );
-        
-        noButton.setStyle(
-            "-fx-background-color: #F44336; " +
-            "-fx-text-fill: white; " +
-            "-fx-font-size: 14; " +
-            "-fx-padding: 5 15; " +
-            "-fx-background-radius: 20; " +  // Eckenradius
-            "-fx-cursor: hand;"
-        );
         
         // Add actions to buttons
         yesButton.setOnAction(event -> {
