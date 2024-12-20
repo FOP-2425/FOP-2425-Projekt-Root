@@ -2,36 +2,45 @@ package hProjekt.controller.gui.controllers;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
+import hProjekt.Config;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.PlayerObjective;
 import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.ChooseCitiesAction;
+import hProjekt.controller.actions.ChooseRailsAction;
+import hProjekt.controller.actions.ConfirmDrive;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
+import hProjekt.model.Edge;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
 import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
+import javafx.beans.property.SetProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleSetProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.scene.layout.Region;
-import javafx.util.Builder;
 import javafx.util.Subscription;
 
-public class PlayerActionsController implements Controller {
+public class PlayerActionsController {
     private final Property<PlayerController> playerControllerProperty = new SimpleObjectProperty<>();
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
     private Subscription playerStateSubscription = Subscription.EMPTY;
     private final RollDiceOverlayView rollDiceOverlayView;
     private final ChosenCitiesOverlayView cityOverlayView;
     private final GameBoardController gameBoardController;
+    private final SetProperty<Edge> selectedEdges = new SimpleSetProperty<>(FXCollections.observableSet());
+    private Subscription selectedEdgesSubscription = Subscription.EMPTY;
 
     /**
      * Creates a new PlayerActionsController.
@@ -100,6 +109,7 @@ public class PlayerActionsController implements Controller {
         cityOverlayView.disableSpinButton();
         removeAllHighlights();
         updatePlayerInformation();
+        selectedEdgesSubscription.unsubscribe();
 
         if (getPlayer().isAi()) {
             return;
@@ -114,6 +124,29 @@ public class PlayerActionsController implements Controller {
         }
         if (allowedActions.contains(ChooseCitiesAction.class)) {
             cityOverlayView.enableSpinButton();
+        }
+        if (allowedActions.contains(ChooseRailsAction.class)) {
+            selectedEdges.clear();
+            updateChooseableEdges();
+            selectedEdgesSubscription = selectedEdges.subscribe((oldValue, newValue) -> {
+                if (newValue == null) {
+                    return;
+                }
+                if (newValue.size() >= Config.MAX_RENTABLE_DISTANCE) {
+                    getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
+                            .map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
+                            .forEach(ec -> ec.unhighlight());
+                    return;
+                }
+                System.out.println("oldValue: " + oldValue.size() + " newValue: " + newValue.size());
+
+                if (oldValue.size() >= Config.MAX_RENTABLE_DISTANCE && newValue.size() < Config.MAX_RENTABLE_DISTANCE) {
+                    System.out.println("TEST");
+                    updateChooseableEdges(
+                            getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
+                                    .collect(Collectors.toSet()));
+                }
+            });
         }
     }
 
@@ -214,10 +247,30 @@ public class PlayerActionsController implements Controller {
                         }));
     }
 
-    @Override
-    public Builder<Region> getBuilder() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBuilder'");
+    private void chooseEdgeHandler(EdgeController ec) {
+        ec.highlight(event -> {
+            selectedEdges.add(ec.getEdge());
+            ec.selected(event2 -> {
+                selectedEdges.remove(ec.getEdge());
+                chooseEdgeHandler(ec);
+            });
+        });
     }
 
+    public void updateChooseableEdges() {
+        updateChooseableEdges(getPlayerState().choosableEdges());
+    }
+
+    private void updateChooseableEdges(Set<Edge> edges) {
+        edges.stream().map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
+                .forEach(this::chooseEdgeHandler);
+    }
+
+    public void confirmSelectedRails() {
+        getPlayerController().triggerAction(new ChooseRailsAction(selectedEdges.getValue()));
+    }
+
+    public void confirmDrive(boolean accept) {
+        getPlayerController().triggerAction(new ConfirmDrive(accept));
+    }
 }
