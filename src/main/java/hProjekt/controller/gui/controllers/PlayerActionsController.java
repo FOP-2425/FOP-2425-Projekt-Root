@@ -15,7 +15,7 @@ import hProjekt.controller.actions.RollDiceAction;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
-import hProjekt.view.menus.overlays.CityOverlayView;
+import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -30,7 +30,7 @@ public class PlayerActionsController implements Controller {
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
     private Subscription playerStateSubscription = Subscription.EMPTY;
     private final RollDiceOverlayView rollDiceOverlayView;
-    private final CityOverlayView cityOverlayView;
+    private final ChosenCitiesOverlayView cityOverlayView;
     private final GameBoardController gameBoardController;
 
     /**
@@ -53,7 +53,7 @@ public class PlayerActionsController implements Controller {
             GameBoardController gameBoardController) {
         this.gameBoardController = gameBoardController;
         this.rollDiceOverlayView = new RollDiceOverlayView(this::rollDiceButtonAction);
-        this.cityOverlayView = new CityOverlayView(this::chooseCitiesButtonAction);
+        this.cityOverlayView = new ChosenCitiesOverlayView(this::chooseCitiesButtonAction);
         this.playerControllerProperty.subscribe((oldValue, newValue) -> {
             Platform.runLater(() -> {
                 playerStateSubscription.unsubscribe();
@@ -188,7 +188,7 @@ public class PlayerActionsController implements Controller {
         return rollDiceOverlayView;
     }
 
-    public CityOverlayView getCityOverlayView() {
+    public ChosenCitiesOverlayView getChosenCitiesOverlayView() {
         return cityOverlayView;
     }
 

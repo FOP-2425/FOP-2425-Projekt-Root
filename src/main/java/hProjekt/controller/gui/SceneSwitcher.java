@@ -13,6 +13,7 @@ import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.controller.gui.controllers.scene.LeaderboardSceneController;
 import hProjekt.controller.gui.controllers.scene.MainMenuSceneController;
 import hProjekt.controller.gui.controllers.scene.SceneController;
+import hProjekt.controller.gui.controllers.scene.SettingsSceneController;
 import hProjekt.controller.gui.controllers.scene.SetupGameSceneController;
 import hProjekt.model.Player;
 import javafx.application.Platform;
@@ -88,13 +89,15 @@ public class SceneSwitcher {
             getInstance().gameLoopStarter.accept(getInstance().gameController);
             return controller;
         }),
+
         MAIN_MENU(MainMenuSceneController::new),
         ABOUT(AboutSceneController::new),
         SETUP_GAME_MENU(() -> {
             getInstance().gameController = new GameController();
             return new SetupGameSceneController(getInstance().gameController.getState());
         }),
-        LEADERBOARD(LeaderboardSceneController::new);
+        LEADERBOARD(LeaderboardSceneController::new),
+        SETTINGS(SettingsSceneController::new);
 
         private final Supplier<SceneController> controller;
 
