@@ -30,10 +30,24 @@ public class ConfirmationOverlayView extends VBox {
         yesButton = new Button("Yes");
         noButton = new Button("No");
 
-        // Style the buttons
-        yesButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 5 15;");
-        noButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 5 15;");
-
+        yesButton.setStyle(
+            "-fx-background-color: #4CAF50; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-size: 14; " +
+            "-fx-padding: 5 15; " +
+            "-fx-background-radius: 20; " +  // Eckenradius
+            "-fx-cursor: hand;"
+        );
+        
+        noButton.setStyle(
+            "-fx-background-color: #F44336; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-size: 14; " +
+            "-fx-padding: 5 15; " +
+            "-fx-background-radius: 20; " +  // Eckenradius
+            "-fx-cursor: hand;"
+        );
+        
         // Add actions to buttons
         yesButton.setOnAction(event -> {
             if (onYesAction != null) {
