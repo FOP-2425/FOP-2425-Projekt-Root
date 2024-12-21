@@ -58,7 +58,7 @@ public class ChosenCitiesOverlayView extends StackPane {
         fromCityLabel = new Label("???");
         fromCityLabel.setTextFill(Color.WHITE);
         fromCityLabel.setFont(new Font("Arial", 14));
-        fromCityLabel.setStyle("-fx-background-color: #333; -fx-padding: 5px; -fx-background-radius: 5px;");
+        fromCityLabel.setStyle("-fx-background-color: #2b2b3a; -fx-padding: 5px; -fx-background-radius: 5px;");
         fromCityLabel.setMinWidth(120);
         fromCityLabel.setAlignment(Pos.CENTER);
 
@@ -70,7 +70,7 @@ public class ChosenCitiesOverlayView extends StackPane {
         toCityLabel = new Label("???");
         toCityLabel.setTextFill(Color.WHITE);
         toCityLabel.setFont(new Font("Arial", 14));
-        toCityLabel.setStyle("-fx-background-color: #333; -fx-padding: 5px; -fx-background-radius: 5px;");
+        toCityLabel.setStyle("-fx-background-color: #2b2b3a; -fx-padding: 5px; -fx-background-radius: 5px;");
         toCityLabel.setMinWidth(120);
         toCityLabel.setAlignment(Pos.CENTER);
 
