@@ -2,6 +2,7 @@ package hProjekt.view;
 
 import java.util.function.Consumer;
 
+import hProjekt.view.menus.overlays.ConfirmationOverlayView;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,9 +21,10 @@ public class GameBoardBuilder implements Builder<Region> {
     private Region rollDiceOverlay;
     private Region spinCityOverlay;
     private Region cityOverlay;
+    private Region confirmationOverlay;
 
     public GameBoardBuilder(final Region map, final Region gameInfoOverlay, final Region playerOverlay,
-            final Region rollDiceOverlay, final Region spinCityOverlay, final Region cityOverlay,
+            final Region rollDiceOverlay, final Region spinCityOverlay, final Region cityOverlay, final Region confirmationOverlay,
             Consumer<ActionEvent> endButtonAction) {
         this.map = map;
         this.gameInfoOverlay = gameInfoOverlay;
@@ -30,6 +32,7 @@ public class GameBoardBuilder implements Builder<Region> {
         this.rollDiceOverlay = rollDiceOverlay;
         this.spinCityOverlay = spinCityOverlay;
         this.cityOverlay = cityOverlay;
+        this.confirmationOverlay = confirmationOverlay;
         this.endButtonAction = endButtonAction;
     }
 
@@ -70,9 +73,15 @@ public class GameBoardBuilder implements Builder<Region> {
         VBox cityOverlayContainer = new VBox(cityOverlay);
         cityOverlayContainer.setPadding(new Insets(10));
         cityOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
-        cityOverlayContainer.setMaxWidth(playerOverlayContainer.getMaxWidth());
-        cityOverlayContainer.setPrefWidth(playerOverlayContainer.getPrefWidth());
-        cityOverlayContainer.setMinWidth(playerOverlayContainer.getPrefWidth());
+        cityOverlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
+
+
+        VBox confirmationOverlayContainer = new VBox(confirmationOverlay);
+        confirmationOverlayContainer.setPadding(new Insets(10));
+        confirmationOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
+        confirmationOverlayContainer.setMaxWidth(playerOverlayContainer.getMaxWidth());
+        confirmationOverlayContainer.setPrefWidth(playerOverlayContainer.getPrefWidth());
+        confirmationOverlayContainer.setMinWidth(playerOverlayContainer.getPrefWidth());
 
         VBox gameInfoOverlayContainer = new VBox(gameInfoOverlay);
         gameInfoOverlayContainer.setPadding(new Insets(10));
@@ -90,7 +99,7 @@ public class GameBoardBuilder implements Builder<Region> {
         // Root layout
         StackPane root = new StackPane();
         root.getChildren().addAll(mapRoot, topLeftContainer, gameInfoOverlayContainer, rollDiceOverlay, spinCityOverlay,
-                topRightContainer);
+               confirmationOverlayContainer, topRightContainer);
 
         // Position the overlays
         StackPane.setAlignment(topLeftContainer, Pos.TOP_LEFT);
@@ -98,6 +107,7 @@ public class GameBoardBuilder implements Builder<Region> {
         StackPane.setAlignment(rollDiceOverlay, Pos.BOTTOM_CENTER);
         StackPane.setAlignment(topRightContainer, Pos.TOP_RIGHT);
         StackPane.setAlignment(spinCityOverlay, Pos.BOTTOM_RIGHT);
+        StackPane.setAlignment(confirmationOverlayContainer, Pos.BOTTOM_LEFT); // Change to BOTTOM_CENTER
 
         // Allow the map to process mouse events when overlays don't consume them
         makeOverlayTransparentForMouseEvents(playerOverlayContainer);
@@ -106,6 +116,7 @@ public class GameBoardBuilder implements Builder<Region> {
         makeOverlayTransparentForMouseEvents(rollDiceOverlay);
         makeOverlayTransparentForMouseEvents(topRightContainer);
         makeOverlayTransparentForMouseEvents(spinCityOverlay);
+        makeOverlayTransparentForMouseEvents(confirmationOverlayContainer);
 
         return root;
     }
