@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
@@ -24,6 +25,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.util.Pair;
 
 /**
  * Default implementation of {@link HexGrid}.
@@ -315,5 +317,48 @@ public class HexGridImpl implements HexGrid {
     public Map<TilePosition, City> getStartingCities() {
         return getCities().values().stream().filter(City::isStartingCity)
                 .collect(Collectors.toMap(City::getPosition, Function.identity()));
+    }
+
+    @Override
+    public Set<Edge> findPath(TilePosition start, TilePosition target, Set<Edge> availableEdges,
+            Function<Edge, Integer> edgeCostFunction) {
+        PriorityQueue<Pair<TilePosition, Integer>> positionQueue = new PriorityQueue<>(
+                (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()) * -1);
+        Map<TilePosition, TilePosition> previous = new HashMap<>();
+        Map<TilePosition, Integer> distance = new HashMap<>();
+        positionQueue.add(new Pair<>(start, 0));
+        previous.put(start, start);
+        distance.put(start, 0);
+
+        while (!positionQueue.isEmpty()) {
+            TilePosition current = positionQueue.poll().getKey();
+            if (current.equals(target)) {
+                break;
+            }
+            for (TilePosition next : getTileAt(current).getConnectedNeighbours(availableEdges).stream()
+                    .map(Tile::getPosition).toList()) {
+                int newDistance = distance.get(current)
+                        + edgeCostFunction.apply(getEdge(next, current));
+                if (!distance.containsKey(next) || newDistance < distance.get(next)) {
+                    distance.put(next, newDistance);
+                    previous.put(next, current);
+                    positionQueue.add(new Pair<>(next, newDistance));
+                }
+            }
+        }
+
+        if (!previous.containsKey(target)) {
+            return Set.of();
+        }
+
+        TilePosition current = target;
+        Set<Edge> pathEdges = new HashSet<>();
+
+        while (!current.equals(start)) {
+            TilePosition previousPosition = previous.get(current);
+            pathEdges.add(getEdge(previousPosition, current));
+            current = previousPosition;
+        }
+        return pathEdges;
     }
 }

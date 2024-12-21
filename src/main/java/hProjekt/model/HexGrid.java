@@ -2,6 +2,7 @@ package hProjekt.model;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -152,4 +153,17 @@ public interface HexGrid {
      * @return all rails of the given player
      */
     Map<Set<TilePosition>, Edge> getRails(Player player);
+
+    /**
+     * Finds the shortest path between start and end using the available edges and
+     * the edgeCostFunction.
+     *
+     * @param start            the start position
+     * @param end              the end position
+     * @param availabeEdges    the edges to search for the path
+     * @param edgeCostFunction the function to calculate the cost of an edge
+     * @return the shortest path between start and end
+     */
+    Set<Edge> findPath(TilePosition start, TilePosition end, Set<Edge> availabeEdges,
+            Function<Edge, Integer> edgeCostFunction);
 }
