@@ -25,10 +25,10 @@ import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
-import javafx.beans.property.SetProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleSetProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.event.ActionEvent;
 import javafx.util.Subscription;
 
@@ -39,8 +39,21 @@ public class PlayerActionsController {
     private final RollDiceOverlayView rollDiceOverlayView;
     private final ChosenCitiesOverlayView cityOverlayView;
     private final GameBoardController gameBoardController;
-    private final SetProperty<Edge> selectedEdges = new SimpleSetProperty<>(FXCollections.observableSet());
-    private Subscription selectedEdgesSubscription = Subscription.EMPTY;
+    private final ObservableSet<Edge> selectedEdges = FXCollections.observableSet();
+    private final SetChangeListener<Edge> selctedEdgesListener = (change) -> {
+        if (change.wasAdded() && change.getSet().size() >= Config.MAX_RENTABLE_DISTANCE) {
+            getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
+                    .map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
+                    .forEach(ec -> ec.unhighlight());
+            return;
+        }
+
+        if (change.wasRemoved() && change.getSet().size() == Config.MAX_RENTABLE_DISTANCE - 1) {
+            updateChooseableEdges(
+                    getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
+                            .collect(Collectors.toSet()));
+        }
+    };
 
     /**
      * Creates a new PlayerActionsController.
@@ -109,7 +122,7 @@ public class PlayerActionsController {
         cityOverlayView.disableSpinButton();
         removeAllHighlights();
         updatePlayerInformation();
-        selectedEdgesSubscription.unsubscribe();
+        selectedEdges.removeListener(selctedEdgesListener);
 
         if (getPlayer().isAi()) {
             return;
@@ -128,25 +141,7 @@ public class PlayerActionsController {
         if (allowedActions.contains(ChooseRailsAction.class)) {
             selectedEdges.clear();
             updateChooseableEdges();
-            selectedEdgesSubscription = selectedEdges.subscribe((oldValue, newValue) -> {
-                if (newValue == null) {
-                    return;
-                }
-                if (newValue.size() >= Config.MAX_RENTABLE_DISTANCE) {
-                    getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
-                            .map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
-                            .forEach(ec -> ec.unhighlight());
-                    return;
-                }
-                System.out.println("oldValue: " + oldValue.size() + " newValue: " + newValue.size());
-
-                if (oldValue.size() >= Config.MAX_RENTABLE_DISTANCE && newValue.size() < Config.MAX_RENTABLE_DISTANCE) {
-                    System.out.println("TEST");
-                    updateChooseableEdges(
-                            getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
-                                    .collect(Collectors.toSet()));
-                }
-            });
+            selectedEdges.addListener(selctedEdgesListener);
         }
     }
 
@@ -267,7 +262,7 @@ public class PlayerActionsController {
     }
 
     public void confirmSelectedRails() {
-        getPlayerController().triggerAction(new ChooseRailsAction(selectedEdges.getValue()));
+        getPlayerController().triggerAction(new ChooseRailsAction(selectedEdges));
     }
 
     public void confirmDrive(boolean accept) {
