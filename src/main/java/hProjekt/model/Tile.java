@@ -1,8 +1,6 @@
 package hProjekt.model;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -58,12 +56,15 @@ public interface Tile {
      *
      * @return all neighbours of this tile
      */
-    default Set<Tile> getNeighbours() {
-        return getHexGrid().getTiles().entrySet().stream()
-                .filter(entrySet -> TilePosition.neighbours(getPosition()).contains(entrySet.getKey()))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toSet());
-    }
+    Set<Tile> getNeighbours();
+
+    /**
+     * Returns all neighbouring tiles connected by the given edges.
+     *
+     * @param connectingEdges the edges connecting the tiles
+     * @return all neighbouring tiles connected by the given edges
+     */
+    Set<Tile> getConnectedNeighbours(Set<Edge> connectingEdges);
 
     /**
      * Returns the tile next in the given direction.
@@ -71,18 +72,14 @@ public interface Tile {
      * @param direction the direction of the edge
      * @return the neighbouring tile
      */
-    default Tile getNeighbour(final EdgeDirection direction) {
-        return getHexGrid().getTileAt(TilePosition.neighbour(getPosition(), direction));
-    }
+    Tile getNeighbour(final EdgeDirection direction);
 
     /**
      * Returns whether this tile is at the coast.
      *
      * @return whether this tile is at the coast
      */
-    default boolean isAtCaost() {
-        return getNeighbours().size() < 6;
-    }
+    boolean isAtCaost();
 
     /**
      * Returns the edge in the given direction.
