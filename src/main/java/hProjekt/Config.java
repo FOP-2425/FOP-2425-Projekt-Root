@@ -28,9 +28,9 @@ public class Config {
     public static int NUMBER_OF_STARTING_CITIES = 3;
 
     /**
-     * The number of cities on the board.
+     * The number of cities on the board. Needs to divisible by 2.
      */
-    public static int NUMBER_OF_CITIES = (DICE_SIDES * DICE_SIDES) - NUMBER_OF_STARTING_CITIES;
+    public static int NUMBER_OF_CITIES = 10;
 
     /**
      * The base probability of a city being generated on a tile.
