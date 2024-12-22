@@ -182,6 +182,7 @@ public class GameController {
                 withActivePlayer(playerControllers.get(player), () -> {
                     while (!getActivePlayerController().hasConfirmedPath()) {
                         getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                        getActivePlayerController().waitForNextAction(PlayerObjective.CONFIRM_PATH);
                     }
                 });
             }
