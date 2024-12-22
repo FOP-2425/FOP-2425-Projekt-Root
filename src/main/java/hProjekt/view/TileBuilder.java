@@ -50,7 +50,7 @@ public class TileBuilder implements Builder<Region> {
         final Label resourceLabel = createResourceLabel();
 
         // Add labels for debugging
-        //mainBox.getChildren().addAll(positionLabel, resourceLabel);
+        // mainBox.getChildren().addAll(positionLabel, resourceLabel);
         pane.getChildren().addAll(mainBox);
 
         return pane;
@@ -101,7 +101,7 @@ public class TileBuilder implements Builder<Region> {
      * @param handler the handler to call when the tile is clicked
      */
     public void highlight(final Runnable handler) {
-        pane.getStyleClass().add("selectable");
+        pane.getStyleClass().addAll("selectable", "selected");
         pane.setOnMouseClicked(e -> handler.run());
     }
 
@@ -109,7 +109,7 @@ public class TileBuilder implements Builder<Region> {
      * Removes the highlight and the handler for mouse clicks.
      */
     public void unhighlight() {
-        pane.getStyleClass().remove("selectable");
+        pane.getStyleClass().removeAll("selectable", "selected");
         pane.setOnMouseClicked(null);
     }
 }
