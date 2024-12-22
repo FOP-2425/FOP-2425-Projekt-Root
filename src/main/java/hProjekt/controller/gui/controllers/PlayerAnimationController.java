@@ -53,9 +53,7 @@ public class PlayerAnimationController {
         this.playerContainer = new StackPane(playerCircle, trainImage);
         this.playerContainer.setTranslateX(0);
         this.playerContainer.setTranslateY(0);
-
-        // Add the container to the HexGridPane
-        this.hexGridBuilder.getHexGridPane().getChildren().add(playerContainer);
+        playerContainer.setMouseTransparent(true);
     }
 
     /**
@@ -68,6 +66,7 @@ public class PlayerAnimationController {
         if (tiles == null || tiles.size() < 2) {
             throw new IllegalArgumentException("At least two tiles are required for the animation.");
         }
+        addTrain();
 
         // Sequential Transition to combine multiple path transitions
         SequentialTransition animationSequence = new SequentialTransition();
@@ -109,6 +108,16 @@ public class PlayerAnimationController {
         // Combine all animations into a single SequentialTransition
         SequentialTransition fullAnimation = new SequentialTransition(pulseBefore, animationSequence, pulseAfter);
         fullAnimation.play();
+    }
+
+    public void addTrain() {
+        if (!hexGridBuilder.getHexGridPane().getChildren().contains(playerContainer)) {
+            this.hexGridBuilder.getHexGridPane().getChildren().add(playerContainer);
+        }
+    }
+
+    public void removeTrain() {
+        this.hexGridBuilder.getHexGridPane().getChildren().remove(playerContainer);
     }
 
     /**
