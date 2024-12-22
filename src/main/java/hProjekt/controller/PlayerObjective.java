@@ -20,7 +20,8 @@ public enum PlayerObjective {
     ROLL_DICE(Set.of(RollDiceAction.class)),
     CHOOSE_CITIES(Set.of(ChooseCitiesAction.class)),
     DRIVE(Set.of(DriveAction.class)),
-    CHOOSE_PATH(Set.of(ChooseRailsAction.class, ConfirmDrive.class)),
+    CHOOSE_PATH(Set.of(ChooseRailsAction.class)),
+    CONFIRM_PATH(Set.of(ConfirmDrive.class)),
     IDLE(Set.of());
 
     final Set<Class<? extends PlayerAction>> allowedActions;
