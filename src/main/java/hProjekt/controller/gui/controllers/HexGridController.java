@@ -110,7 +110,7 @@ public class HexGridController implements Controller {
         }
         pane.setScaleX(pane.getScaleX() + event.getDeltaY() / 500);
         pane.setScaleY(pane.getScaleY() + event.getDeltaY() / 500);
-    }    
+    }
 
     /**
      * Returns the edge controllers.
@@ -128,6 +128,10 @@ public class HexGridController implements Controller {
      */
     public Map<Edge, EdgeController> getEdgeControllersMap() {
         return Collections.unmodifiableMap(edgeControllers);
+    }
+
+    public Map<Tile, TileController> getTileControllersMap() {
+        return Collections.unmodifiableMap(tileControllers);
     }
 
     /**
