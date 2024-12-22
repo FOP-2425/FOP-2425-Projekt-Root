@@ -23,6 +23,7 @@ public class ConfirmationOverlayView extends VBox {
         // Label for the message
         messageLabel = new Label(initialMessage);
         messageLabel.getStyleClass().add("label-message");
+        messageLabel.setWrapText(true);
         this.getChildren().add(messageLabel);
 
         // Buttons for "Yes" and "No"
@@ -31,7 +32,6 @@ public class ConfirmationOverlayView extends VBox {
         noButton = new Button("No");
         noButton.getStyleClass().add("button-no");
 
-        
         // Add actions to buttons
         yesButton.setOnAction(event -> {
             if (onYesAction != null) {
