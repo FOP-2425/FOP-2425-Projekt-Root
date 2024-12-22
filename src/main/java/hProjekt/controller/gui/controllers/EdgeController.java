@@ -48,6 +48,10 @@ public class EdgeController {
         line.highlight(handler);
     }
 
+    public void highlight() {
+        line.highlight();
+    }
+
     public void selected(final Consumer<MouseEvent> deselectHandler) {
         line.selected(deselectHandler);
     }

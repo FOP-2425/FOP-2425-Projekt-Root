@@ -113,6 +113,12 @@ public class EdgeLine extends Line {
         }
     }
 
+    public void highlight() {
+        init();
+        outline.getStyleClass().add("selected");
+        outline.setStrokeWidth(strokeWidth * 2);
+    }
+
     /**
      * Highlights the EdgeLine with the given handler.
      *
@@ -121,7 +127,6 @@ public class EdgeLine extends Line {
     public void highlight(final Consumer<MouseEvent> handler) {
         init(0.1);
         outline.setStroke(Color.GRAY);
-        outline.setStrokeWidth(strokeWidth * 1.6);
         outline.setStrokeWidth(strokeWidth * 2);
         outline.getStyleClass().add("selectable");
         getStrokeDashArray().add(10.0);
