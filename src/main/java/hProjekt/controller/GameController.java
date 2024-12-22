@@ -187,11 +187,15 @@ public class GameController {
                 });
             }
 
-            for (Player player : getState().getDrivingPlayers()) {
-                withActivePlayer(playerControllers.get(player), () -> {
-                    getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
-                    getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
-                });
+            while (!getState().getPlayerPositions().values().stream()
+                    .anyMatch(pos -> getTargetCity().getPosition().equals(pos))
+                    && !getState().getDrivingPlayers().isEmpty()) {
+                for (Player player : getState().getDrivingPlayers()) {
+                    withActivePlayer(playerControllers.get(player), () -> {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
+                        getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
+                    });
+                }
             }
         }
     }
