@@ -44,7 +44,7 @@
 }
 
 .hex-tile.selectable {
-    -fx-border-color: -selectable-color;
+    -fx-border-color: -selected-color;
 }
 
 .highlighted,
