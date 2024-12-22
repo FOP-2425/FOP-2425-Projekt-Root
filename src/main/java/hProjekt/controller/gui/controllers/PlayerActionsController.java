@@ -142,6 +142,22 @@ public class PlayerActionsController {
             selectedEdges.clear();
             updateChooseableEdges();
             selectedEdges.addListener(selctedEdgesListener);
+            gameBoardController.updateConfirmationOverlay("Rent selected rails?", this::confirmSelectedRails, null);
+        }
+        if (allowedActions.contains(ConfirmDrive.class)) {
+            getPlayerState().rentedEdges().stream().forEach(edge -> {
+                getHexGridController().getEdgeControllersMap().get(edge).highlight();
+            });
+            if (getPlayerState().hasPath()) {
+                gameBoardController.updateConfirmationOverlay("Rent highlighted edges and drive?",
+                        () -> confirmDrive(true),
+                        () -> confirmDrive(false));
+            } else {
+                gameBoardController.updateConfirmationOverlay(
+                        "Could not find path to target city. Do you want to rent different edges?",
+                        () -> confirmDrive(false), () -> confirmDrive(true));
+            }
+        }
         }
     }
 
