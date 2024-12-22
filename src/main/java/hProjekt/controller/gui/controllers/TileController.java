@@ -46,12 +46,20 @@ public class TileController implements Controller {
         builder.unhighlight();
     }
 
-    public void addMouseEnteredHandler(final Consumer<MouseEvent> handler) {
-        builder.addMouseEnteredHandler(handler);
+    public void setMouseEnteredHandler(final Consumer<MouseEvent> handler) {
+        builder.setMouseEnteredHandler(handler);
     }
 
     public void removeMouseEnteredHandler() {
         builder.removeMouseEnteredHandler();
+    }
+
+    public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
+        builder.setMouseClickedHandler(handler);
+    }
+
+    public void removeMouseClickedHandler() {
+        builder.removeMouseClickedHandler();
     }
 
     @Override

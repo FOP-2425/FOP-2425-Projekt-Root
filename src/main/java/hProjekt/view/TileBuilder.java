@@ -105,7 +105,7 @@ public class TileBuilder implements Builder<Region> {
      */
     public void highlight(final Runnable handler) {
         pane.getStyleClass().addAll("selectable");
-        pane.setOnMouseClicked(e -> handler.run());
+        setMouseClickedHandler(e -> handler.run());
     }
 
     /**
@@ -113,14 +113,22 @@ public class TileBuilder implements Builder<Region> {
      */
     public void unhighlight() {
         pane.getStyleClass().removeAll("selectable");
-        pane.setOnMouseClicked(null);
+        removeMouseClickedHandler();
     }
 
-    public void addMouseEnteredHandler(final Consumer<MouseEvent> handler) {
+    public void setMouseEnteredHandler(final Consumer<MouseEvent> handler) {
         pane.setOnMouseEntered(handler::accept);
     }
 
     public void removeMouseEnteredHandler() {
         pane.setOnMouseEntered(null);
+    }
+
+    public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
+        pane.setOnMouseClicked(handler::accept);
+    }
+
+    public void removeMouseClickedHandler() {
+        pane.setOnMouseClicked(null);
     }
 }
