@@ -18,7 +18,6 @@ import javafx.event.Event;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Region;
-import javafx.util.Builder;
 
 /**
  * The controller for the hex grid.
@@ -174,7 +173,7 @@ public class HexGridController implements Controller {
     }
 
     @Override
-    public Builder<Region> getBuilder() {
+    public HexGridBuilder getBuilder() {
         return builder;
     }
 }
