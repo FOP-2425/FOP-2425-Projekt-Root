@@ -400,7 +400,7 @@ public class PlayerController {
         Set<Edge> allAvailableEdges = List.of(getState().getGrid().getRails(player).values(), edges).stream()
                 .flatMap(set -> set.stream())
                 .filter(Edge::hasRail).collect(Collectors.toSet());
-        Set<Edge> pathEdges = getState().getGrid().findPath(gameController.getStartingCity().getPosition(),
+        List<Edge> pathEdges = getState().getGrid().findPath(gameController.getStartingCity().getPosition(),
                 gameController.getTargetCity().getPosition(), allAvailableEdges, Edge::getDrivingCost);
         if (pathEdges.isEmpty()) {
             rentedEdges = new HashSet<>();
