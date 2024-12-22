@@ -129,6 +129,10 @@ public class HexGridController implements Controller {
         return Collections.unmodifiableMap(edgeControllers);
     }
 
+    public Set<TileController> getTileControllers() {
+        return tileControllers.values().stream().collect(Collectors.toSet());
+    }
+
     public Map<Tile, TileController> getTileControllersMap() {
         return Collections.unmodifiableMap(tileControllers);
     }
