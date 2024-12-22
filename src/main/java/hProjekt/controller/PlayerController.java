@@ -488,6 +488,7 @@ public class PlayerController {
                         positionQueue.add(new Pair<>(tile, path));
                         distanceQueue.add(newDistance);
                     } else {
+                        path.add(tile);
                         drivableTiles.put(tile, path);
                     }
                 }
