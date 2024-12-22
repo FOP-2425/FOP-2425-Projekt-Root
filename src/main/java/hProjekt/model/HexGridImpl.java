@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -320,10 +321,10 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
-    public Set<Edge> findPath(TilePosition start, TilePosition target, Set<Edge> availableEdges,
+    public List<Edge> findPath(TilePosition start, TilePosition target, Set<Edge> availableEdges,
             Function<Edge, Integer> edgeCostFunction) {
         PriorityQueue<Pair<TilePosition, Integer>> positionQueue = new PriorityQueue<>(
-                (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()) * -1);
+                (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()));
         Map<TilePosition, TilePosition> previous = new HashMap<>();
         Map<TilePosition, Integer> distance = new HashMap<>();
         positionQueue.add(new Pair<>(start, 0));
@@ -348,17 +349,17 @@ public class HexGridImpl implements HexGrid {
         }
 
         if (!previous.containsKey(target)) {
-            return Set.of();
+            return List.of();
         }
 
         TilePosition current = target;
-        Set<Edge> pathEdges = new HashSet<>();
+        List<Edge> pathEdges = new ArrayList<>();
 
         while (!current.equals(start)) {
             TilePosition previousPosition = previous.get(current);
             pathEdges.add(getEdge(previousPosition, current));
             current = previousPosition;
         }
-        return pathEdges;
+        return pathEdges.reversed();
     }
 }
