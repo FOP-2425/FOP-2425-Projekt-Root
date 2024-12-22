@@ -351,6 +351,18 @@ public class PlayerController {
         player.removeCredits(edge.getTotalBuildingCost(player));
     }
 
+    public void buildRails(final List<Edge> edges) throws IllegalActionException {
+        Set<Edge> buildableRails = getBuildableRails();
+
+        if (buildableRails.isEmpty() || !buildableRails.containsAll(edges)) {
+            throw new IllegalActionException("Cannot build rails");
+        }
+
+        for (Edge edge : edges) {
+            buildRail(edge);
+        }
+    }
+
     public Set<Edge> getChooseableEdges() {
         if (player.getCredits() == 0 || !getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
             return Set.of();
