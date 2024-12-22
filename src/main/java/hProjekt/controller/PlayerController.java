@@ -498,4 +498,13 @@ public class PlayerController {
         return drivableTiles;
     }
 
+    public void drive(final Tile targetTile) throws IllegalActionException {
+        if (!canDrive()) {
+            throw new IllegalActionException("Player cannot drive");
+        }
+        if (!getDrivableTiles().containsKey(targetTile)) {
+            throw new IllegalActionException("Player cannot drive to the target tile");
+        }
+        getState().setPlayerPositon(player, targetTile.getPosition());
+    }
 }
