@@ -171,6 +171,16 @@ public class PlayerController {
         this.hasConfirmedPath = false;
     }
 
+    public void resetRentedEdges() {
+        rentedEdges = new HashSet<>();
+    }
+
+    public void resetDrivingPhase() {
+        resetHasConfirmedPath();
+        resetHasPath();
+        resetRentedEdges();
+    }
+
     /**
      * Rolls the dice.
      */

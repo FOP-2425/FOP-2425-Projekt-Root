@@ -177,8 +177,7 @@ public class GameController {
                     });
 
             for (Player player : getState().getPlayers()) {
-                playerControllers.get(player).resetHasConfirmedPath();
-                playerControllers.get(player).resetHasPath();
+                playerControllers.get(player).resetDrivingPhase();
                 getState().setPlayerPositon(player, getStartingCity().getPosition());
                 withActivePlayer(playerControllers.get(player), () -> {
                     while (!getActivePlayerController().hasConfirmedPath()) {
