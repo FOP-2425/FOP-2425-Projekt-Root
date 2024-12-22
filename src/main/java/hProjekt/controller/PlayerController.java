@@ -452,9 +452,14 @@ public class PlayerController {
             return Map.of();
         }
 
+        final Set<Edge> allAvailableEdges = List.of(getState().getGrid().getRails(player).values(), rentedEdges)
+                .stream()
+                .flatMap(set -> set.stream())
+                .filter(Edge::hasRail).collect(Collectors.toSet());
         final Tile startNode = getState().getGrid().getTileAt(getState().getPlayerPositions().get(getPlayer()));
         final Set<Tile> visitedNodes = new HashSet<>(Set.of(startNode));
-        final List<Pair<Tile, List<Tile>>> positionQueue = new ArrayList<>(List.of(new Pair<>(startNode, List.of())));
+        final List<Pair<Tile, List<Tile>>> positionQueue = new ArrayList<>(List.of(new Pair<>(startNode, List.of(
+                startNode))));
         final List<Integer> distanceQueue = new ArrayList<>(List.of(0));
         final Map<Tile, List<Tile>> drivableTiles = new HashMap<>();
 
@@ -462,11 +467,7 @@ public class PlayerController {
             final Pair<Tile, List<Tile>> currentPair = positionQueue.removeFirst();
             final TilePosition currentPosition = currentPair.getKey().getPosition();
             final int currentDistance = distanceQueue.removeFirst();
-            for (Tile tile : currentPair.getKey().getEdges().stream().filter(Edge::hasRail)
-                    .filter(edge -> edge.getRailOwners().contains(player))
-                    .flatMap(edge -> edge.getAdjacentTilePositions().stream())
-                    .filter(Predicate.not(currentPosition::equals))
-                    .map(position -> getState().getGrid().getTileAt(position)).toList()) {
+            for (Tile tile : currentPair.getKey().getConnectedNeighbours(allAvailableEdges)) {
                 if (visitedNodes.contains(tile)) {
                     continue;
                 }
