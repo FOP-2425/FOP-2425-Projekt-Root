@@ -1,5 +1,6 @@
 package hProjekt.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -164,6 +165,6 @@ public interface HexGrid {
      * @param edgeCostFunction the function to calculate the cost of an edge
      * @return the shortest path between start and end
      */
-    Set<Edge> findPath(TilePosition start, TilePosition end, Set<Edge> availabeEdges,
+    List<Edge> findPath(TilePosition start, TilePosition end, Set<Edge> availabeEdges,
             Function<Edge, Integer> edgeCostFunction);
 }
