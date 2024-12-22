@@ -15,6 +15,7 @@ import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.ChooseCitiesAction;
 import hProjekt.controller.actions.ChooseRailsAction;
 import hProjekt.controller.actions.ConfirmDrive;
+import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
 import hProjekt.controller.gui.controllers.scene.GameBoardController;
@@ -158,6 +159,15 @@ public class PlayerActionsController {
                         () -> confirmDrive(false), () -> confirmDrive(true));
             }
         }
+        if (allowedActions.contains(DriveAction.class)) {
+            gameBoardController.getPlayerAnimationController(getPlayer()).addTrain();
+            getPlayerState().drivableTiles().keySet().stream().forEach(tile -> {
+                getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
+                    getPlayerController().triggerAction(new DriveAction(tile));
+                    gameBoardController.getPlayerAnimationController(getPlayer())
+                            .animatePlayer(getPlayerState().drivableTiles().get(tile));
+                });
+            });
         }
     }
 
