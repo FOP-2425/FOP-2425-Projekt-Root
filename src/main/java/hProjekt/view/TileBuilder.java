@@ -1,8 +1,11 @@
 package hProjekt.view;
 
+import java.util.function.Consumer;
+
 import hProjekt.model.Tile;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -101,7 +104,7 @@ public class TileBuilder implements Builder<Region> {
      * @param handler the handler to call when the tile is clicked
      */
     public void highlight(final Runnable handler) {
-        pane.getStyleClass().addAll("selectable", "selected");
+        pane.getStyleClass().addAll("selectable");
         pane.setOnMouseClicked(e -> handler.run());
     }
 
@@ -109,7 +112,15 @@ public class TileBuilder implements Builder<Region> {
      * Removes the highlight and the handler for mouse clicks.
      */
     public void unhighlight() {
-        pane.getStyleClass().removeAll("selectable", "selected");
+        pane.getStyleClass().removeAll("selectable");
         pane.setOnMouseClicked(null);
+    }
+
+    public void addMouseEnteredHandler(final Consumer<MouseEvent> handler) {
+        pane.setOnMouseEntered(handler::accept);
+    }
+
+    public void removeMouseEnteredHandler() {
+        pane.setOnMouseEntered(null);
     }
 }
