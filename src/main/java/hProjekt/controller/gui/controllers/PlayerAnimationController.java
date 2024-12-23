@@ -111,10 +111,10 @@ public class PlayerAnimationController {
         fullAnimation.play();
     }
 
-    public void addTrain() {
-        if (!hexGridBuilder.getHexGridPane().getChildren().contains(playerContainer)) {
-            this.hexGridBuilder.getHexGridPane().getChildren().add(playerContainer);
-        }
+    public void setPosition(TilePosition position) {
+        Point2D center = hexGridBuilder.calculatePositionCenterOffset(position);
+        playerContainer.setTranslateX(center.getX() - playerContainer.getWidth() / 2);
+        playerContainer.setTranslateY(center.getY() - playerContainer.getHeight() / 2);
     }
 
     public void showTrain() {
