@@ -354,7 +354,7 @@ public class PlayerController {
     public void buildRails(final List<Edge> edges) throws IllegalActionException {
         Set<Edge> buildableRails = getBuildableRails();
 
-        if (buildableRails.isEmpty() || !buildableRails.containsAll(edges)) {
+        if (buildableRails.isEmpty()) {
             throw new IllegalActionException("Cannot build rails");
         }
 
