@@ -215,7 +215,8 @@ public interface Edge {
      */
     default int getDrivingCost(TilePosition from) {
         return Config.TILE_TYPE_TO_DRIVING_COST
-                .get(new Pair<>(getHexGrid().getTileAt(from).getType(),
-                        getPosition1().equals(from) ? getPosition2() : getPosition1()));
+                .get(new Pair<Tile.Type, Tile.Type>(getHexGrid().getTileAt(from).getType(),
+                        getHexGrid().getTileAt(getPosition1().equals(from) ? getPosition2() : getPosition1())
+                                .getType()));
     }
 }
