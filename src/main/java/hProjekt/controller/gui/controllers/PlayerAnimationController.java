@@ -5,6 +5,7 @@ import java.util.List;
 import hProjekt.model.Tile;
 import hProjekt.model.TilePosition;
 import hProjekt.view.HexGridBuilder;
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.animation.ScaleTransition;
@@ -63,14 +64,13 @@ public class PlayerAnimationController {
      * @param tiles the list of Tiles to follow
      * @param red
      */
-    public void animatePlayer(List<Tile> tiles) {
+    public Animation animatePlayer(List<Tile> tiles) {
         if (tiles == null || tiles.size() < 2) {
             throw new IllegalArgumentException("At least two tiles are required for the animation.");
         }
-        addTrain();
-
         // Sequential Transition to combine multiple path transitions
         SequentialTransition animationSequence = new SequentialTransition();
+        Path path = new Path();
 
         for (int i = 0; i < tiles.size() - 1; i++) {
             Tile currentTile = tiles.get(i);
@@ -84,21 +84,21 @@ public class PlayerAnimationController {
             Point2D nextCenter = hexGridBuilder.calculatePositionCenterOffset(nextPosition);
 
             // Create a path between the two tile centers
-            Path path = new Path();
-            path.getElements().add(new MoveTo(currentCenter.getX(), currentCenter.getY()));
+            path.getElements().add(new MoveTo(currentCenter.getX(),
+                    currentCenter.getY()));
             path.getElements().add(new LineTo(nextCenter.getX(), nextCenter.getY()));
 
-            // Create a PathTransition for this segment
-            PathTransition transition = new PathTransition();
-            transition.setNode(playerContainer);
-            transition.setPath(path);
-            transition.setDuration(Duration.seconds(2));
-            transition.setInterpolator(Interpolator.LINEAR);
-            transition.setCycleCount(1);
-
-            // Add the transition to the sequence
-            animationSequence.getChildren().add(transition);
         }
+        // Create a PathTransition for this segment
+        PathTransition transition = new PathTransition();
+        transition.setNode(playerContainer);
+        transition.setPath(path);
+        transition.setDuration(Duration.seconds(1));
+        transition.setInterpolator(Interpolator.EASE_BOTH);
+        transition.setCycleCount(1);
+
+        // Add the transition to the sequence
+        animationSequence.getChildren().add(transition);
 
         // Add pulsating animation before the main animation
         ScaleTransition pulseBefore = createPulseTransition();
@@ -107,8 +107,11 @@ public class PlayerAnimationController {
         ScaleTransition pulseAfter = createPulseTransition();
 
         // Combine all animations into a single SequentialTransition
-        SequentialTransition fullAnimation = new SequentialTransition(pulseBefore, animationSequence, pulseAfter);
+        SequentialTransition fullAnimation = new SequentialTransition(pulseBefore,
+                animationSequence, pulseAfter);
+        showTrain();
         fullAnimation.play();
+        return fullAnimation;
     }
 
     public void setPosition(TilePosition position) {
