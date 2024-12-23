@@ -296,7 +296,8 @@ public class PlayerActionsController {
                                     tc.getTile().getPosition(),
                                     getHexGridController().getHexGrid().getEdges().values().stream()
                                             .collect(Collectors.toSet()),
-                                    edge -> edge.getDrivingCost());
+                                    (from, to) -> getHexGridController().getHexGrid().getEdge(from, to)
+                                            .getDrivingCost(from));
                             selectedRailPath = new ArrayList<>();
                             int buildingCost = 0;
                             int parallelCost = 0;

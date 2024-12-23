@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import hProjekt.Config;
 import javafx.beans.property.Property;
+import javafx.util.Pair;
 
 /**
  * Holds information on an edge connecting two tile centers.
@@ -212,8 +213,9 @@ public interface Edge {
      *
      * @return the cost of driving along this edge
      */
-    default int getDrivingCost() {
-        return Config.TILE_TYPE_TO_DRIVING_COST.get(getAdjacentTilePositions().stream()
-                .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
+    default int getDrivingCost(TilePosition from) {
+        return Config.TILE_TYPE_TO_DRIVING_COST
+                .get(new Pair<>(getHexGrid().getTileAt(from).getType(),
+                        getPosition1().equals(from) ? getPosition2() : getPosition1()));
     }
 }

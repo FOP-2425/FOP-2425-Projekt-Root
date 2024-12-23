@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 import hProjekt.model.Tile;
+import javafx.util.Pair;
 
 public class Config {
     /**
@@ -94,8 +95,11 @@ public class Config {
             Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 3,
             Set.of(Tile.Type.MOUNTAIN), 5);
 
-    public static Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_DRIVING_COST = Map.of(
-            Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 2, Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.MOUNTAIN), 1);
+    public static Map<Pair<Tile.Type, Tile.Type>, Integer> TILE_TYPE_TO_DRIVING_COST = Map.of(
+            new Pair<>(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 2,
+            new Pair<>(Tile.Type.PLAIN, Tile.Type.PLAIN), 1,
+            new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.MOUNTAIN), 1,
+            new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.PLAIN), 1);
 
     public static final String[] TOWN_NAMES;
 

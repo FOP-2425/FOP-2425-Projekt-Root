@@ -413,7 +413,8 @@ public class PlayerController {
                 .flatMap(set -> set.stream())
                 .filter(Edge::hasRail).collect(Collectors.toSet());
         List<Edge> pathEdges = getState().getGrid().findPath(gameController.getStartingCity().getPosition(),
-                gameController.getTargetCity().getPosition(), allAvailableEdges, Edge::getDrivingCost);
+                gameController.getTargetCity().getPosition(), allAvailableEdges,
+                (from, to) -> getState().getGrid().getEdge(from, to).getDrivingCost(from));
         if (pathEdges.isEmpty()) {
             rentedEdges = new HashSet<>();
             return;
@@ -485,7 +486,7 @@ public class PlayerController {
                 }
 
                 final int drivingCost = getState().getGrid().getEdge(currentPosition, tile.getPosition())
-                        .getDrivingCost();
+                        .getDrivingCost(currentPosition);
                 int newDistance = currentDistance + drivingCost;
 
                 if (newDistance <= gameController.getCurrentDiceRoll()) {

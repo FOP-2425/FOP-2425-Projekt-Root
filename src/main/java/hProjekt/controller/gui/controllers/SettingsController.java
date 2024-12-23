@@ -11,6 +11,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.util.Pair;
 
 public class SettingsController {
 
@@ -47,11 +48,11 @@ public class SettingsController {
 
     // Properties for Driving Costs
     public final IntegerProperty plainToPlainDrivingCost = new SimpleIntegerProperty(
-            Config.TILE_TYPE_TO_DRIVING_COST.get(Set.of(Tile.Type.PLAIN)));
+            Config.TILE_TYPE_TO_DRIVING_COST.get(new Pair<>(Tile.Type.PLAIN, Tile.Type.PLAIN)));
     public final IntegerProperty plainToMountainDrivingCost = new SimpleIntegerProperty(
-            Config.TILE_TYPE_TO_DRIVING_COST.get(Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN)));
+            Config.TILE_TYPE_TO_DRIVING_COST.get(new Pair<>(Tile.Type.PLAIN, Tile.Type.MOUNTAIN)));
     public final IntegerProperty mountainToMountainDrivingCost = new SimpleIntegerProperty(
-            Config.TILE_TYPE_TO_DRIVING_COST.get(Set.of(Tile.Type.MOUNTAIN)));
+            Config.TILE_TYPE_TO_DRIVING_COST.get(new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.MOUNTAIN)));
 
     /**
      * Updates Config values with the current settings.
@@ -89,10 +90,10 @@ public class SettingsController {
         Config.TILE_TYPE_TO_BUILDING_COST = Collections.unmodifiableMap(buildingCostMap);
 
         // Driving Costs (convert immutable map to mutable HashMap)
-        Map<Set<Tile.Type>, Integer> drivingCostMap = new HashMap<>(Config.TILE_TYPE_TO_DRIVING_COST);
-        drivingCostMap.put(Set.of(Tile.Type.PLAIN), plainToPlainDrivingCost.get());
-        drivingCostMap.put(Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), plainToMountainDrivingCost.get());
-        drivingCostMap.put(Set.of(Tile.Type.MOUNTAIN), mountainToMountainDrivingCost.get());
+        Map<Pair<Tile.Type, Tile.Type>, Integer> drivingCostMap = new HashMap<>(Config.TILE_TYPE_TO_DRIVING_COST);
+        drivingCostMap.put(new Pair<>(Tile.Type.PLAIN, Tile.Type.PLAIN), plainToPlainDrivingCost.get());
+        drivingCostMap.put(new Pair<>(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), plainToMountainDrivingCost.get());
+        drivingCostMap.put(new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.MOUNTAIN), mountainToMountainDrivingCost.get());
         Config.TILE_TYPE_TO_DRIVING_COST = Collections.unmodifiableMap(drivingCostMap);
 
         System.out.println("Settings saved successfully");

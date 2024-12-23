@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -322,7 +323,7 @@ public class HexGridImpl implements HexGrid {
 
     @Override
     public List<Edge> findPath(TilePosition start, TilePosition target, Set<Edge> availableEdges,
-            Function<Edge, Integer> edgeCostFunction) {
+            BiFunction<TilePosition, TilePosition, Integer> edgeCostFunction) {
         PriorityQueue<Pair<TilePosition, Integer>> positionQueue = new PriorityQueue<>(
                 (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()));
         Map<TilePosition, TilePosition> previous = new HashMap<>();
@@ -339,7 +340,7 @@ public class HexGridImpl implements HexGrid {
             for (TilePosition next : getTileAt(current).getConnectedNeighbours(availableEdges).stream()
                     .map(Tile::getPosition).toList()) {
                 int newDistance = distance.get(current)
-                        + edgeCostFunction.apply(getEdge(next, current));
+                        + edgeCostFunction.apply(current, next);
                 if (!distance.containsKey(next) || newDistance < distance.get(next)) {
                     distance.put(next, newDistance);
                     previous.put(next, current);
