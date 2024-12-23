@@ -12,6 +12,7 @@ import hProjekt.controller.gui.controllers.PlayerAnimationController;
 import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
+import hProjekt.model.TilePosition;
 import hProjekt.view.GameBoardBuilder;
 import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.CityOverlayView;
@@ -136,6 +137,10 @@ public class GameBoardController implements SceneController {
             confirmationOverlayView.setOnYesAction(onYesAction);
             confirmationOverlayView.setOnNoAction(onNoAction);
         });
+    }
+
+    public TilePosition getPlayerPosition(Player player) {
+        return gameState.getPlayerPositions().get(player);
     }
 
     @Override
