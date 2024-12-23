@@ -143,7 +143,10 @@ public class PlayerActionsController {
             selectedEdges.clear();
             updateChooseableEdges();
             selectedEdges.addListener(selctedEdgesListener);
-            gameBoardController.updateConfirmationOverlay("Rent selected rails?", this::confirmSelectedRails, null);
+            gameBoardController.updateConfirmationOverlay("Rent selected rails?", this::confirmSelectedRails, () -> {
+                selectedEdges.clear();
+                updateChooseableEdges();
+            });
         }
         if (allowedActions.contains(ConfirmDrive.class)) {
             getPlayerState().rentedEdges().stream().forEach(edge -> {
