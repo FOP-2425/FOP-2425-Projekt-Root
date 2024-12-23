@@ -113,7 +113,7 @@ public class PlayerController {
     private void updatePlayerState() {
         playerStateProperty
                 .setValue(new PlayerState(getBuildableRails(), getPlayerObjective(), getChooseableEdges(),
-                        getRentedEdges(), hasPath(), getDrivableTiles()));
+                        getRentedEdges(), hasPath(), getDrivableTiles(), getBuildingBudget()));
     }
 
     /**

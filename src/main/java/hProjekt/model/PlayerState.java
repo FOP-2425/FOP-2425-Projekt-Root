@@ -18,5 +18,5 @@ import hProjekt.controller.PlayerObjective;
 public record PlayerState(
         Set<Edge> buildableRailEdges,
         PlayerObjective playerObjective, Set<Edge> choosableEdges, Set<Edge> rentedEdges, boolean hasPath,
-        Map<Tile, List<Tile>> drivableTiles) {
+        Map<Tile, List<Tile>> drivableTiles, int buildingBudget) {
 }
