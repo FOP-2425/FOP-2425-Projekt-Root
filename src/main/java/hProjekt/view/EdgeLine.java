@@ -44,6 +44,7 @@ public class EdgeLine extends Line {
             outline.getStrokeDashArray().setAll(getStrokeDashArray());
         });
         setMouseTransparent(true);
+        outline.setMouseTransparent(true);
     }
 
     /**
@@ -132,6 +133,7 @@ public class EdgeLine extends Line {
         getStrokeDashArray().add(10.0);
         // setStrokeWidth(strokeWidth * 1.2);
         outline.setOnMouseClicked(handler::accept);
+        outline.setMouseTransparent(false);
     }
 
     public void selected(final Consumer<MouseEvent> deselectHandler) {
@@ -151,5 +153,6 @@ public class EdgeLine extends Line {
         outline.setOnMouseClicked(null);
         outline.getStyleClass().clear();
         init();
+        outline.setMouseTransparent(true);
     }
 }
