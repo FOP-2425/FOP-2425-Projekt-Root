@@ -22,6 +22,7 @@ import javafx.util.Builder;
 public class TileBuilder implements Builder<Region> {
     private final Tile tile;
     private final StackPane pane = new StackPane();
+    private boolean hasMouseClickedHandler = false;
 
     /**
      * Creates a new TileBuilder for the given {@link Tile}.
@@ -125,10 +126,16 @@ public class TileBuilder implements Builder<Region> {
     }
 
     public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
+        hasMouseClickedHandler = true;
         pane.setOnMouseClicked(handler::accept);
     }
 
     public void removeMouseClickedHandler() {
+        hasMouseClickedHandler = false;
         pane.setOnMouseClicked(null);
+    }
+
+    public boolean hasMouseClickedHandler() {
+        return hasMouseClickedHandler;
     }
 }

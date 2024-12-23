@@ -62,6 +62,10 @@ public class TileController implements Controller {
         builder.removeMouseClickedHandler();
     }
 
+    public boolean hasMouseClickedHandler() {
+        return builder.hasMouseClickedHandler();
+    }
+
     @Override
     public TileBuilder getBuilder() {
         return builder;
