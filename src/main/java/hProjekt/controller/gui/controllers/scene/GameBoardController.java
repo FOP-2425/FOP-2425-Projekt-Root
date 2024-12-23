@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hProjekt.controller.GamePhase;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.gui.controllers.HexGridController;
 import hProjekt.controller.gui.controllers.PlayerActionsController;
@@ -116,6 +117,10 @@ public class GameBoardController implements SceneController {
         Platform.runLater(() -> {
             playerOverlayView.updatePlayerCredits(gameState.getPlayers());
         });
+    }
+
+    public GamePhase getGamePhase() {
+        return gameState.getGamePhaseProperty().getValue();
     }
 
     public void updateCityOverlay() {
