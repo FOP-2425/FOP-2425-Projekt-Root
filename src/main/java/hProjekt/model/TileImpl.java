@@ -108,4 +108,9 @@ public record TileImpl(
                 .count() > 0)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public Set<Edge> getRails(Player player) {
+        return getEdges().stream().filter(edge -> edge.getRailOwners().contains(player)).collect(Collectors.toSet());
+    }
 }

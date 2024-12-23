@@ -104,6 +104,14 @@ public interface Tile {
     boolean hasCity();
 
     /**
+     * Returns all rails the given player has build on this tile.
+     *
+     * @param player the player
+     * @return all rails the given player has build on this tile
+     */
+    Set<Edge> getRails(Player player);
+
+    /**
      * An enumeration containing all available tile types.
      * Custom tile types need to be added to this list manually.
      */
