@@ -56,6 +56,7 @@ public class PlayerAnimationController {
         this.playerContainer.setTranslateY(0);
         playerContainer.setMouseTransparent(true);
         this.hexGridBuilder.getHexGridPane().getChildren().add(playerContainer);
+        hideTrain();
     }
 
     /**
