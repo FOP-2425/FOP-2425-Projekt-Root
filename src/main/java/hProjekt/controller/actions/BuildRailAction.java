@@ -1,12 +1,14 @@
 package hProjekt.controller.actions;
 
+import java.util.List;
+
 import hProjekt.controller.PlayerController;
 import hProjekt.model.Edge;
 
-public record BuildRailAction(Edge edge) implements PlayerAction {
+public record BuildRailAction(List<Edge> edges) implements PlayerAction {
 
     @Override
     public void execute(PlayerController pc) throws IllegalActionException {
-        pc.buildRail(edge);
+        pc.buildRails(edges);
     }
 }

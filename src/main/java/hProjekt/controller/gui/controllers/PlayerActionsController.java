@@ -1,5 +1,7 @@
 package hProjekt.controller.gui.controllers;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -9,6 +11,7 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import hProjekt.Config;
+import hProjekt.controller.GamePhase;
 import hProjekt.controller.PlayerController;
 import hProjekt.controller.PlayerObjective;
 import hProjekt.controller.actions.BuildRailAction;
@@ -22,6 +25,7 @@ import hProjekt.controller.gui.controllers.scene.GameBoardController;
 import hProjekt.model.Edge;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
+import hProjekt.model.Tile;
 import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
@@ -55,6 +59,8 @@ public class PlayerActionsController {
                             .collect(Collectors.toSet()));
         }
     };
+    private Tile selectedTile;
+    private List<Edge> selectedRailPath = List.of();
 
     /**
      * Creates a new PlayerActionsController.
@@ -131,7 +137,7 @@ public class PlayerActionsController {
 
         final Set<Class<? extends PlayerAction>> allowedActions = getPlayerObjective().getAllowedActions();
         if (allowedActions.contains(BuildRailAction.class)) {
-            updateBuildableEdges();
+            addBuildHandlers();
         }
         if (allowedActions.contains(RollDiceAction.class)) {
             rollDiceOverlayView.enableRollDiceButton();
@@ -239,6 +245,7 @@ public class PlayerActionsController {
     private void removeAllHighlights() {
         getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
         getHexGridController().unhighlightTiles();
+        getHexGridController().getTileControllers().forEach(TileController::removeMouseEnteredHandler);
     }
 
     public RollDiceOverlayView getRollDiceOverlayView() {
@@ -263,12 +270,61 @@ public class PlayerActionsController {
         getPlayerController().triggerAction(new ChooseCitiesAction());
     }
 
-    public void updateBuildableEdges() {
-        getPlayerState().buildableRailEdges().stream()
-                .map(edge -> getHexGridController().getEdgeControllersMap().get(edge)).forEach(ec -> ec
-                        .highlight(e -> {
-                            getPlayerController().triggerAction(new BuildRailAction(ec.getEdge()));
-                        }));
+    public void addBuildHandlers() {
+        Collection<Tile> startingTiles;
+        selectedTile = null;
+        selectedRailPath = List.of();
+        if (getPlayer().getRails().isEmpty()) {
+            startingTiles = getHexGridController().getHexGrid().getStartingCities().keySet().stream()
+                    .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
+        } else {
+            startingTiles = getPlayer().getRails().keySet().stream().flatMap(set -> set.stream())
+                    .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
+        }
+        for (Tile tile : startingTiles) {
+            getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
+                selectedTile = tile;
+            });
+        }
+        getHexGridController().getTileControllers().stream().filter(tc -> !tc.hasMouseClickedHandler())
+                .forEach(tc -> {
+                    tc.setMouseEnteredHandler(e -> {
+                        if (selectedTile != null) {
+                            getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
+                            List<Edge> foundPath = getHexGridController().getHexGrid().findPath(
+                                    selectedTile.getPosition(),
+                                    tc.getTile().getPosition(),
+                                    getHexGridController().getHexGrid().getEdges().values().stream()
+                                            .collect(Collectors.toSet()),
+                                    edge -> edge.getDrivingCost());
+                            selectedRailPath = new ArrayList<>();
+                            int buildingCost = 0;
+                            int parallelCost = 0;
+                            for (Edge edge : foundPath) {
+                                if (edge.getRailOwners().contains(getPlayer())) {
+                                    continue;
+                                }
+                                buildingCost += edge.getBuildingCost();
+                                parallelCost += edge.getTotalParallelCost(getPlayer());
+                                if ((GamePhase.BUILDING_PHASE.equals(gameBoardController.getGamePhase())
+                                        && (buildingCost > getPlayerState().buildingBudget()
+                                                || parallelCost > getPlayer().getCredits()))
+                                        || buildingCost + parallelCost > getPlayer().getCredits()) {
+                                    break;
+                                }
+                                selectedRailPath.add(edge);
+                            }
+                            for (Edge edge : selectedRailPath) {
+                                getHexGridController().getEdgeControllersMap().get(edge).highlight();
+                            }
+                        }
+                    });
+                    tc.setMouseClickedHandler(e -> {
+                        if (selectedRailPath != null && !selectedRailPath.isEmpty()) {
+                            getPlayerController().triggerAction(new BuildRailAction(selectedRailPath));
+                        }
+                    });
+                });
     }
 
     private void chooseEdgeHandler(EdgeController ec) {
