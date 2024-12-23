@@ -402,7 +402,7 @@ public class PlayerController {
         Set<Edge> chooseableEdges = getChooseableEdges();
         hasPath = false;
 
-        if (chooseableEdges.isEmpty() || !chooseableEdges.containsAll(edges)) {
+        if (!chooseableEdges.containsAll(edges)) {
             throw new IllegalActionException("Cannot choose edges");
         }
         if (edges.size() > Config.MAX_RENTABLE_DISTANCE) {
@@ -494,6 +494,7 @@ public class PlayerController {
                     path.add(currentPair.getKey());
 
                     if (gameController.getTargetCity().getPosition().equals(tile.getPosition())) {
+                        path.add(tile);
                         return Map.of(tile, path);
                     }
 
