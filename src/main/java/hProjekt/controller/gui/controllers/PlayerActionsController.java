@@ -59,7 +59,8 @@ public class PlayerActionsController {
                             .collect(Collectors.toSet()));
         }
     };
-    private Tile selectedTile;
+    private final Property<Tile> selectedTile = new SimpleObjectProperty<>();
+    private Subscription selectedTileSubscription = Subscription.EMPTY;
     private List<Edge> selectedRailPath = List.of();
 
     /**
@@ -130,6 +131,7 @@ public class PlayerActionsController {
         removeAllHighlights();
         updatePlayerInformation();
         selectedEdges.removeListener(selctedEdgesListener);
+        selectedTileSubscription.unsubscribe();
 
         if (getPlayer().isAi()) {
             return;
@@ -274,10 +276,9 @@ public class PlayerActionsController {
         getPlayerController().triggerAction(new ChooseCitiesAction());
     }
 
-    public void addBuildHandlers() {
+    private void highlightStartingTiles() {
         Collection<Tile> startingTiles;
-        selectedTile = null;
-        selectedRailPath = List.of();
+        selectedTile.setValue(null);
         if (getPlayer().getRails().isEmpty()) {
             startingTiles = getHexGridController().getHexGrid().getStartingCities().keySet().stream()
                     .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
@@ -287,49 +288,76 @@ public class PlayerActionsController {
         }
         for (Tile tile : startingTiles) {
             getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
-                selectedTile = tile;
+                getHexGridController().unhighlightTiles();
+                getHexGridController().getTileControllersMap().get(tile).highlight(e2 -> {
+                    selectedTile.setValue(null);
+                    highlightStartingTiles();
+                });
+                selectedTile.setValue(tile);
             });
         }
-        getHexGridController().getTileControllers().stream().filter(tc -> !tc.hasMouseClickedHandler())
-                .forEach(tc -> {
-                    tc.setMouseEnteredHandler(e -> {
-                        if (selectedTile != null) {
-                            getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
-                            List<Edge> foundPath = getHexGridController().getHexGrid().findPath(
-                                    selectedTile.getPosition(),
-                                    tc.getTile().getPosition(),
-                                    getHexGridController().getHexGrid().getEdges().values().stream()
-                                            .collect(Collectors.toSet()),
-                                    (from, to) -> getHexGridController().getHexGrid().getEdge(from, to)
-                                            .getDrivingCost(from));
-                            selectedRailPath = new ArrayList<>();
-                            int buildingCost = 0;
-                            int parallelCost = 0;
-                            for (Edge edge : foundPath) {
-                                if (edge.getRailOwners().contains(getPlayer())) {
-                                    continue;
-                                }
-                                buildingCost += edge.getBuildingCost();
-                                parallelCost += edge.getTotalParallelCost(getPlayer());
-                                if ((GamePhase.BUILDING_PHASE.equals(gameBoardController.getGamePhase())
-                                        && (buildingCost > getPlayerState().buildingBudget()
-                                                || parallelCost > getPlayer().getCredits()))
-                                        || buildingCost + parallelCost > getPlayer().getCredits()) {
-                                    break;
-                                }
-                                selectedRailPath.add(edge);
+    }
+
+    private void highlightPotentialBuildPath(Tile hoveredTile, Tile selectedTile) {
+        getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
+
+        List<Edge> pathToHoveredTile = getHexGridController().getHexGrid().findPath(
+                selectedTile.getPosition(),
+                hoveredTile.getPosition(),
+                getHexGridController().getHexGrid().getEdges().values().stream()
+                        .collect(Collectors.toSet()),
+                (from, to) -> getHexGridController().getHexGrid().getEdge(from, to)
+                        .getDrivingCost(from));
+
+        selectedRailPath = new ArrayList<>();
+        int buildingCost = 0;
+        int parallelCost = 0;
+
+        for (Edge edge : pathToHoveredTile) {
+            if (edge.getRailOwners().contains(getPlayer())) {
+                continue;
+            }
+
+            buildingCost += edge.getBuildingCost();
+            parallelCost += edge.getTotalParallelCost(getPlayer());
+
+            if ((GamePhase.BUILDING_PHASE.equals(gameBoardController.getGamePhase())
+                    && (buildingCost > getPlayerState().buildingBudget()
+                            || parallelCost > getPlayer().getCredits()))
+                    || buildingCost + parallelCost > getPlayer().getCredits()) {
+                break;
+            }
+            selectedRailPath.add(edge);
+        }
+
+        for (Edge edge : selectedRailPath) {
+            getHexGridController().getEdgeControllersMap().get(edge).highlight();
+        }
+    }
+
+    public void addBuildHandlers() {
+        selectedRailPath = List.of();
+        highlightStartingTiles();
+        selectedTileSubscription.unsubscribe();
+        selectedTileSubscription = selectedTile.subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
+                getHexGridController().getTileControllers().forEach(TileController::removeMouseEnteredHandler);
+                selectedRailPath = List.of();
+                return;
+            }
+            getHexGridController().getTileControllers().stream().filter(tc -> !tc.hasMouseClickedHandler())
+                    .forEach(tc -> {
+                        tc.setMouseEnteredHandler(e -> {
+                            highlightPotentialBuildPath(tc.getTile(), newValue);
+                        });
+                        tc.setMouseClickedHandler(e -> {
+                            if (selectedRailPath != null && !selectedRailPath.isEmpty()) {
+                                getPlayerController().triggerAction(new BuildRailAction(selectedRailPath));
                             }
-                            for (Edge edge : selectedRailPath) {
-                                getHexGridController().getEdgeControllersMap().get(edge).highlight();
-                            }
-                        }
+                        });
                     });
-                    tc.setMouseClickedHandler(e -> {
-                        if (selectedRailPath != null && !selectedRailPath.isEmpty()) {
-                            getPlayerController().triggerAction(new BuildRailAction(selectedRailPath));
-                        }
-                    });
-                });
+        });
     }
 
     private void chooseEdgeHandler(EdgeController ec) {
