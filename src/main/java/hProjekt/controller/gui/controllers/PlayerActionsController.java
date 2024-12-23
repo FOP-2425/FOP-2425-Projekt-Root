@@ -169,12 +169,16 @@ public class PlayerActionsController {
             }
         }
         if (allowedActions.contains(DriveAction.class)) {
-            gameBoardController.getPlayerAnimationController(getPlayer()).addTrain();
+            gameBoardController.getPlayerAnimationController(getPlayer())
+                    .setPosition(gameBoardController.getPlayerPosition(getPlayer()));
+            gameBoardController.getPlayerAnimationController(getPlayer()).showTrain();
             getPlayerState().drivableTiles().keySet().stream().forEach(tile -> {
                 getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
-                    getPlayerController().triggerAction(new DriveAction(tile));
+                    getHexGridController().unhighlightTiles();
                     gameBoardController.getPlayerAnimationController(getPlayer())
-                            .animatePlayer(getPlayerState().drivableTiles().get(tile));
+                            .animatePlayer(getPlayerState().drivableTiles().get(tile))
+                            .setOnFinished(actionEvent -> getPlayerController()
+                                    .triggerAction(new DriveAction(tile)));
                 });
             });
         }
