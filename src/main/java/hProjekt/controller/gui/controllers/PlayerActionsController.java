@@ -171,6 +171,9 @@ public class PlayerActionsController {
             gameBoardController.getPlayerAnimationController(getPlayer())
                     .setPosition(gameBoardController.getPlayerPosition(getPlayer()));
             gameBoardController.getPlayerAnimationController(getPlayer()).showTrain();
+            getPlayerState().rentedEdges().stream().forEach(edge -> {
+                getHexGridController().getEdgeControllersMap().get(edge).highlight();
+            });
             getPlayerState().drivableTiles().keySet().stream().forEach(tile -> {
                 getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
                     getHexGridController().unhighlightTiles();
