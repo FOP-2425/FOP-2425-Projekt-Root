@@ -90,12 +90,16 @@ public class GameBoardController implements SceneController {
         });
         chosenCitiesProperty.subscribe((oldValue, newValue) -> {
             if (newValue == null) {
+                getHexGridController().getCityControllers().forEach(cc -> cc.unhighlight());
                 return;
             }
             Platform.runLater(() -> {
+                getHexGridController().getCityControllers().forEach(cc -> cc.unhighlight());
                 chosenCitiesOverlayView.spinCities(newValue.getKey().getName(), newValue.getValue().getName(),
                         gameState.getGrid().getCities().values().stream().map(City::getName).toList());
                 updateCityOverlay();
+                getHexGridController().getCityControllersMap().get(newValue.getKey()).highlight();
+                getHexGridController().getCityControllersMap().get(newValue.getValue()).highlight();
             });
         });
         gameState.getWinnerProperty().subscribe((oldValue, newValue) -> {
