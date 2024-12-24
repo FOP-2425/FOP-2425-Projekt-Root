@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
+import hProjekt.controller.actions.ConfirmBuildAction;
+import hProjekt.controller.actions.PlayerAction;
 import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGridImpl;
@@ -130,27 +132,23 @@ public class GameController {
         while (state.getGrid().getCities().values().size() - state.getGrid().getConnectedCities().size() > 3) {
             roundCounter.set(roundCounter.get() + 1);
             final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
-            System.out.println("Round " + roundCounter.get());
             withActivePlayer(
                     playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
                     () -> {
-                        System.out.println("Player " + getActivePlayerController().getPlayer().getName()
-                                + " is rolling the dice");
                         getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
-                        getActivePlayerController().setBuildingBudget(getCurrentDiceRoll());
-
-                        for (int i = 0; i < state.getPlayers().size(); i++) {
-                            final Player player = state.getPlayers()
-                                    .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
-                            final PlayerController pc = playerControllers.get(player);
-                            withActivePlayer(pc, () -> {
-                                pc.setBuildingBudget(getCurrentDiceRoll());
-                                while (pc.getBuildingBudget() > 0) {
-                                    pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
-                                }
-                            });
-                        }
                     });
+            for (int i = 0; i < state.getPlayers().size(); i++) {
+                final Player player = state.getPlayers()
+                        .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
+                final PlayerController pc = playerControllers.get(player);
+                withActivePlayer(pc, () -> {
+                    pc.setBuildingBudget(getCurrentDiceRoll());
+                    PlayerAction action = pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                    while (!(action instanceof ConfirmBuildAction)) {
+                        action = pc.waitForNextAction();
+                    }
+                });
+            }
         }
 
         // Fahrphase
