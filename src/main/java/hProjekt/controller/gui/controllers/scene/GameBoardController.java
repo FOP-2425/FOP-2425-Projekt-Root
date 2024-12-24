@@ -30,7 +30,7 @@ import javafx.util.Pair;
 
 public class GameBoardController implements SceneController {
     private final HexGridController hexGridController;
-    private final Builder<Region> builder;
+    private final GameBoardBuilder builder;
     private final GameInfoOverlayView gameInfoOverlayView;
     private final PlayerOverlayView playerOverlayView;
     private final RollDiceOverlayView rollDiceOverlayView;
@@ -131,11 +131,16 @@ public class GameBoardController implements SceneController {
     }
 
     public void updateConfirmationOverlay(String message, Runnable onYesAction, Runnable onNoAction) {
+        builder.addConfirmationOverlay();
         Platform.runLater(() -> {
             confirmationOverlayView.setMessage(message);
             confirmationOverlayView.setOnYesAction(onYesAction);
             confirmationOverlayView.setOnNoAction(onNoAction);
         });
+    }
+
+    public void hideConfirmationOverlay() {
+        builder.removeConfirmationOverlay();
     }
 
     public TilePosition getPlayerPosition(Player player) {
