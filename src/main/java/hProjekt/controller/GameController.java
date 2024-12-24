@@ -157,14 +157,19 @@ public class GameController {
         while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
             roundCounter.set(roundCounter.get() + 1);
             getState().resetDrivingPlayers();
+            getState().resetPlayerPositions();
 
             if (roundCounter.get() % 3 == 0) {
                 getState().getPlayers().stream().sorted((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()))
                         .forEachOrdered((player) -> {
-                            withActivePlayer(playerControllers.get(player), () -> {
-                                // must currently place one rail
-                                // TODO: Should fix
-                                getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
+                            final PlayerController pc = playerControllers.get(player);
+                            pc.setBuildingBudget(Config.MAX_BUILDINGBUDGET_DRIVING_PHASE);
+                            withActivePlayer(pc, () -> {
+                                pc.setBuildingBudget(getCurrentDiceRoll());
+                                PlayerAction action = pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                                while (!(action instanceof ConfirmBuildAction)) {
+                                    action = pc.waitForNextAction();
+                                }
                             });
                         });
             }
