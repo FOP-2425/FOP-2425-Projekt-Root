@@ -19,4 +19,11 @@ public class CityController implements Controller {
         return builder;
     }
 
+    public void highlight() {
+        builder.highlight();
+    }
+
+    public void unhighlight() {
+        builder.unhighlight();
+    }
 }
