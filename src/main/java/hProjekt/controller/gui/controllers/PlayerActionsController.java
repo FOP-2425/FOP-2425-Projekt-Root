@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
@@ -17,6 +19,7 @@ import hProjekt.controller.PlayerObjective;
 import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.ChooseCitiesAction;
 import hProjekt.controller.actions.ChooseRailsAction;
+import hProjekt.controller.actions.ConfirmBuildAction;
 import hProjekt.controller.actions.ConfirmDrive;
 import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
@@ -26,6 +29,7 @@ import hProjekt.model.Edge;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;
 import hProjekt.model.Tile;
+import hProjekt.model.TilePosition;
 import hProjekt.view.menus.overlays.ChosenCitiesOverlayView;
 import hProjekt.view.menus.overlays.RollDiceOverlayView;
 import javafx.application.Platform;
@@ -35,6 +39,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.ActionEvent;
+import javafx.util.Pair;
 import javafx.util.Subscription;
 
 public class PlayerActionsController {
@@ -46,17 +51,8 @@ public class PlayerActionsController {
     private final GameBoardController gameBoardController;
     private final ObservableSet<Edge> selectedEdges = FXCollections.observableSet();
     private final SetChangeListener<Edge> selctedEdgesListener = (change) -> {
-        if (change.wasAdded() && change.getSet().size() >= Config.MAX_RENTABLE_DISTANCE) {
-            getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
-                    .map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
-                    .forEach(ec -> ec.unhighlight());
-            return;
-        }
-
-        if (change.wasRemoved() && change.getSet().size() == Config.MAX_RENTABLE_DISTANCE - 1) {
-            updateChooseableEdges(
-                    getPlayerState().choosableEdges().stream().filter(Predicate.not(selectedEdges::contains))
-                            .collect(Collectors.toSet()));
+        for (Edge edge : change.getSet()) {
+            getHexGridController().getEdgeControllersMap().get(edge).highlight();
         }
     };
     private final Property<Tile> selectedTile = new SimpleObjectProperty<>();
@@ -128,6 +124,7 @@ public class PlayerActionsController {
         System.out.println("objective: " + objective);
         rollDiceOverlayView.disableRollDiceButton();
         cityOverlayView.disableSpinButton();
+        gameBoardController.hideConfirmationOverlay();
         removeAllHighlights();
         updatePlayerInformation();
         selectedEdges.removeListener(selctedEdgesListener);
@@ -149,11 +146,10 @@ public class PlayerActionsController {
         }
         if (allowedActions.contains(ChooseRailsAction.class)) {
             selectedEdges.clear();
-            updateChooseableEdges();
             selectedEdges.addListener(selctedEdgesListener);
+            addChooseEdgesHandlers();
             gameBoardController.updateConfirmationOverlay("Rent selected rails?", this::confirmSelectedRails, () -> {
                 selectedEdges.clear();
-                updateChooseableEdges();
             });
         }
         if (allowedActions.contains(ConfirmDrive.class)) {
@@ -161,12 +157,12 @@ public class PlayerActionsController {
                 getHexGridController().getEdgeControllersMap().get(edge).highlight();
             });
             if (getPlayerState().hasPath()) {
-                gameBoardController.updateConfirmationOverlay("Rent highlighted edges and drive?",
+                gameBoardController.updateConfirmationOverlay("Rent highlighted rails and drive?",
                         () -> confirmDrive(true),
                         () -> confirmDrive(false));
             } else {
                 gameBoardController.updateConfirmationOverlay(
-                        "Could not find path to target city. Do you want to rent different edges?",
+                        "Could not find path to target city. Do you want to rent different rails?",
                         () -> confirmDrive(false), () -> confirmDrive(true));
             }
         }
@@ -298,20 +294,33 @@ public class PlayerActionsController {
         }
     }
 
-    private void highlightPotentialBuildPath(Tile hoveredTile, Tile selectedTile) {
-        getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
+    private Integer drivingCostFunction(TilePosition from, TilePosition to) {
+        return getHexGridController().getHexGrid().getEdge(from, to).getDrivingCost(from);
+    }
 
-        List<Edge> pathToHoveredTile = getHexGridController().getHexGrid().findPath(
+    private List<Edge> findBuildPath(Tile hoveredTile, Tile selectedTile) {
+        return getHexGridController().getHexGrid().findPath(
                 selectedTile.getPosition(),
                 hoveredTile.getPosition(),
                 getHexGridController().getHexGrid().getEdges().values().stream()
                         .collect(Collectors.toSet()),
-                (from, to) -> getHexGridController().getHexGrid().getEdge(from, to)
-                        .getDrivingCost(from));
+                this::drivingCostFunction);
+    }
+
+    private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
+            List<Edge> pathToHoveredTile) {
+        highlightPath(terminateFunction, pathToHoveredTile, List.of());
+    }
+
+    private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
+            List<Edge> pathToHoveredTile, Collection<Edge> highlightedEdges) {
+        getHexGridController().getEdgeControllers().stream().filter(ec -> !highlightedEdges.contains(ec.getEdge()))
+                .forEach(EdgeController::unhighlight);
 
         selectedRailPath = new ArrayList<>();
         int buildingCost = 0;
         int parallelCost = 0;
+        int distance = 0;
 
         for (Edge edge : pathToHoveredTile) {
             if (edge.getRailOwners().contains(getPlayer())) {
@@ -320,13 +329,12 @@ public class PlayerActionsController {
 
             buildingCost += edge.getBuildingCost();
             parallelCost += edge.getTotalParallelCost(getPlayer());
+            distance++;
 
-            if ((GamePhase.BUILDING_PHASE.equals(gameBoardController.getGamePhase())
-                    && (buildingCost > getPlayerState().buildingBudget()
-                            || parallelCost > getPlayer().getCredits()))
-                    || buildingCost + parallelCost > getPlayer().getCredits()) {
+            if (terminateFunction.apply(new Pair<>(buildingCost, parallelCost), distance)) {
                 break;
             }
+
             selectedRailPath.add(edge);
         }
 
@@ -336,9 +344,29 @@ public class PlayerActionsController {
     }
 
     public void addBuildHandlers() {
+        gameBoardController.updateConfirmationOverlay(
+                String.format("Finish building? (%s budget left)", getPlayerState().buildingBudget()),
+                () -> getPlayerController().triggerAction(new ConfirmBuildAction()), null);
         selectedRailPath = List.of();
-        highlightStartingTiles();
         selectedTileSubscription.unsubscribe();
+
+        if (getPlayerState().buildingBudget() == 0) {
+            return;
+        }
+
+        setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
+                (costs, distance) -> costs.getKey() > getPlayerState()
+                        .buildingBudget() || costs.getValue() > getPlayer().getCredits()
+                        || (GamePhase.DRIVING_PHASE.equals(gameBoardController.getGamePhase())
+                                && costs.getKey() + costs.getValue() > getPlayer().getCredits()),
+                findBuildPath(tc.getTile(), selectedTile)),
+                tc -> getPlayerController()
+                        .triggerAction(new BuildRailAction(selectedRailPath)));
+    }
+
+    private void setupTileSelectionHandlers(BiConsumer<TileController, Tile> handleTileHover,
+            Consumer<TileController> handleTileClick) {
+        highlightStartingTiles();
         selectedTileSubscription = selectedTile.subscribe((oldValue, newValue) -> {
             if (newValue == null) {
                 getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
@@ -349,15 +377,36 @@ public class PlayerActionsController {
             getHexGridController().getTileControllers().stream().filter(tc -> !tc.hasMouseClickedHandler())
                     .forEach(tc -> {
                         tc.setMouseEnteredHandler(e -> {
-                            highlightPotentialBuildPath(tc.getTile(), newValue);
+                            handleTileHover.accept(tc, newValue);
                         });
                         tc.setMouseClickedHandler(e -> {
                             if (selectedRailPath != null && !selectedRailPath.isEmpty()) {
-                                getPlayerController().triggerAction(new BuildRailAction(selectedRailPath));
+                                handleTileClick.accept(tc);
                             }
                         });
                     });
         });
+    }
+
+    private List<Edge> findChoosenEdgesPath(Tile hoveredTile, Tile selectedTile) {
+        return getHexGridController().getHexGrid().findPath(selectedTile.getPosition(), hoveredTile.getPosition(),
+                Set.of(getPlayerState().choosableEdges(), getPlayer()
+                        .getRails().values()).stream().flatMap(set -> set.stream()).collect(Collectors.toSet()),
+                this::drivingCostFunction);
+    }
+
+    public void addChooseEdgesHandlers() {
+        selectedRailPath = List.of();
+        selectedTileSubscription.unsubscribe();
+
+        if (selectedEdges.size() == Config.MAX_RENTABLE_DISTANCE) {
+            return;
+        }
+
+        setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
+                (costs, distance) -> distance > Config.MAX_RENTABLE_DISTANCE || distance > getPlayer().getCredits(),
+                findChoosenEdgesPath(tc.getTile(), selectedTile), selectedEdges),
+                tc -> selectedEdges.addAll(selectedRailPath));
     }
 
     private void chooseEdgeHandler(EdgeController ec) {
