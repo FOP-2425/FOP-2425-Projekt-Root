@@ -444,6 +444,12 @@ public class PlayerController {
 
         hasConfirmedPath = true;
         if (hasPath) {
+            rentedEdges.stream().flatMap(edge -> edge.getRentingCost(player).entrySet().stream()).forEach(entry -> {
+                entry.getKey().addCredits(entry.getValue());
+                if (!player.removeCredits(entry.getValue())) {
+                    throw new RuntimeException("Player unexpectedly ran out of credits");
+                }
+            });
             getState().addDrivingPlayer(player);
             return;
         }
