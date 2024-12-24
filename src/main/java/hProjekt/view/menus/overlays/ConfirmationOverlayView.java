@@ -16,12 +16,13 @@ public class ConfirmationOverlayView extends VBox {
     private final Label messageLabel;
     private final Button yesButton;
     private final Button noButton;
+    private final HBox buttonContainer;
 
-    public ConfirmationOverlayView(String initialMessage, Runnable onYesAction, Runnable onNoAction) {
+    public ConfirmationOverlayView() {
         configureOverlayStyle();
         this.getStylesheets().add(ConfirmationOverlayView.class.getResource("/css/confirmation.css").toExternalForm());
         // Label for the message
-        messageLabel = new Label(initialMessage);
+        messageLabel = new Label();
         messageLabel.getStyleClass().add("label-message");
         messageLabel.setWrapText(true);
         this.getChildren().add(messageLabel);
@@ -32,21 +33,8 @@ public class ConfirmationOverlayView extends VBox {
         noButton = new Button("No");
         noButton.getStyleClass().add("button-no");
 
-        // Add actions to buttons
-        yesButton.setOnAction(event -> {
-            if (onYesAction != null) {
-                onYesAction.run();
-            }
-        });
-
-        noButton.setOnAction(event -> {
-            if (onNoAction != null) {
-                onNoAction.run();
-            }
-        });
-
         // Layout for buttons
-        HBox buttonContainer = new HBox(10, yesButton, noButton); // 10px spacing between buttons
+        buttonContainer = new HBox(10, yesButton, noButton); // 10px spacing between buttons
         buttonContainer.setAlignment(Pos.CENTER);
 
         this.getChildren().add(buttonContainer);
@@ -91,6 +79,13 @@ public class ConfirmationOverlayView extends VBox {
      * @param onNoAction the action to run when "No" is clicked
      */
     public void setOnNoAction(Runnable onNoAction) {
+        if (onNoAction == null) {
+            buttonContainer.getChildren().remove(noButton);
+            return;
+        }
+        if (!buttonContainer.getChildren().contains(noButton)) {
+            buttonContainer.getChildren().add(noButton);
+        }
         noButton.setOnAction(event -> {
             if (onNoAction != null) {
                 onNoAction.run();

@@ -48,8 +48,7 @@ public class GameBoardController implements SceneController {
         this.gameInfoOverlayView = new GameInfoOverlayView();
         this.playerOverlayView = new PlayerOverlayView(gameState.getPlayers());
         this.cityOverlayView = new CityOverlayView(gameState);
-        this.confirmationOverlayView = new ConfirmationOverlayView("This is a sample message that can be changed",
-                () -> System.out.println("Yes clicked!"), () -> System.out.println("No clicked!"));
+        this.confirmationOverlayView = new ConfirmationOverlayView();
         PlayerActionsController playerActionsController = new PlayerActionsController(activePlayerControllerProperty,
                 this);
         this.chosenCitiesOverlayView = playerActionsController.getChosenCitiesOverlayView();
