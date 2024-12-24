@@ -165,6 +165,7 @@ public class PlayerActionsController {
                         "Could not find path to target city. Do you want to rent different rails?",
                         () -> confirmDrive(false), () -> confirmDrive(true));
             }
+            selectedEdges.clear();
         }
         if (allowedActions.contains(DriveAction.class)) {
             gameBoardController.getPlayerAnimationController(getPlayer())
