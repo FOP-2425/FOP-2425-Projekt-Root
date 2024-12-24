@@ -137,6 +137,14 @@ public class HexGridController implements Controller {
         return Collections.unmodifiableMap(tileControllers);
     }
 
+    public Set<CityController> getCityControllers() {
+        return cityControllers.values().stream().collect(Collectors.toSet());
+    }
+
+    public Map<City, CityController> getCityControllersMap() {
+        return Collections.unmodifiableMap(cityControllers);
+    }
+
     /**
      * Returns the hex grid.
      *
