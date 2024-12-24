@@ -129,7 +129,8 @@ public class GameController {
 
         // Bauphase
         getState().getGamePhaseProperty().setValue(GamePhase.BUILDING_PHASE);
-        while (state.getGrid().getCities().values().size() - state.getGrid().getConnectedCities().size() > 3) {
+        while (state.getGrid().getCities().values().size()
+                - state.getGrid().getConnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
             roundCounter.set(roundCounter.get() + 1);
             final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
             withActivePlayer(

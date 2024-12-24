@@ -35,6 +35,11 @@ public class Config {
     public static int NUMBER_OF_CITIES = 10;
 
     /**
+     * The number of unconnected cities left to start the driving phase.
+     */
+    public static int UNCONNECTED_CITIES_START_THRESHOLD = 1;
+
+    /**
      * The base probability of a city being generated on a tile.
      */
     public static double CITY_BASE_PROBABILTY = 0.3;
@@ -88,7 +93,7 @@ public class Config {
     /**
      * The scale of the map, bigger values mean a bigger map.
      */
-    public static int MAP_SCALE = 5;
+    public static int MAP_SCALE = 3;
 
     public static int MAX_RENTABLE_DISTANCE = 10;
 
