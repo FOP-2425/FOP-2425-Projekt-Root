@@ -193,7 +193,8 @@ public class GameController {
             while (!getState().getPlayerPositions().values().stream()
                     .anyMatch(pos -> getTargetCity().getPosition().equals(pos))
                     && !getState().getDrivingPlayers().isEmpty()) {
-                for (Player player : getState().getDrivingPlayers()) {
+                for (Player player : getState().getDrivingPlayers().stream()
+                        .sorted((p1, p2) -> -Integer.compare(p1.getCredits(), p2.getCredits())).toList()) {
                     withActivePlayer(playerControllers.get(player), () -> {
                         getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
                         getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
