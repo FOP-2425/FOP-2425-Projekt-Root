@@ -516,9 +516,12 @@ public class PlayerController {
         if (!canDrive()) {
             throw new IllegalActionException("Player cannot drive");
         }
-        if (!getDrivableTiles().containsKey(targetTile)) {
+        Map<Tile, List<Tile>> drivableTiles = getDrivableTiles();
+        if (!drivableTiles.containsKey(targetTile)) {
             throw new IllegalActionException("Player cannot drive to the target tile");
         }
         getState().setPlayerPositon(player, targetTile.getPosition());
+        getState().setPlayerPointSurplus(player,
+                gameController.getCurrentDiceRoll() - drivableTiles.get(targetTile).size());
     }
 }
