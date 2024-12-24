@@ -78,6 +78,7 @@ public class GameBoardController implements SceneController {
             }
             Platform.runLater(() -> {
                 gameInfoOverlayView.setRound(newValue.intValue());
+                playerAnimationControllers.values().forEach(pa -> pa.hideTrain());
             });
         });
         diceRollProperty.subscribe((oldValue, newValue) -> {
