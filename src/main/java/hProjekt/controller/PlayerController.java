@@ -409,6 +409,11 @@ public class PlayerController {
         if (edges.size() > Config.MAX_RENTABLE_DISTANCE) {
             throw new IllegalActionException("Cannot choose more than 10 edges");
         }
+        if (edges.stream().reduce(0, (previous, edge) -> {
+            return previous + edge.getRentingCost(player).values().stream().reduce(0, Integer::sum);
+        }, Integer::sum) > player.getCredits()) {
+            throw new IllegalArgumentException("Player cannot afford to rent the chosen edges");
+        }
 
         Set<Edge> allAvailableEdges = List.of(getState().getGrid().getRails(player).values(), edges).stream()
                 .flatMap(set -> set.stream())
