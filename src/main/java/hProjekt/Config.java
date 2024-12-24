@@ -101,6 +101,14 @@ public class Config {
             new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.MOUNTAIN), 1,
             new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.PLAIN), 1);
 
+    /**
+     * The credits a player receives for arriving as the i-th player during the
+     * driving phase.
+     */
+    public static List<Integer> WINNING_CREDITS = List.of(20, 10);
+
+    public static int MAX_BUILDINGBUDGET_DRIVING_PHASE = 10;
+
     public static final String[] TOWN_NAMES;
 
     static {
