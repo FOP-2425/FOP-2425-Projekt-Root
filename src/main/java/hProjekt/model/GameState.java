@@ -46,6 +46,8 @@ public final class GameState {
      */
     private final Map<Player, TilePosition> playerPositions = new HashMap<>();
 
+    private final Map<Player, Integer> playerPointSurplus = new HashMap<>();
+
     /**
      * The game over flag.
      */
@@ -113,6 +115,14 @@ public final class GameState {
      */
     public void setPlayerPositon(final Player player, final TilePosition position) {
         playerPositions.put(player, position);
+    }
+
+    public Map<Player, Integer> getPlayerPointSurplus() {
+        return Collections.unmodifiableMap(playerPointSurplus);
+    }
+
+    public void setPlayerPointSurplus(final Player player, final int surplus) {
+        playerPointSurplus.put(player, surplus);
     }
 
     /**
