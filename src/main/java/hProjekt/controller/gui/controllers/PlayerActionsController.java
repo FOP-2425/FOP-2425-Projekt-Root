@@ -415,7 +415,10 @@ public class PlayerActionsController {
         }
 
         setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
-                (costs, distance) -> distance > Config.MAX_RENTABLE_DISTANCE || distance > getPlayer().getCredits(),
+                (costs, distance) -> {
+                    distance += selectedEdges.size();
+                    return distance > Config.MAX_RENTABLE_DISTANCE || distance > getPlayer().getCredits();
+                },
                 findChoosenEdgesPath(tc.getTile(), selectedTile), selectedEdges),
                 tc -> selectedEdges.addAll(selectedRailPath), selectedEdges);
     }
