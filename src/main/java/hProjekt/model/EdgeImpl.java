@@ -60,8 +60,10 @@ public record EdgeImpl(
 
     @Override
     public Map<Player, Integer> getRentingCost(Player player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRentingCost'");
+        if (getRailOwners().contains(player)) {
+            return Map.of();
+        }
+        return getRailOwners().stream().collect(Collectors.toMap(p -> p, p -> 1));
     }
 
     @Override
