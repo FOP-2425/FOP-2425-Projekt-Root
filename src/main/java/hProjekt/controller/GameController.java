@@ -200,6 +200,19 @@ public class GameController {
                     });
                 }
             }
+
+            List<Player> winners = getState().getPlayerPositions().entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(getTargetCity().getPosition()))
+                    .map(entry -> entry.getKey())
+                    .sorted((p1, p2) -> Integer.compare(getState().getPlayerPointSurplus().get(p1),
+                            getState().getPlayerPointSurplus().get(p2)))
+                    .limit(Config.WINNING_CREDITS.size())
+                    .toList();
+
+            for (int i = 0; i < winners.size(); i++) {
+                Player player = winners.get(i);
+                player.addCredits(Config.WINNING_CREDITS.get(i));
+            }
         }
     }
 
