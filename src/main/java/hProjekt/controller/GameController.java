@@ -214,6 +214,8 @@ public class GameController {
                 player.addCredits(Config.WINNING_CREDITS.get(i));
             }
         }
+        getState().getWinnerProperty().setValue(getState().getPlayers().stream()
+                .max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits())).get());
     }
 
     /**
