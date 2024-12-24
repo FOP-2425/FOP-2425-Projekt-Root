@@ -166,7 +166,6 @@ public class GameController {
                             final PlayerController pc = playerControllers.get(player);
                             pc.setBuildingBudget(Config.MAX_BUILDINGBUDGET_DRIVING_PHASE);
                             withActivePlayer(pc, () -> {
-                                pc.setBuildingBudget(getCurrentDiceRoll());
                                 PlayerAction action = pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
                                 while (!(action instanceof ConfirmBuildAction)) {
                                     action = pc.waitForNextAction();
