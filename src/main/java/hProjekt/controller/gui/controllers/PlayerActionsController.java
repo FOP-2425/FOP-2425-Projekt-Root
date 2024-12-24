@@ -370,10 +370,17 @@ public class PlayerActionsController {
 
     private void setupTileSelectionHandlers(BiConsumer<TileController, Tile> handleTileHover,
             Consumer<TileController> handleTileClick) {
+        setupTileSelectionHandlers(handleTileHover, handleTileClick, Set.of());
+    }
+
+    private void setupTileSelectionHandlers(BiConsumer<TileController, Tile> handleTileHover,
+            Consumer<TileController> handleTileClick, Set<Edge> highlightedEdges) {
         highlightStartingTiles();
         selectedTileSubscription = selectedTile.subscribe((oldValue, newValue) -> {
             if (newValue == null) {
-                getHexGridController().getEdgeControllers().forEach(EdgeController::unhighlight);
+                getHexGridController().getEdgeControllers().stream()
+                        .filter(ec -> !highlightedEdges.contains(ec.getEdge()))
+                        .forEach(EdgeController::unhighlight);
                 getHexGridController().getTileControllers().forEach(TileController::removeMouseEnteredHandler);
                 selectedRailPath = List.of();
                 return;
@@ -410,7 +417,7 @@ public class PlayerActionsController {
         setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
                 (costs, distance) -> distance > Config.MAX_RENTABLE_DISTANCE || distance > getPlayer().getCredits(),
                 findChoosenEdgesPath(tc.getTile(), selectedTile), selectedEdges),
-                tc -> selectedEdges.addAll(selectedRailPath));
+                tc -> selectedEdges.addAll(selectedRailPath), selectedEdges);
     }
 
     private void chooseEdgeHandler(EdgeController ec) {
