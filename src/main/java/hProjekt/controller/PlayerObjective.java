@@ -5,6 +5,7 @@ import java.util.Set;
 import hProjekt.controller.actions.BuildRailAction;
 import hProjekt.controller.actions.ChooseCitiesAction;
 import hProjekt.controller.actions.ChooseRailsAction;
+import hProjekt.controller.actions.ConfirmBuildAction;
 import hProjekt.controller.actions.ConfirmDrive;
 import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
@@ -16,7 +17,7 @@ import hProjekt.controller.actions.RollDiceAction;
  * objective.
  */
 public enum PlayerObjective {
-    PLACE_RAIL(Set.of(BuildRailAction.class)),
+    PLACE_RAIL(Set.of(BuildRailAction.class, ConfirmBuildAction.class)),
     ROLL_DICE(Set.of(RollDiceAction.class)),
     CHOOSE_CITIES(Set.of(ChooseCitiesAction.class)),
     DRIVE(Set.of(DriveAction.class)),
