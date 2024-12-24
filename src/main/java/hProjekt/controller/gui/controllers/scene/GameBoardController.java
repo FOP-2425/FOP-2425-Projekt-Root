@@ -98,6 +98,14 @@ public class GameBoardController implements SceneController {
                 updateCityOverlay();
             });
         });
+        gameState.getWinnerProperty().subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+            Platform.runLater(() -> {
+                SceneController.loadEndScreenScene(gameState.getPlayers());
+            });
+        });
     }
 
     /**
