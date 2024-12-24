@@ -433,6 +433,7 @@ public class PlayerController {
     public void confirmPath(boolean confirm) {
         if (!confirm) {
             hasConfirmedPath = false;
+            rentedEdges = new HashSet<>();
             return;
         }
 
