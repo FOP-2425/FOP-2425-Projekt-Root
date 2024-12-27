@@ -8,6 +8,8 @@ import hProjekt.model.Edge;
 import hProjekt.model.EdgeImpl;
 import hProjekt.model.Player;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -25,6 +27,7 @@ public class EdgeLine extends Line {
     private final int strokeWidth = 5;
     private final double positionOffset = 10;
     private final Line outline = new Line();
+    private final Label label = new Label();
 
     /**
      * Creates a new EdgeLine for the given {@link EdgeImpl}.
@@ -45,6 +48,7 @@ public class EdgeLine extends Line {
         });
         setMouseTransparent(true);
         outline.setMouseTransparent(true);
+        label.getStyleClass().add("highlighted-label");
     }
 
     /**
@@ -61,8 +65,8 @@ public class EdgeLine extends Line {
      *
      * @return the outline
      */
-    public Line getOutline() {
-        return outline;
+    public List<Node> getOutline() {
+        return List.of(outline, label);
     }
 
     /**
@@ -112,6 +116,32 @@ public class EdgeLine extends Line {
         if (edge.hasRail()) {
             outline.setStroke(Color.BLACK);
         }
+    }
+
+    public void setLabel(final String text) {
+        label.setVisible(true);
+        label.setText(text);
+        label.setLayoutX(((getStartX() + getEndX()) / 2) - label.getWidth() / 2);
+        label.setLayoutY(((getStartY() + getEndY()) / 2) - label.getHeight() / 2);
+        label.toFront();
+    }
+
+    public void setCostLabel(Integer... costs) {
+        String text = "";
+        for (int i = 0; i < costs.length; i++) {
+            if (costs[i] == 0) {
+                continue;
+            }
+            if (i > 0) {
+                text += " + ";
+            }
+            text += String.format(" %d ", costs[i]);
+        }
+        setLabel(text);
+    }
+
+    public void hideLabel() {
+        label.setVisible(false);
     }
 
     public void highlight() {

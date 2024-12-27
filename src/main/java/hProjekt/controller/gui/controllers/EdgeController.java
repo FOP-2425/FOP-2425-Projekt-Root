@@ -56,6 +56,18 @@ public class EdgeController {
         line.selected(deselectHandler);
     }
 
+    public void setLabel(final String text) {
+        line.setLabel(text);
+    }
+
+    public void setCostLabel(Integer... costs) {
+        line.setCostLabel(costs);
+    }
+
+    public void hideLabel() {
+        line.hideLabel();
+    }
+
     /**
      * Unhighlights the edge.
      */

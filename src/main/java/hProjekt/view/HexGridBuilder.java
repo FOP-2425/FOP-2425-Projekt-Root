@@ -179,7 +179,7 @@ public class HexGridBuilder implements Builder<Region> {
         edgeLine.setEndX(translatedEnd.getX());
         edgeLine.setEndY(translatedEnd.getY());
         edgeLine.init();
-        hexGridPane.getChildren().add(edgeLine.getOutline());
+        hexGridPane.getChildren().addAll(edgeLine.getOutline());
         hexGridPane.getChildren().add(edgeLine);
     }
 
