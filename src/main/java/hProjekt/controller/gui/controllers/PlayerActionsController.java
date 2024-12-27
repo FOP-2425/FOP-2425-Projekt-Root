@@ -1,6 +1,5 @@
 package hProjekt.controller.gui.controllers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +35,8 @@ import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.ActionEvent;
@@ -57,7 +58,15 @@ public class PlayerActionsController {
     };
     private final Property<Tile> selectedTile = new SimpleObjectProperty<>();
     private Subscription selectedTileSubscription = Subscription.EMPTY;
-    private List<Edge> selectedRailPath = List.of();
+    private ObservableList<Edge> selectedRailPath = FXCollections.observableArrayList();
+    private final ListChangeListener<Edge> selectedRailPathListener = (change) -> {
+        getHexGridController().getEdgeControllers().forEach(EdgeController::hideLabel);
+        change.getList().forEach(edge -> {
+            EdgeController edgeController = getHexGridController().getEdgeControllersMap().get(edge);
+            edgeController.setCostLabel(edge.getBuildingCost(),
+                    edge.getTotalParallelCost(getPlayer()));
+        });
+    };
 
     /**
      * Creates a new PlayerActionsController.
@@ -129,6 +138,8 @@ public class PlayerActionsController {
         updatePlayerInformation();
         selectedEdges.removeListener(selctedEdgesListener);
         selectedTileSubscription.unsubscribe();
+        getHexGridController().getEdgeControllers().forEach(EdgeController::hideLabel);
+        selectedRailPath.removeListener(selectedRailPathListener);
 
         if (getPlayer().isAi()) {
             return;
@@ -321,7 +332,7 @@ public class PlayerActionsController {
         getHexGridController().getEdgeControllers().stream().filter(ec -> !highlightedEdges.contains(ec.getEdge()))
                 .forEach(EdgeController::unhighlight);
 
-        selectedRailPath = new ArrayList<>();
+        selectedRailPath.clear();
         int buildingCost = 0;
         int parallelCost = 0;
         int distance = 0;
@@ -351,13 +362,14 @@ public class PlayerActionsController {
         gameBoardController.updateConfirmationOverlay(
                 String.format("Finish building? (%s budget left)", getPlayerState().buildingBudget()),
                 () -> getPlayerController().triggerAction(new ConfirmBuildAction()), null);
-        selectedRailPath = List.of();
+        selectedRailPath.clear();
         selectedTileSubscription.unsubscribe();
 
         if (getPlayerState().buildingBudget() == 0) {
             return;
         }
 
+        selectedRailPath.addListener(selectedRailPathListener);
         setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
                 (costs, distance) -> costs.getKey() > getPlayerState()
                         .buildingBudget() || costs.getValue() > getPlayer().getCredits()
@@ -382,7 +394,7 @@ public class PlayerActionsController {
                         .filter(ec -> !highlightedEdges.contains(ec.getEdge()))
                         .forEach(EdgeController::unhighlight);
                 getHexGridController().getTileControllers().forEach(TileController::removeMouseEnteredHandler);
-                selectedRailPath = List.of();
+                selectedRailPath.clear();
                 return;
             }
             getHexGridController().getTileControllers().stream().filter(tc -> !tc.hasMouseClickedHandler())
@@ -407,7 +419,7 @@ public class PlayerActionsController {
     }
 
     public void addChooseEdgesHandlers() {
-        selectedRailPath = List.of();
+        selectedRailPath.clear();
         selectedTileSubscription.unsubscribe();
 
         if (selectedEdges.size() == Config.MAX_RENTABLE_DISTANCE) {
