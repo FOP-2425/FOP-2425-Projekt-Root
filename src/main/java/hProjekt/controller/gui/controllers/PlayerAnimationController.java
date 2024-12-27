@@ -116,6 +116,9 @@ public class PlayerAnimationController {
     }
 
     public void setPosition(TilePosition position) {
+        if (position == null) {
+            return;
+        }
         Point2D center = hexGridBuilder.calculatePositionCenterOffset(position);
         playerContainer.setTranslateX(center.getX() - playerContainer.getWidth() / 2);
         playerContainer.setTranslateY(center.getY() - playerContainer.getHeight() / 2);
