@@ -1,8 +1,11 @@
 package hProjekt.view;
 
+import java.util.function.Consumer;
+
 import hProjekt.model.Tile;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -19,6 +22,7 @@ import javafx.util.Builder;
 public class TileBuilder implements Builder<Region> {
     private final Tile tile;
     private final StackPane pane = new StackPane();
+    private boolean hasMouseClickedHandler = false;
 
     /**
      * Creates a new TileBuilder for the given {@link Tile}.
@@ -50,7 +54,7 @@ public class TileBuilder implements Builder<Region> {
         final Label resourceLabel = createResourceLabel();
 
         // Add labels for debugging
-        //mainBox.getChildren().addAll(positionLabel, resourceLabel);
+        // mainBox.getChildren().addAll(positionLabel, resourceLabel);
         pane.getChildren().addAll(mainBox);
 
         return pane;
@@ -101,15 +105,37 @@ public class TileBuilder implements Builder<Region> {
      * @param handler the handler to call when the tile is clicked
      */
     public void highlight(final Runnable handler) {
-        pane.getStyleClass().add("selectable");
-        pane.setOnMouseClicked(e -> handler.run());
+        pane.getStyleClass().addAll("selectable");
+        setMouseClickedHandler(e -> handler.run());
     }
 
     /**
      * Removes the highlight and the handler for mouse clicks.
      */
     public void unhighlight() {
-        pane.getStyleClass().remove("selectable");
+        pane.getStyleClass().removeAll("selectable");
+        removeMouseClickedHandler();
+    }
+
+    public void setMouseEnteredHandler(final Consumer<MouseEvent> handler) {
+        pane.setOnMouseEntered(handler::accept);
+    }
+
+    public void removeMouseEnteredHandler() {
+        pane.setOnMouseEntered(null);
+    }
+
+    public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
+        hasMouseClickedHandler = true;
+        pane.setOnMouseClicked(handler::accept);
+    }
+
+    public void removeMouseClickedHandler() {
+        hasMouseClickedHandler = false;
         pane.setOnMouseClicked(null);
+    }
+
+    public boolean hasMouseClickedHandler() {
+        return hasMouseClickedHandler;
     }
 }

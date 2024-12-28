@@ -1,6 +1,7 @@
 package hProjekt.model;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,5 +80,37 @@ public record TileImpl(
     @Override
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public Set<Tile> getNeighbours() {
+        return getHexGrid().getTiles().entrySet().stream()
+                .filter(entrySet -> TilePosition.neighbours(getPosition()).contains(entrySet.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Tile getNeighbour(final EdgeDirection direction) {
+        return getHexGrid().getTileAt(TilePosition.neighbour(getPosition(), direction));
+    }
+
+    @Override
+    public boolean isAtCaost() {
+        return getNeighbours().size() < 6;
+    }
+
+    @Override
+    public Set<Tile> getConnectedNeighbours(Set<Edge> connectingEdges) {
+        return getNeighbours().stream().filter(neighbour -> connectingEdges.stream().filter(
+                edge -> edge.getAdjacentTilePositions()
+                        .containsAll(Set.of(neighbour.getPosition(), this.getPosition())))
+                .count() > 0)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Edge> getRails(Player player) {
+        return getEdges().stream().filter(edge -> edge.getRailOwners().contains(player)).collect(Collectors.toSet());
     }
 }

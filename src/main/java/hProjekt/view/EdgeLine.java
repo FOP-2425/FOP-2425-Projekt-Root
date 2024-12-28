@@ -8,6 +8,8 @@ import hProjekt.model.Edge;
 import hProjekt.model.EdgeImpl;
 import hProjekt.model.Player;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -25,6 +27,7 @@ public class EdgeLine extends Line {
     private final int strokeWidth = 5;
     private final double positionOffset = 10;
     private final Line outline = new Line();
+    private final Label label = new Label();
 
     /**
      * Creates a new EdgeLine for the given {@link EdgeImpl}.
@@ -43,6 +46,9 @@ public class EdgeLine extends Line {
         getStrokeDashArray().subscribe(() -> {
             outline.getStrokeDashArray().setAll(getStrokeDashArray());
         });
+        setMouseTransparent(true);
+        outline.setMouseTransparent(true);
+        label.getStyleClass().add("highlighted-label");
     }
 
     /**
@@ -59,8 +65,8 @@ public class EdgeLine extends Line {
      *
      * @return the outline
      */
-    public Line getOutline() {
-        return outline;
+    public List<Node> getOutline() {
+        return List.of(outline, label);
     }
 
     /**
@@ -112,6 +118,38 @@ public class EdgeLine extends Line {
         }
     }
 
+    public void setLabel(final String text) {
+        label.setVisible(true);
+        label.setText(text);
+        label.setLayoutX(((getStartX() + getEndX()) / 2) - label.getWidth() / 2);
+        label.setLayoutY(((getStartY() + getEndY()) / 2) - label.getHeight() / 2);
+        label.toFront();
+    }
+
+    public void setCostLabel(Integer... costs) {
+        String text = "";
+        for (int i = 0; i < costs.length; i++) {
+            if (costs[i] == 0) {
+                continue;
+            }
+            if (i > 0) {
+                text += " + ";
+            }
+            text += String.format(" %d ", costs[i]);
+        }
+        setLabel(text);
+    }
+
+    public void hideLabel() {
+        label.setVisible(false);
+    }
+
+    public void highlight() {
+        init();
+        outline.getStyleClass().add("selected");
+        outline.setStrokeWidth(strokeWidth * 2);
+    }
+
     /**
      * Highlights the EdgeLine with the given handler.
      *
@@ -119,12 +157,21 @@ public class EdgeLine extends Line {
      */
     public void highlight(final Consumer<MouseEvent> handler) {
         init(0.1);
-        outline.setStroke(Color.BLACK);
-        outline.setStrokeWidth(strokeWidth * 1.6);
-        getStyleClass().add("selectable");
+        outline.setStroke(Color.GRAY);
+        outline.setStrokeWidth(strokeWidth * 2);
+        outline.getStyleClass().add("selectable");
         getStrokeDashArray().add(10.0);
-        setStrokeWidth(strokeWidth * 1.2);
-        setOnMouseClicked(handler::accept);
+        // setStrokeWidth(strokeWidth * 1.2);
+        outline.setOnMouseClicked(handler::accept);
+        outline.setMouseTransparent(false);
+    }
+
+    public void selected(final Consumer<MouseEvent> deselectHandler) {
+        highlight(event -> {
+            outline.getStyleClass().remove("selected");
+            deselectHandler.accept(event);
+        });
+        outline.getStyleClass().add("selected");
     }
 
     /**
@@ -132,8 +179,10 @@ public class EdgeLine extends Line {
      */
     public void unhighlight() {
         outline.setStroke(Color.TRANSPARENT);
-        setOnMouseClicked(null);
-        getStyleClass().remove("selectable");
+        outline.setStrokeWidth(strokeWidth * 1.4);
+        outline.setOnMouseClicked(null);
+        outline.getStyleClass().clear();
         init();
+        outline.setMouseTransparent(true);
     }
 }

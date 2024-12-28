@@ -1,15 +1,9 @@
 package hProjekt.model;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import hProjekt.Config;
 import javafx.beans.property.Property;
 
 /**
@@ -46,29 +40,21 @@ public interface Edge {
      * @param other the other edge
      * @return whether the two edges are connected
      */
-    default boolean connectsTo(Edge other) {
-        return getAdjacentTilePositions().contains(other.getPosition1())
-                || getAdjacentTilePositions().contains(other.getPosition2());
-    }
+    boolean connectsTo(Edge other);
 
     /**
      * Returns the {@link TilePosition}s that this edge lies between.
      *
      * @return the adjacent tile positions
      */
-    default Set<TilePosition> getAdjacentTilePositions() {
-        return Set.of(getPosition1(), getPosition2());
-    }
+    Set<TilePosition> getAdjacentTilePositions();
 
     /**
      * Returns all edges that connect to this edge in the grid.
      *
      * @return all edges connected to this one
      */
-    default Set<Edge> getConnectedEdges() {
-        return getHexGrid().getEdges().entrySet().stream().map(entry -> entry.getValue())
-                .filter(edge -> connectsTo(edge)).collect(Collectors.toUnmodifiableSet());
-    }
+    Set<Edge> getConnectedEdges();
 
     /**
      * Returns {@code true} if a player has built a rail on this edge and
@@ -76,9 +62,7 @@ public interface Edge {
      *
      * @return whether a player has placed a rail on this edge
      */
-    default boolean hasRail() {
-        return getRailOwnersProperty().getValue() != null && !getRailOwnersProperty().getValue().isEmpty();
-    }
+    boolean hasRail();
 
     /**
      * Adds a rail for the given player to this edge.
@@ -95,15 +79,7 @@ public interface Edge {
      * @param player the player to add the rail for
      * @return {@code true} if the rail was added, {@code false} otherwise
      */
-    default boolean addRail(Player player) {
-        if (getRailOwners().contains(player) || (player.getRails().size() > 0
-                && getConnectedEdges().stream().noneMatch(e -> e.getRailOwners().contains(player)))
-                || (player.getRails().size() == 0 && Collections.disjoint(getHexGrid().getStartingCities().keySet(),
-                        getAdjacentTilePositions()))) {
-            return false;
-        }
-        return getRailOwnersProperty().getValue().add(player);
-    }
+    boolean addRail(Player player);
 
     /**
      * Removes the rail of the given player from this edge.
@@ -111,9 +87,7 @@ public interface Edge {
      * @param player the player to remove the rail for
      * @return {@code true} if the rail was removed, {@code false} otherwise
      */
-    default boolean removeRail(Player player) {
-        return getRailOwnersProperty().getValue().remove(player);
-    }
+    boolean removeRail(Player player);
 
     /**
      * Returns the rail's owners, if a rail has been built on this edge.
@@ -127,9 +101,7 @@ public interface Edge {
      *
      * @return the rail's owners, if a rail has been built on this edge
      */
-    default List<Player> getRailOwners() {
-        return getRailOwnersProperty().getValue();
-    }
+    List<Player> getRailOwners();
 
     /**
      * Returns the connected rails of the given player.
@@ -144,10 +116,7 @@ public interface Edge {
      *
      * @return the cost of building a rail on this edge
      */
-    default int getBuildingCost() {
-        return Config.TILE_TYPE_TO_BUILDING_COST.get(getAdjacentTilePositions().stream()
-                .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
-    }
+    int getBuildingCost();
 
     /**
      * Returns the cost that needs to be paid to each player that has already built
@@ -157,32 +126,7 @@ public interface Edge {
      * @return the cost that needs to be paid to each player that has already built
      *         on this edge
      */
-    default Map<Player, Integer> getParallelCost(Player player) {
-        final Map<Player, Integer> result = new HashMap<>();
-        if (!getRailOwners().isEmpty() && !(getRailOwners().size() == 1 && getRailOwners().contains(player))) {
-            if (Collections.disjoint(getHexGrid().getCities().keySet(), getAdjacentTilePositions())) {
-                getRailOwners().stream().forEach(p -> result.put(p, 5));
-            } else {
-                getRailOwners().stream().forEach(p -> result.put(p, 3));
-            }
-        }
-
-        getAdjacentTilePositions().stream()
-                .flatMap(position -> {
-                    if (getHexGrid().getCityAt(position) != null) {
-                        return Stream.empty();
-                    }
-                    Set<Player> owners = getHexGrid().getTileAt(position).getEdges().stream()
-                            .filter(Predicate.not(this::equals)).flatMap(edge -> edge.getRailOwners().stream())
-                            .collect(Collectors.toUnmodifiableSet());
-                    if (owners.contains(player)) {
-                        return Stream.empty();
-                    }
-                    return owners.stream();
-                }).forEach(p -> result.put(p, Math.max(result.getOrDefault(p, 0), 1)));
-
-        return result;
-    }
+    Map<Player, Integer> getParallelCost(Player player);
 
     /**
      * Returns the total cost that needs to be paid by the player to build a rail on
@@ -191,9 +135,7 @@ public interface Edge {
      * @param player the player to calculate the total parallel cost for
      * @return the total cost that needs to be paid by the player to build a rail
      */
-    default int getTotalParallelCost(Player player) {
-        return getParallelCost(player).values().stream().reduce(0, Integer::sum);
-    }
+    int getTotalParallelCost(Player player);
 
     /**
      * Returns the total cost the player has to pay to build a rail on this edge.
@@ -203,17 +145,20 @@ public interface Edge {
      * @param player the player to calculate the total cost for
      * @return the total cost the player has to pay to build a rail on this edge
      */
-    default int getTotalBuildingCost(Player player) {
-        return getBuildingCost() + getTotalParallelCost(player);
-    }
+    int getTotalBuildingCost(Player player);
 
     /**
      * Returns the cost of driving along this edge.
      *
      * @return the cost of driving along this edge
      */
-    default int getDrivingCost() {
-        return Config.TILE_TYPE_TO_DRIVING_COST.get(getAdjacentTilePositions().stream()
-                .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
-    }
+    int getDrivingCost(TilePosition from);
+
+    /**
+     * Returns the cost of renting the rail on this edge.
+     *
+     * @param player the player that wants to rent the rail
+     * @return the rent that needs to be paid to the other players on this edge
+     */
+    Map<Player, Integer> getRentingCost(Player player);
 }

@@ -48,6 +48,26 @@ public class EdgeController {
         line.highlight(handler);
     }
 
+    public void highlight() {
+        line.highlight();
+    }
+
+    public void selected(final Consumer<MouseEvent> deselectHandler) {
+        line.selected(deselectHandler);
+    }
+
+    public void setLabel(final String text) {
+        line.setLabel(text);
+    }
+
+    public void setCostLabel(Integer... costs) {
+        line.setCostLabel(costs);
+    }
+
+    public void hideLabel() {
+        line.hideLabel();
+    }
+
     /**
      * Unhighlights the edge.
      */

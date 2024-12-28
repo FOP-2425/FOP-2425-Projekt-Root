@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
+import hProjekt.controller.actions.ConfirmBuildAction;
+import hProjekt.controller.actions.PlayerAction;
 import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGridImpl;
@@ -127,30 +129,27 @@ public class GameController {
 
         // Bauphase
         getState().getGamePhaseProperty().setValue(GamePhase.BUILDING_PHASE);
-        while (state.getGrid().getCities().values().size() - state.getGrid().getConnectedCities().size() > 3) {
+        while (state.getGrid().getCities().values().size()
+                - state.getGrid().getConnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
             roundCounter.set(roundCounter.get() + 1);
             final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
-            System.out.println("Round " + roundCounter.get());
             withActivePlayer(
                     playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
                     () -> {
-                        System.out.println("Player " + getActivePlayerController().getPlayer().getName()
-                                + " is rolling the dice");
                         getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
-                        getActivePlayerController().setBuildingBudget(getCurrentDiceRoll());
-
-                        for (int i = 0; i < state.getPlayers().size(); i++) {
-                            final Player player = state.getPlayers()
-                                    .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
-                            final PlayerController pc = playerControllers.get(player);
-                            withActivePlayer(pc, () -> {
-                                pc.setBuildingBudget(getCurrentDiceRoll());
-                                while (pc.getBuildingBudget() > 0) {
-                                    pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
-                                }
-                            });
-                        }
                     });
+            for (int i = 0; i < state.getPlayers().size(); i++) {
+                final Player player = state.getPlayers()
+                        .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
+                final PlayerController pc = playerControllers.get(player);
+                withActivePlayer(pc, () -> {
+                    pc.setBuildingBudget(getCurrentDiceRoll());
+                    PlayerAction action = pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                    while (!(action instanceof ConfirmBuildAction)) {
+                        action = pc.waitForNextAction();
+                    }
+                });
+            }
         }
 
         // Fahrphase
@@ -158,12 +157,19 @@ public class GameController {
         roundCounter.set(0);
         while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
             roundCounter.set(roundCounter.get() + 1);
+            getState().resetDrivingPlayers();
+            getState().resetPlayerPositions();
 
             if (roundCounter.get() % 3 == 0) {
                 getState().getPlayers().stream().sorted((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()))
                         .forEachOrdered((player) -> {
-                            withActivePlayer(playerControllers.get(player), () -> {
-                                getActivePlayerController().waitForNextAction(PlayerObjective.PLACE_RAIL);
+                            final PlayerController pc = playerControllers.get(player);
+                            pc.setBuildingBudget(Config.MAX_BUILDINGBUDGET_DRIVING_PHASE);
+                            withActivePlayer(pc, () -> {
+                                PlayerAction action = pc.waitForNextAction(PlayerObjective.PLACE_RAIL);
+                                while (!(action instanceof ConfirmBuildAction)) {
+                                    action = pc.waitForNextAction();
+                                }
                             });
                         });
             }
@@ -174,19 +180,43 @@ public class GameController {
                     });
 
             for (Player player : getState().getPlayers()) {
+                playerControllers.get(player).resetDrivingPhase();
                 getState().setPlayerPositon(player, getStartingCity().getPosition());
                 withActivePlayer(playerControllers.get(player), () -> {
-                    getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                    while (!getActivePlayerController().hasConfirmedPath()) {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_PATH);
+                        getActivePlayerController().waitForNextAction(PlayerObjective.CONFIRM_PATH);
+                    }
                 });
             }
 
-            for (Player player : getState().getDrivingPlayers()) {
-                withActivePlayer(playerControllers.get(player), () -> {
-                    getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
-                    getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
-                });
+            while (!getState().getPlayerPositions().values().stream()
+                    .anyMatch(pos -> getTargetCity().getPosition().equals(pos))
+                    && !getState().getDrivingPlayers().isEmpty()) {
+                for (Player player : getState().getDrivingPlayers().stream()
+                        .sorted((p1, p2) -> -Integer.compare(p1.getCredits(), p2.getCredits())).toList()) {
+                    withActivePlayer(playerControllers.get(player), () -> {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
+                        getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
+                    });
+                }
+            }
+
+            List<Player> winners = getState().getPlayerPositions().entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(getTargetCity().getPosition()))
+                    .map(entry -> entry.getKey())
+                    .sorted((p1, p2) -> Integer.compare(getState().getPlayerPointSurplus().get(p1),
+                            getState().getPlayerPointSurplus().get(p2)))
+                    .limit(Config.WINNING_CREDITS.size())
+                    .toList();
+
+            for (int i = 0; i < winners.size(); i++) {
+                Player player = winners.get(i);
+                player.addCredits(Config.WINNING_CREDITS.get(i));
             }
         }
+        getState().getWinnerProperty().setValue(getState().getPlayers().stream()
+                .max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits())).get());
     }
 
     /**

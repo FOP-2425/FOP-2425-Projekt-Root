@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import hProjekt.model.Tile;
 import hProjekt.view.TileBuilder;
+import javafx.scene.input.MouseEvent;
 
 /**
  * The controller for a tile.
@@ -43,6 +44,26 @@ public class TileController implements Controller {
      */
     public void unhighlight() {
         builder.unhighlight();
+    }
+
+    public void setMouseEnteredHandler(final Consumer<MouseEvent> handler) {
+        builder.setMouseEnteredHandler(handler);
+    }
+
+    public void removeMouseEnteredHandler() {
+        builder.removeMouseEnteredHandler();
+    }
+
+    public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
+        builder.setMouseClickedHandler(handler);
+    }
+
+    public void removeMouseClickedHandler() {
+        builder.removeMouseClickedHandler();
+    }
+
+    public boolean hasMouseClickedHandler() {
+        return builder.hasMouseClickedHandler();
     }
 
     @Override

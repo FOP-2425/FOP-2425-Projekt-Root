@@ -1,12 +1,11 @@
 package hProjekt.controller.actions;
 
 import hProjekt.controller.PlayerController;
-import hProjekt.model.Tile;
 
-public record DriveAction(Tile targetTile) implements PlayerAction {
+public record ConfirmBuildAction() implements PlayerAction {
 
     @Override
     public void execute(PlayerController pc) throws IllegalActionException {
-        pc.drive(targetTile);
+        // stays empty
     }
 }

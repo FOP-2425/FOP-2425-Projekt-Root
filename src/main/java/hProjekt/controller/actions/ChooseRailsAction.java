@@ -1,12 +1,15 @@
 package hProjekt.controller.actions;
 
-import hProjekt.controller.PlayerController;
-import hProjekt.model.Tile;
+import java.util.Set;
 
-public record DriveAction(Tile targetTile) implements PlayerAction {
+import hProjekt.controller.PlayerController;
+import hProjekt.model.Edge;
+
+public record ChooseRailsAction(Set<Edge> choosenEdges) implements PlayerAction {
 
     @Override
     public void execute(PlayerController pc) throws IllegalActionException {
-        pc.drive(targetTile);
+        pc.chooseEdges(choosenEdges);
     }
+
 }

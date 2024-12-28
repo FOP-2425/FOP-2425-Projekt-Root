@@ -14,6 +14,7 @@ import javafx.util.Builder;
 public class CityBuilder implements Builder<Region> {
     private final City city;
     private final VBox pane = new VBox();
+    private Label label;
     private Node marker;
 
     public CityBuilder(final City city) {
@@ -42,14 +43,22 @@ public class CityBuilder implements Builder<Region> {
         circle.setFill(city.isStartingCity() ? Color.RED : Color.BLACK);
         pane.getChildren().add(circle);
 
-        final Label text = new Label(city.getName());
-        text.setTextAlignment(TextAlignment.CENTER);
-        text.getStyleClass().add("highlighted-label");
-        pane.getChildren().add(text);
+        label = new Label(city.getName());
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.getStyleClass().add("highlighted-label");
+        pane.getChildren().add(label);
 
         pane.setAlignment(Pos.CENTER);
         // pane.setBackground(Background.fill(Color.WHITE));
         pane.setMouseTransparent(true);
         return pane;
+    }
+
+    public void highlight() {
+        label.getStyleClass().add("selected");
+    }
+
+    public void unhighlight() {
+        label.getStyleClass().remove("selected");
     }
 }

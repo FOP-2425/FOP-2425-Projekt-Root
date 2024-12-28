@@ -18,7 +18,6 @@ import javafx.event.Event;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Region;
-import javafx.util.Builder;
 
 /**
  * The controller for the hex grid.
@@ -110,7 +109,7 @@ public class HexGridController implements Controller {
         }
         pane.setScaleX(pane.getScaleX() + event.getDeltaY() / 500);
         pane.setScaleY(pane.getScaleY() + event.getDeltaY() / 500);
-    }    
+    }
 
     /**
      * Returns the edge controllers.
@@ -128,6 +127,22 @@ public class HexGridController implements Controller {
      */
     public Map<Edge, EdgeController> getEdgeControllersMap() {
         return Collections.unmodifiableMap(edgeControllers);
+    }
+
+    public Set<TileController> getTileControllers() {
+        return tileControllers.values().stream().collect(Collectors.toSet());
+    }
+
+    public Map<Tile, TileController> getTileControllersMap() {
+        return Collections.unmodifiableMap(tileControllers);
+    }
+
+    public Set<CityController> getCityControllers() {
+        return cityControllers.values().stream().collect(Collectors.toSet());
+    }
+
+    public Map<City, CityController> getCityControllersMap() {
+        return Collections.unmodifiableMap(cityControllers);
     }
 
     /**
@@ -170,7 +185,7 @@ public class HexGridController implements Controller {
     }
 
     @Override
-    public Builder<Region> getBuilder() {
+    public HexGridBuilder getBuilder() {
         return builder;
     }
 }

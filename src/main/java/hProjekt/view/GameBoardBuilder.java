@@ -2,12 +2,13 @@ package hProjekt.view;
 
 import java.util.function.Consumer;
 
-import hProjekt.view.menus.overlays.ConfirmationOverlayView;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -22,9 +23,12 @@ public class GameBoardBuilder implements Builder<Region> {
     private Region spinCityOverlay;
     private Region cityOverlay;
     private Region confirmationOverlay;
+    private Pane confirmationOverlayContainer;
+    private HBox bottomCenterContainer;
 
     public GameBoardBuilder(final Region map, final Region gameInfoOverlay, final Region playerOverlay,
-            final Region rollDiceOverlay, final Region spinCityOverlay, final Region cityOverlay, final Region confirmationOverlay,
+            final Region rollDiceOverlay, final Region spinCityOverlay, final Region cityOverlay,
+            final Region confirmationOverlay,
             Consumer<ActionEvent> endButtonAction) {
         this.map = map;
         this.gameInfoOverlay = gameInfoOverlay;
@@ -41,13 +45,6 @@ public class GameBoardBuilder implements Builder<Region> {
         BorderPane mapRoot = new BorderPane();
         mapRoot.setCenter(map);
 
-        // Create Overlays
-        // PlayerOverlayView playerOverlay = new
-        // PlayerOverlayView(gameController.getState().getPlayers());
-        // GameInfoOverlayView gameInfoOverlay = new GameInfoOverlayView();
-        // RollDiceOverlayView rollDiceOverlay = new
-        // RollDiceOverlayView(gameController);
-
         // Debug Button
         Button endScreenButton = new Button("Go to End Screen");
         endScreenButton.setOnAction(endButtonAction::accept);
@@ -58,11 +55,6 @@ public class GameBoardBuilder implements Builder<Region> {
         topRightContainer.setAlignment(Pos.TOP_RIGHT); // Ensure alignment within the VBox
         topRightContainer.setMaxWidth(Region.USE_PREF_SIZE); // Prevent stretching
         topRightContainer.setMaxHeight(Region.USE_PREF_SIZE); // Prevent stretching
-
-        // Update gameInfoOverlay with active player info
-        // PlayerController activePlayerController =
-        // gameController.getActivePlayerController();
-        // gameInfoOverlay.setPlayerStatus(activePlayerController);
 
         // Create containers for overlays
         VBox playerOverlayContainer = new VBox(playerOverlay);
@@ -75,8 +67,7 @@ public class GameBoardBuilder implements Builder<Region> {
         cityOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
         cityOverlayContainer.setMaxWidth(Region.USE_PREF_SIZE);
 
-
-        VBox confirmationOverlayContainer = new VBox(confirmationOverlay);
+        confirmationOverlayContainer = new VBox(confirmationOverlay);
         confirmationOverlayContainer.setPadding(new Insets(10));
         confirmationOverlayContainer.setMaxHeight(Region.USE_PREF_SIZE);
         confirmationOverlayContainer.setMaxWidth(playerOverlayContainer.getMaxWidth());
@@ -96,19 +87,20 @@ public class GameBoardBuilder implements Builder<Region> {
         // Füge beide Container hinzu
         topLeftContainer.getChildren().addAll(playerOverlayContainer, cityOverlayContainer);
 
+        bottomCenterContainer = new HBox(rollDiceOverlay);
+        bottomCenterContainer.setAlignment(Pos.BOTTOM_CENTER);
 
         // Root layout
         StackPane root = new StackPane();
-        root.getChildren().addAll(mapRoot, topLeftContainer, gameInfoOverlayContainer, rollDiceOverlay, spinCityOverlay,
-               confirmationOverlayContainer, topRightContainer);
+        root.getChildren().addAll(mapRoot, topLeftContainer, gameInfoOverlayContainer, spinCityOverlay,
+                bottomCenterContainer, topRightContainer);
 
         // Position the overlays
         StackPane.setAlignment(topLeftContainer, Pos.TOP_LEFT);
         StackPane.setAlignment(gameInfoOverlayContainer, Pos.TOP_CENTER);
-        StackPane.setAlignment(rollDiceOverlay, Pos.BOTTOM_CENTER);
         StackPane.setAlignment(topRightContainer, Pos.TOP_RIGHT);
         StackPane.setAlignment(spinCityOverlay, Pos.BOTTOM_RIGHT);
-        StackPane.setAlignment(confirmationOverlayContainer, Pos.BOTTOM_LEFT); // Change to BOTTOM_CENTER
+        StackPane.setAlignment(bottomCenterContainer, Pos.BOTTOM_CENTER); // Change to BOTTOM_CENTER
 
         // Allow the map to process mouse events when overlays don't consume them
         makeOverlayTransparentForMouseEvents(playerOverlayContainer);
@@ -118,6 +110,7 @@ public class GameBoardBuilder implements Builder<Region> {
         makeOverlayTransparentForMouseEvents(topRightContainer);
         makeOverlayTransparentForMouseEvents(spinCityOverlay);
         makeOverlayTransparentForMouseEvents(confirmationOverlayContainer);
+        makeOverlayTransparentForMouseEvents(bottomCenterContainer);
 
         return root;
     }
@@ -130,5 +123,22 @@ public class GameBoardBuilder implements Builder<Region> {
      */
     private void makeOverlayTransparentForMouseEvents(Region node) {
         node.setPickOnBounds(false); // Ensures only visible parts react to mouse events
+    }
+
+    /**
+     * Adds the confirmation overlay to the bottom center of the screen.
+     */
+    public void addConfirmationOverlay() {
+        if (bottomCenterContainer.getChildren().contains(confirmationOverlayContainer)) {
+            return;
+        }
+        bottomCenterContainer.getChildren().add(confirmationOverlayContainer);
+    }
+
+    /**
+     * Removes the confirmation overlay from the bottom center of the screen.
+     */
+    public void removeConfirmationOverlay() {
+        bottomCenterContainer.getChildren().remove(confirmationOverlayContainer);
     }
 }

@@ -6,9 +6,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,6 +27,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.util.Pair;
 
 /**
  * Default implementation of {@link HexGrid}.
@@ -308,5 +313,54 @@ public class HexGridImpl implements HexGrid {
         Set<TilePosition> cityPositions = new HashSet<>(cities.keySet());
         cityPositions.removeAll(getConnectedCities().keySet());
         return Collections.unmodifiableMap(cityPositions.stream().collect(Collectors.toMap(p -> p, cities::get)));
+    }
+
+    @Override
+    public Map<TilePosition, City> getStartingCities() {
+        return getCities().values().stream().filter(City::isStartingCity)
+                .collect(Collectors.toMap(City::getPosition, Function.identity()));
+    }
+
+    @Override
+    public List<Edge> findPath(TilePosition start, TilePosition target, Set<Edge> availableEdges,
+            BiFunction<TilePosition, TilePosition, Integer> edgeCostFunction) {
+        PriorityQueue<Pair<TilePosition, Integer>> positionQueue = new PriorityQueue<>(
+                (pair1, pair2) -> Integer.compare(pair1.getValue(), pair2.getValue()));
+        Map<TilePosition, TilePosition> previous = new HashMap<>();
+        Map<TilePosition, Integer> distance = new HashMap<>();
+        positionQueue.add(new Pair<>(start, 0));
+        previous.put(start, start);
+        distance.put(start, 0);
+
+        while (!positionQueue.isEmpty()) {
+            TilePosition current = positionQueue.poll().getKey();
+            if (current.equals(target)) {
+                break;
+            }
+            for (TilePosition next : getTileAt(current).getConnectedNeighbours(availableEdges).stream()
+                    .map(Tile::getPosition).toList()) {
+                int newDistance = distance.get(current)
+                        + edgeCostFunction.apply(current, next);
+                if (!distance.containsKey(next) || newDistance < distance.get(next)) {
+                    distance.put(next, newDistance);
+                    previous.put(next, current);
+                    positionQueue.add(new Pair<>(next, newDistance));
+                }
+            }
+        }
+
+        if (!previous.containsKey(target)) {
+            return List.of();
+        }
+
+        TilePosition current = target;
+        List<Edge> pathEdges = new ArrayList<>();
+
+        while (!current.equals(start)) {
+            TilePosition previousPosition = previous.get(current);
+            pathEdges.add(getEdge(previousPosition, current));
+            current = previousPosition;
+        }
+        return pathEdges.reversed();
     }
 }

@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import hProjekt.model.Tile;
+import javafx.util.Pair;
 
 public class Config {
     /**
@@ -28,9 +30,14 @@ public class Config {
     public static int NUMBER_OF_STARTING_CITIES = 3;
 
     /**
-     * The number of cities on the board.
+     * The number of cities on the board. Needs to divisible by 2.
      */
-    public static int NUMBER_OF_CITIES = (DICE_SIDES * DICE_SIDES) - NUMBER_OF_STARTING_CITIES;
+    public static int NUMBER_OF_CITIES = 36;
+
+    /**
+     * The number of unconnected cities left to start the driving phase.
+     */
+    public static int UNCONNECTED_CITIES_START_THRESHOLD = 3;
 
     /**
      * The base probability of a city being generated on a tile.
@@ -88,12 +95,25 @@ public class Config {
      */
     public static int MAP_SCALE = 15;
 
+    public static int MAX_RENTABLE_DISTANCE = 10;
+
     public static Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_BUILDING_COST = Map.of(
             Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 3,
             Set.of(Tile.Type.MOUNTAIN), 5);
 
-    public static Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_DRIVING_COST = Map.of(
-            Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 2, Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.MOUNTAIN), 1);
+    public static Map<Pair<Tile.Type, Tile.Type>, Integer> TILE_TYPE_TO_DRIVING_COST = Map.of(
+            new Pair<>(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 2,
+            new Pair<>(Tile.Type.PLAIN, Tile.Type.PLAIN), 1,
+            new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.MOUNTAIN), 1,
+            new Pair<>(Tile.Type.MOUNTAIN, Tile.Type.PLAIN), 1);
+
+    /**
+     * The credits a player receives for arriving as the i-th player during the
+     * driving phase.
+     */
+    public static List<Integer> WINNING_CREDITS = List.of(20, 10);
+
+    public static int MAX_BUILDINGBUDGET_DRIVING_PHASE = 10;
 
     public static final String[] TOWN_NAMES;
 

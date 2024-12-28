@@ -1,9 +1,9 @@
 package hProjekt.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -145,10 +145,7 @@ public interface HexGrid {
      *
      * @return all cities that are stating cities.
      */
-    default Map<TilePosition, City> getStartingCities() {
-        return getCities().values().stream().filter(City::isStartingCity)
-                .collect(Collectors.toMap(City::getPosition, Function.identity()));
-    }
+    Map<TilePosition, City> getStartingCities();
 
     /**
      * Returns all rails of the given player.
@@ -157,4 +154,19 @@ public interface HexGrid {
      * @return all rails of the given player
      */
     Map<Set<TilePosition>, Edge> getRails(Player player);
+
+    /**
+     * Finds the shortest path between start and end using the available edges and
+     * the edgeCostFunction.
+     *
+     * @param start            the start position
+     * @param end              the end position
+     * @param availabeEdges    the edges to search for the path
+     * @param edgeCostFunction the function to calculate the cost of an edge
+     *                         receives the two position of the edge as inputs.
+     *                         First the current position, second the next position.
+     * @return the shortest path between start and end
+     */
+    List<Edge> findPath(TilePosition start, TilePosition end, Set<Edge> availabeEdges,
+            BiFunction<TilePosition, TilePosition, Integer> edgeCostFunction);
 }
