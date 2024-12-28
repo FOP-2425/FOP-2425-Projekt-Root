@@ -113,6 +113,9 @@ public class PlayerActionsController {
         });
 
         playerStateProperty.subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
             updateUIBasedOnObjective(newValue.playerObjective());
         });
 
