@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
+
 /**
  * Controller for managing the leaderboard functionality.
  * This class handles reading from, writing to, and initializing the leaderboard CSV file.
@@ -40,6 +42,7 @@ public class LeaderboardController {
      * @param score The score achieved by the player.
      * @param ai Indicates whether the player is an AI (true) or a human (false).
      */
+    @StudentImplementationRequired
     public static void savePlayerData(String playerName, int score, boolean ai) {
         try {
             initializeCsv(); // Ensures the CSV exists
@@ -58,6 +61,7 @@ public class LeaderboardController {
      *
      * @return A list of LeaderboardEntry objects containing player data from the CSV file.
      */
+    @StudentImplementationRequired
     public static List<LeaderboardEntry> loadLeaderboardData() {
         List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 

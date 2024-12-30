@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
+
 import hProjekt.model.Player;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +16,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import kotlin.jvm.JvmStatic;
 
 public class PlayerOverlayView extends VBox {
     private Map<Player, Label> playerCreditsLabels = new HashMap<>();
@@ -79,6 +82,7 @@ public class PlayerOverlayView extends VBox {
      *
      * @param players the list of players to update
      */
+    @StudentImplementationRequired
     public void updatePlayerCredits(List<Player> players) {
         for (Player player : players) {
             playerCreditsLabels.get(player).setText("Credits: " + player.getCredits());
