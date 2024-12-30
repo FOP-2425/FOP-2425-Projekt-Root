@@ -42,7 +42,6 @@ public class AboutBuilder implements Builder<Region> {
         // Credits
         Text credits = new Text("Credits:\n" +
                 "Programmers: Alice, Bob\n" +
-                "Designers: Alice, Bob\n" +
                 "Testing: Alice, Bob");
         credits.getStyleClass().add("text-credits");
         credits.setFill(Color.WHITE);
