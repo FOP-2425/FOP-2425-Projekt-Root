@@ -45,7 +45,8 @@ public class PlayerController {
 
     private final BlockingDeque<PlayerAction> actions = new LinkedBlockingDeque<>();
 
-    private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
+    private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>(
+            new PlayerState(Set.of(), PlayerObjective.IDLE, Set.of(), Set.of(), false, Map.of(), 0));
 
     private PlayerObjective playerObjective = PlayerObjective.IDLE;
 
