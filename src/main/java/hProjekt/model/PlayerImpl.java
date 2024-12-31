@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
-import javafx.beans.property.SimpleBooleanProperty;
+import hProjekt.controller.AiController;
 import javafx.scene.paint.Color;
 
 /**
@@ -15,16 +15,17 @@ public class PlayerImpl implements Player {
     private final String name;
     private final int id;
     private final Color color;
-    private final boolean ai;
+    private final Class<? extends AiController> aiController;
     private int credits;
 
     @DoNotTouch("Please don't create a public Contructor, use the Builder instead.")
-    private PlayerImpl(final HexGrid hexGrid, final Color color, final int id, final String name, final boolean ai) {
+    private PlayerImpl(final HexGrid hexGrid, final Color color, final int id, final String name,
+            final Class<? extends AiController> ai) {
         this.hexGrid = hexGrid;
         this.color = color;
         this.id = id;
         this.name = name;
-        this.ai = ai;
+        this.aiController = ai;
         this.credits = Config.STARTING_CREDITS;
     }
 
@@ -50,7 +51,7 @@ public class PlayerImpl implements Player {
 
     @Override
     public boolean isAi() {
-        return this.ai;
+        return this.aiController != null;
     }
 
     @Override
@@ -81,7 +82,7 @@ public class PlayerImpl implements Player {
         private int id;
         private Color color;
         private @Nullable String name;
-        private final SimpleBooleanProperty ai = new SimpleBooleanProperty(false);
+        private @Nullable Class<? extends AiController> aiController;
 
         /**
          * Creates a new builder for a player with the given id.
@@ -175,16 +176,7 @@ public class PlayerImpl implements Player {
          * @return whether the player is an AI
          */
         public boolean isAi() {
-            return this.ai.get();
-        }
-
-        /**
-         * Returns the property indicating whether the player is an AI.
-         *
-         * @return the property indicating whether the player is an AI
-         */
-        public SimpleBooleanProperty aiProperty() {
-            return this.ai;
+            return this.aiController != null;
         }
 
         /**
@@ -193,8 +185,8 @@ public class PlayerImpl implements Player {
          * @param ai whether the player is an AI
          * @return this builder
          */
-        public Builder ai(final boolean ai) {
-            this.ai.set(ai);
+        public Builder ai(final Class<? extends AiController> ai) {
+            this.aiController = ai;
             return this;
         }
 
@@ -205,13 +197,18 @@ public class PlayerImpl implements Player {
          * @return the player with the properties set in this builder
          */
         public Player build(final HexGrid grid) {
-            return new PlayerImpl(grid, this.color, this.id, nameOrDefault(), this.ai.get());
+            return new PlayerImpl(grid, this.color, this.id, nameOrDefault(), this.aiController);
         }
     }
 
     @Override
     public String toString() {
         return String.format("Player %d %s (%s)", getID(), getName(), getColor());
+    }
+
+    @Override
+    public Class<? extends AiController> getAiController() {
+        return aiController;
     }
 
 }

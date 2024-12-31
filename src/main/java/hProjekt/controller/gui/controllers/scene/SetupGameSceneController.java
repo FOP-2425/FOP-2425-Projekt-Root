@@ -2,6 +2,7 @@ package hProjekt.controller.gui.controllers.scene;
 
 import java.util.List;
 
+import hProjekt.controller.BasicAiController;
 import hProjekt.model.GameSetup;
 import hProjekt.model.GameSetupImpl;
 import hProjekt.model.GameState;
@@ -50,7 +51,8 @@ public class SetupGameSceneController implements SceneController {
             Color playerColor = Color.web(colorHex);
 
             // Create a new player and add it to the GameState
-            gameState.newPlayer(playerName, playerColor, isAi);
+            gameState.newPlayer(playerName, playerColor,
+                    isAi ? BasicAiController.class : null);
         }
 
         // Print players for debugging

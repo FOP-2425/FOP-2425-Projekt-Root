@@ -3,6 +3,7 @@ package hProjekt.model;
 import java.util.Map;
 import java.util.Set;
 
+import hProjekt.controller.AiController;
 import javafx.scene.paint.Color;
 
 public interface Player {
@@ -43,6 +44,13 @@ public interface Player {
     default boolean isAi() {
         return false;
     }
+
+    /**
+     * Returns the ai controller for the player or null if the player is not an ai.
+     *
+     * @return the ai controller for the player or null if the player is not an ai
+     */
+    Class<? extends AiController> getAiController();
 
     /**
      * Returns the number of credits the player has.
