@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.Config;
+import hProjekt.controller.AiController;
 import hProjekt.controller.GamePhase;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -248,11 +249,12 @@ public final class GameState {
      * @return the new {@link Player}
      * @throws IllegalStateException if the {@link Player} could not be added
      */
-    public Player newPlayer(final @Nullable String name, final Color color, final boolean isAi) {
+    public Player newPlayer(final @Nullable String name, final Color color,
+            final Class<? extends AiController> aiController) {
         final Player player = new PlayerImpl.Builder(this.players.size() + 1)
                 .color(color)
                 .name(name)
-                .ai(isAi)
+                .ai(aiController)
                 .build(this.grid);
         if (!addPlayer(player)) {
             throw new IllegalStateException("Cannot add more players");

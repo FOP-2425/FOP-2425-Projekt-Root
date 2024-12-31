@@ -1,5 +1,6 @@
 package hProjekt.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import hProjekt.controller.actions.ConfirmBuildAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.model.City;
 import hProjekt.model.GameState;
+import hProjekt.model.HexGrid;
 import hProjekt.model.HexGridImpl;
 import hProjekt.model.Player;
 import javafx.beans.property.IntegerProperty;
@@ -32,6 +34,7 @@ import javafx.util.Pair;
 public class GameController {
     private final GameState state;
     private final Map<Player, PlayerController> playerControllers;
+    private final List<AiController> aiControllers = new ArrayList<>();
     private final Supplier<Integer> dice;
     private final IntegerProperty currentDiceRoll = new SimpleIntegerProperty(0);
     private final IntegerProperty roundCounter = new SimpleIntegerProperty(0);
@@ -115,7 +118,29 @@ public class GameController {
     private void initPlayerControllers() {
         for (Player player : state.getPlayers()) {
             playerControllers.put(player, new PlayerController(this, player));
-            // TODO: Add AI player controller
+            if (player.isAi()) {
+                try {
+                    aiControllers.add(player.getAiController()
+                            .getConstructor(PlayerController.class, HexGrid.class, GameState.class, Property.class)
+                            .newInstance(playerControllers.get(player), state.getGrid(), state,
+                                    activePlayerController));
+                } catch (NoSuchMethodException e) {
+                    System.err.println("Could not create ai controller for player " + player.getName());
+                    System.err.println("You probably forgot to implement the constructor in your ai controller.");
+                    System.err.println("The full error message: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Could not create ai controller for player " + player.getName());
+                    System.err.println("You probably do not have all necessary parameters in your constructor.");
+                    System.err.println("The full error message: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    System.err.println("Could not create ai controller for player " + player.getName());
+                    System.err.println("An error occurred while trying to create the ai controller.");
+                    System.err.println("The full error message: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
