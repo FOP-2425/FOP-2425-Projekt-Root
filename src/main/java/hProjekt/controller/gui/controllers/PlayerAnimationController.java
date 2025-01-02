@@ -138,11 +138,11 @@ public class PlayerAnimationController {
      * @return the ScaleTransition animation
      */
     private ScaleTransition createPulseTransition() {
-        ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.3), playerContainer);
+        ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.2), playerContainer);
         pulse.setFromX(1.0);
         pulse.setFromY(1.0);
-        pulse.setToX(2.0); // Scale up to 200% of the original size
-        pulse.setToY(2.0);
+        pulse.setToX(1.8); // Scale up to 180% of the original size
+        pulse.setToY(1.8);
         pulse.setAutoReverse(true); // Return to the original size
         pulse.setCycleCount(2); // Scale up and down once
         return pulse;

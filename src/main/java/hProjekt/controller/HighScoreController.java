@@ -4,6 +4,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
+
 /**
  * Singleton controller for managing the high score.
  */
@@ -37,6 +39,7 @@ public class HighScoreController {
      *
      * @return The high score.
      */
+    @StudentImplementationRequired
     public int getHighScore() {
         return highScore;
     }
@@ -46,6 +49,7 @@ public class HighScoreController {
      *
      * @param newScore The new score to consider.
      */
+    @StudentImplementationRequired
     public void updateHighScore(int newScore) {
         if (newScore > highScore) {
             highScore = newScore;
@@ -56,6 +60,7 @@ public class HighScoreController {
     /**
      * Loads the high score from the file.
      */
+    @StudentImplementationRequired
     private void loadHighScore() {
         try {
             if (Files.exists(Path.of(HIGHSCORE_FILE))) {
@@ -73,6 +78,7 @@ public class HighScoreController {
     /**
      * Saves the current high score to the file.
      */
+    @StudentImplementationRequired
     private void saveHighScore() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGHSCORE_FILE))) {
             writer.write(String.valueOf(highScore));

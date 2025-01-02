@@ -25,7 +25,7 @@ import java.util.List;
 public class EndScreenBuilder implements Builder<Region> {
     private final Runnable loadMainMenuAction;
     private final List<Player> players;
-    private final int CREDITS_PER_STAR = 200; // Determines how many credits are required for a star
+    private final int CREDITS_PER_STAR = 40; // Determines how many credits are required for a star
 
     public EndScreenBuilder(Runnable loadMainMenuAction, List<Player> players) {
         this.loadMainMenuAction = loadMainMenuAction;

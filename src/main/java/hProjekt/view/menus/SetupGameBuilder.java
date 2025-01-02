@@ -120,7 +120,7 @@ public class SetupGameBuilder implements Builder<Region> {
         mapLabel.getStyleClass().add("label");
 
         ComboBox<String> mapSelector = new ComboBox<>();
-        mapSelector.getItems().addAll("Generate Random Map", "Germany", "Ireland", "Map Editor Custom #1");
+        mapSelector.getItems().addAll("Generate Random Map"); // No other maps implemented yet
         mapSelector.setMaxWidth(200);
         mapSelector.setValue("Generate Random Map");
         mapSelector.getStyleClass().add("combo-box");

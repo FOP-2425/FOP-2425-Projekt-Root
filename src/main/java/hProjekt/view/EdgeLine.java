@@ -49,6 +49,7 @@ public class EdgeLine extends Line {
         setMouseTransparent(true);
         outline.setMouseTransparent(true);
         label.getStyleClass().add("highlighted-label");
+        label.setMouseTransparent(true);
     }
 
     /**

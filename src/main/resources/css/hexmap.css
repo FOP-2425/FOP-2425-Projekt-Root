@@ -79,6 +79,9 @@
 }
 
 .selected.label .text {
-    -fx-stroke: white;
-    -fx-fill: darkred;
+    -fx-font-size: 4em;
+    -fx-font-weight: 900;
+    -fx-stroke: rgb(0, 0, 0);
+    -fx-stroke-width: 2px;
+    -fx-fill: rgb(0, 251, 255);
 }

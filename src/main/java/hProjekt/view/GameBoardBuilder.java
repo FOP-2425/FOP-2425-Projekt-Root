@@ -46,8 +46,10 @@ public class GameBoardBuilder implements Builder<Region> {
         mapRoot.setCenter(map);
 
         // Debug Button
-        Button endScreenButton = new Button("Go to End Screen");
+        Button endScreenButton = new Button("Stop Game");
         endScreenButton.setOnAction(endButtonAction::accept);
+        endScreenButton.getStylesheets().add(getClass().getResource("/css/setupgamemenu.css").toExternalForm());
+        endScreenButton.getStyleClass().add("button");
 
         // Wrap the button in a VBox for padding and alignment
         VBox topRightContainer = new VBox(endScreenButton);
