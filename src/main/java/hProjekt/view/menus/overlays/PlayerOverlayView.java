@@ -121,7 +121,7 @@ public class PlayerOverlayView extends VBox {
      */
     private void animateCreditChange(Label creditsLabel, int start, int end){
         int steps = Math.abs(end-start);
-        int totalDuration = steps * 175; // 175ms per credit change
+        int totalDuration = steps * 150; // 150ms per credit change
         double stepTime = (double) totalDuration / steps;
         Timeline timeline = new Timeline();
 
