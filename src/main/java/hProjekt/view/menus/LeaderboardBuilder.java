@@ -1,5 +1,7 @@
 package hProjekt.view.menus;
 
+import java.util.List;
+
 import hProjekt.controller.LeaderboardController;
 import hProjekt.controller.LeaderboardEntry;
 import javafx.collections.FXCollections;
@@ -24,6 +26,8 @@ import javafx.util.Builder;
 public class LeaderboardBuilder implements Builder<Region> {
 
     private final Runnable loadMainMenuAction;
+    // This is ugly I know but i don't care cause it works
+    private final TableColumn<LeaderboardEntry, Integer> scoreColumn = new TableColumn<>("Score");
 
     /**
      * Constructor for the LeaderboardBuilder.
@@ -59,6 +63,8 @@ public class LeaderboardBuilder implements Builder<Region> {
         ObservableList<LeaderboardEntry> entries = FXCollections
                 .observableArrayList(LeaderboardController.loadLeaderboardData());
         tableView.setItems(entries);
+        tableView.getSortOrder().setAll(List.of(scoreColumn));
+        tableView.sort();
 
         // VBox to center content (title and table)
         VBox contentContainer = new VBox(20);
@@ -100,14 +106,14 @@ public class LeaderboardBuilder implements Builder<Region> {
         timestampColumn.setCellValueFactory(cellData -> cellData.getValue().timestampProperty());
         timestampColumn.setPrefWidth(0.3); // 30% width
 
-        TableColumn<LeaderboardEntry, Integer> scoreColumn = new TableColumn<>("Score");
         scoreColumn.setCellValueFactory(cellData -> cellData.getValue().scoreProperty().asObject());
         scoreColumn.setPrefWidth(0.2); // 20% width
+        scoreColumn.setSortType(TableColumn.SortType.DESCENDING);
 
         // Distribute columns across the full width of the table
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         // Add columns to the table
-        tableView.getColumns().addAll(playerColumn, aiColumn, timestampColumn, scoreColumn);
+        tableView.getColumns().addAll(List.of(playerColumn, aiColumn, timestampColumn, scoreColumn));
     }
 }
