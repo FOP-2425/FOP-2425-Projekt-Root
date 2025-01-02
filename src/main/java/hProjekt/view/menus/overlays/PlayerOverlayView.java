@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import hProjekt.model.Player;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -88,10 +87,10 @@ public class PlayerOverlayView extends VBox {
     public void updatePlayerCredits(List<Player> players) {
         for (Player player : players) {
             Label creditsLabel = playerCreditsLabels.get(player);
-            if(creditsLabel != null){
+            if (creditsLabel != null) {
                 int currentCredits = extractCredits(creditsLabel.getText());
                 int targetCredits = player.getCredits();
-                if(currentCredits != targetCredits){
+                if (currentCredits != targetCredits) {
                     animateCreditChange(creditsLabel, currentCredits, targetCredits);
                 }
             }
@@ -101,49 +100,46 @@ public class PlayerOverlayView extends VBox {
 
     /**
      * Extrahiert die numerischen Credits aus einem Textstring
+     *
      * @param text Der Text, z.B. "Credits: 25"
      * @return Der extrahierte Creditwert oder 0 bei Fehlern
      */
-    private int extractCredits(String text){
-        try{
+    private int extractCredits(String text) {
+        try {
             return Integer.parseInt(text.replaceAll("[^0-9]", ""));
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return 0;
         }
     }
 
     /**
      * Animiert die schrittweise Aktualisierung der Credits
-     * 
+     *
      * @param creditsLabel Das anzuzeigende Label
-     * @param start Startwert der Credits
-     * @param end Zielwert der Credits
+     * @param start        Startwert der Credits
+     * @param end          Zielwert der Credits
      */
-    private void animateCreditChange(Label creditsLabel, int start, int end){
-        int steps = Math.abs(end-start);
-        int totalDuration = steps * 150; // 150ms per credit change
+    private void animateCreditChange(Label creditsLabel, int start, int end) {
+        int steps = Math.abs(end - start);
+        int totalDuration = 800;
         double stepTime = (double) totalDuration / steps;
         Timeline timeline = new Timeline();
 
         creditsLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
 
-        for (int i = 0; i <= steps; i++){
-            int value = start + (int) Math.signum(end-start) * i;
+        for (int i = 0; i <= steps; i++) {
+            int value = start + (int) Math.signum(end - start) * i;
             KeyFrame keyFrame = new KeyFrame(
-                Duration.millis(i*stepTime),
-                event -> creditsLabel.setText("Credits: " + value)
-            );
+                    Duration.millis(i * stepTime),
+                    event -> creditsLabel.setText("Credits: " + value));
             timeline.getKeyFrames().add(keyFrame);
         }
-        
-        KeyFrame endFrame = new KeyFrame(
-            Duration.millis(totalDuration),
-            event -> creditsLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14))
-        );
-        timeline.getKeyFrames().add(endFrame);
 
+        KeyFrame endFrame = new KeyFrame(
+                Duration.millis(totalDuration),
+                event -> creditsLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14)));
+        timeline.getKeyFrames().add(endFrame);
         timeline.play();
     }
 
-    
 }
