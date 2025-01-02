@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import hProjekt.model.Player;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -16,7 +17,9 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import kotlin.jvm.JvmStatic;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 
 public class PlayerOverlayView extends VBox {
     private Map<Player, Label> playerCreditsLabels = new HashMap<>();
@@ -82,10 +85,65 @@ public class PlayerOverlayView extends VBox {
      *
      * @param players the list of players to update
      */
-    @StudentImplementationRequired
     public void updatePlayerCredits(List<Player> players) {
         for (Player player : players) {
+            Label creditsLabel = playerCreditsLabels.get(player);
+            if(creditsLabel != null){
+                int currentCredits = extractCredits(creditsLabel.getText());
+                int targetCredits = player.getCredits();
+                if(currentCredits != targetCredits){
+                    animateCreditChange(creditsLabel, currentCredits, targetCredits);
+                }
+            }
             playerCreditsLabels.get(player).setText("Credits: " + player.getCredits());
         }
     }
+
+    /**
+     * Extrahiert die numerischen Credits aus einem Textstring
+     * @param text Der Text, z.B. "Credits: 25"
+     * @return Der extrahierte Creditwert oder 0 bei Fehlern
+     */
+    private int extractCredits(String text){
+        try{
+            return Integer.parseInt(text.replaceAll("[^0-9]", ""));
+        } catch (NumberFormatException e){
+            return 0;
+        }
+    }
+
+    /**
+     * Animiert die schrittweise Aktualisierung der Credits
+     * 
+     * @param creditsLabel Das anzuzeigende Label
+     * @param start Startwert der Credits
+     * @param end Zielwert der Credits
+     */
+    private void animateCreditChange(Label creditsLabel, int start, int end){
+        int steps = Math.abs(end-start);
+        int totalDuration = steps * 175; // 175ms per credit change
+        double stepTime = (double) totalDuration / steps;
+        Timeline timeline = new Timeline();
+
+        creditsLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
+
+        for (int i = 0; i <= steps; i++){
+            int value = start + (int) Math.signum(end-start) * i;
+            KeyFrame keyFrame = new KeyFrame(
+                Duration.millis(i*stepTime),
+                event -> creditsLabel.setText("Credits: " + value)
+            );
+            timeline.getKeyFrames().add(keyFrame);
+        }
+        
+        KeyFrame endFrame = new KeyFrame(
+            Duration.millis(totalDuration),
+            event -> creditsLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14))
+        );
+        timeline.getKeyFrames().add(endFrame);
+
+        timeline.play();
+    }
+
+    
 }
