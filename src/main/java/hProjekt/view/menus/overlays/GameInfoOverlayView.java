@@ -2,6 +2,7 @@
 package hProjekt.view.menus.overlays;
 
 import hProjekt.model.Player;
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class GameInfoOverlayView extends HBox {
 
@@ -63,6 +65,8 @@ public class GameInfoOverlayView extends HBox {
     }
 
     public void setPlayerStatus(Player player) {
+        String previousPlayer = playerStatusLabel.getText();
+
         if (player != null) {
             String playerName = player.getName();
             Color playerColor = player.getColor();
@@ -72,5 +76,20 @@ public class GameInfoOverlayView extends HBox {
             playerStatusLabel.setText("No active player");
             playerStatusLabel.setTextFill(Color.WHITE); // Default color if no active player
         }
+        if (!playerStatusLabel.getText().equals(previousPlayer)){
+            playPulseAnimation(playerStatusLabel);
+        }
+
+    }
+
+    private void playPulseAnimation(Label label){
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), label);
+        scaleTransition.setFromX(1.0);
+        scaleTransition.setFromY(1.0);
+        scaleTransition.setToX(2.0);
+        scaleTransition.setToY(2.0);
+        scaleTransition.setCycleCount(2);
+        scaleTransition.setAutoReverse(true);
+        scaleTransition.play();
     }
 }
