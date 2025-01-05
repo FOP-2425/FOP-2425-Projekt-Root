@@ -182,22 +182,26 @@ public class PlayerActionsController {
             selectedEdges.clear();
         }
         if (allowedActions.contains(DriveAction.class)) {
-            gameBoardController.getPlayerAnimationController(getPlayer())
-                    .setPosition(gameBoardController.getPlayerPosition(getPlayer()));
-            gameBoardController.getPlayerAnimationController(getPlayer()).showTrain();
-            getPlayerState().rentedEdges().stream().forEach(edge -> {
-                getHexGridController().getEdgeControllersMap().get(edge).highlight();
-            });
-            getPlayerState().drivableTiles().keySet().stream().forEach(tile -> {
-                getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
-                    getHexGridController().unhighlightTiles();
-                    gameBoardController.getPlayerAnimationController(getPlayer())
-                            .animatePlayer(getPlayerState().drivableTiles().get(tile))
-                            .setOnFinished(actionEvent -> getPlayerController()
-                                    .triggerAction(new DriveAction(tile)));
-                });
-            });
+            updateDriveableTiles();
         }
+    }
+
+    private void updateDriveableTiles() {
+        gameBoardController.getPlayerAnimationController(getPlayer())
+                .setPosition(gameBoardController.getPlayerPosition(getPlayer()));
+        gameBoardController.getPlayerAnimationController(getPlayer()).showTrain();
+        getPlayerState().rentedEdges().stream().forEach(edge -> {
+            getHexGridController().getEdgeControllersMap().get(edge).highlight();
+        });
+        getPlayerState().drivableTiles().keySet().stream().forEach(tile -> {
+            getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
+                getHexGridController().unhighlightTiles();
+                gameBoardController.getPlayerAnimationController(getPlayer())
+                        .animatePlayer(getPlayerState().drivableTiles().get(tile))
+                        .setOnFinished(actionEvent -> getPlayerController()
+                                .triggerAction(new DriveAction(tile)));
+            });
+        });
     }
 
     /**
