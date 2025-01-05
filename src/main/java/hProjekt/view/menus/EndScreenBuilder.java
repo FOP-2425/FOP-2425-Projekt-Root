@@ -1,7 +1,11 @@
 package hProjekt.view.menus;
 
-import hProjekt.controller.HighScoreController;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import hProjekt.controller.LeaderboardController;
+import hProjekt.controller.LeaderboardEntry;
 import hProjekt.model.Player;
 import hProjekt.util.Confetti;
 import javafx.geometry.Insets;
@@ -10,14 +14,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Builder;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Builder for the End Screen.
@@ -39,20 +43,10 @@ public class EndScreenBuilder implements Builder<Region> {
         List<Player> sortedPlayers = new ArrayList<>(players);
         sortedPlayers.sort(Comparator.comparingInt(Player::getCredits).reversed());
 
-        // Update and retrieve the Highscore
-        HighScoreController highScoreController = HighScoreController.getInstance();
-        int currentHighscore = highScoreController.getHighScore();
-        int newScore = sortedPlayers.isEmpty() ? 0 : sortedPlayers.get(0).getCredits();
-        if (newScore > currentHighscore) {
-            highScoreController.updateHighScore(newScore);
-            currentHighscore = newScore;
-        }
-
-        // Add all players to leaderboard
-        for(int i = 0; i < sortedPlayers.size(); i++){
-            Player player = sortedPlayers.get(i);
-            LeaderboardController.savePlayerData(player.getName(), player.getCredits(), player.isAi());
-        }
+        int currentHighscore = LeaderboardController.loadLeaderboardData().stream()
+                .sorted((score1, score2) -> Integer.compare(score2.getScore(), score1.getScore())).findFirst()
+                .map(LeaderboardEntry::getScore)
+                .orElse(0);
 
         // Root container for the entire screen
         StackPane rootContainer = new StackPane();
@@ -72,7 +66,8 @@ public class EndScreenBuilder implements Builder<Region> {
 
         // Leaderboard title
         Label title = new Label("Congratulations, " + sortedPlayers.get(0).getName() + "!");
-        title.setStyle("-fx-font-size: 36px; -fx-text-fill: #ffffff; -fx-font-family: Arial, sans-serif; -fx-padding: 15px 0; -fx-alignment: center;");
+        title.setStyle(
+                "-fx-font-size: 36px; -fx-text-fill: #ffffff; -fx-font-family: Arial, sans-serif; -fx-padding: 15px 0; -fx-alignment: center;");
         title.setAlignment(Pos.CENTER);
 
         StackPane.setAlignment(title, Pos.TOP_CENTER);
@@ -177,9 +172,12 @@ public class EndScreenBuilder implements Builder<Region> {
         Button backToMenuButton = new Button("Back to Main Menu");
         backToMenuButton.setFont(new Font("Arial", 18));
         backToMenuButton.setOnAction(event -> loadMainMenuAction.run());
-        backToMenuButton.setStyle("-fx-background-color: #2a2a3b; -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-family: Arial, sans-serif; -fx-padding: 10px 20px; -fx-background-radius: 12px; -fx-border-radius: 12px; -fx-border-color: transparent; -fx-cursor: hand;");
-        backToMenuButton.setOnMouseEntered(event -> backToMenuButton.setStyle("-fx-background-color: #3a3a4f;-fx-text-fill: #ffffff;-fx-font-size: 16px;-fx-font-family: Arial, sans-serif;-fx-padding: 10px 20px;-fx-background-radius: 12px;-fx-border-radius: 12px;-fx-border-color: transparent;-fx-cursor: hand;"));
-        backToMenuButton.setOnMouseExited(event -> backToMenuButton.setStyle("-fx-background-color: #2a2a3b;-fx-text-fill: #ffffff;-fx-font-size: 16px;-fx-font-family: Arial, sans-serif;-fx-padding: 10px 20px;-fx-background-radius: 12px;-fx-border-radius: 12px;-fx-border-color: transparent;-fx-cursor: hand;"));
+        backToMenuButton.setStyle(
+                "-fx-background-color: #2a2a3b; -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-family: Arial, sans-serif; -fx-padding: 10px 20px; -fx-background-radius: 12px; -fx-border-radius: 12px; -fx-border-color: transparent; -fx-cursor: hand;");
+        backToMenuButton.setOnMouseEntered(event -> backToMenuButton.setStyle(
+                "-fx-background-color: #3a3a4f;-fx-text-fill: #ffffff;-fx-font-size: 16px;-fx-font-family: Arial, sans-serif;-fx-padding: 10px 20px;-fx-background-radius: 12px;-fx-border-radius: 12px;-fx-border-color: transparent;-fx-cursor: hand;"));
+        backToMenuButton.setOnMouseExited(event -> backToMenuButton.setStyle(
+                "-fx-background-color: #2a2a3b;-fx-text-fill: #ffffff;-fx-font-size: 16px;-fx-font-family: Arial, sans-serif;-fx-padding: 10px 20px;-fx-background-radius: 12px;-fx-border-radius: 12px;-fx-border-color: transparent;-fx-cursor: hand;"));
 
         StackPane.setAlignment(backToMenuButton, Pos.BOTTOM_CENTER);
         StackPane.setMargin(backToMenuButton, new Insets(20));
@@ -191,7 +189,7 @@ public class EndScreenBuilder implements Builder<Region> {
     // Returns an animated confetti background
     private Pane createConfettiBackground() {
         Pane confettiPane = new Pane();
-        confettiPane.setPickOnBounds(false); 
+        confettiPane.setPickOnBounds(false);
         for (int i = 0; i < 1000; i++) {
             Confetti confetti = new Confetti(randomColor(), 800, 600);
             confetti.animate();
