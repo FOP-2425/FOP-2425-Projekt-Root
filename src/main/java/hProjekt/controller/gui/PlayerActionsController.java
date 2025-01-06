@@ -134,15 +134,9 @@ public class PlayerActionsController {
     @StudentImplementationRequired("H3.2")
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
-        rollDiceOverlayView.disableRollDiceButton();
-        cityOverlayView.disableSpinButton();
-        gameBoardController.hideConfirmationOverlay();
+        resetUiToBaseState();
         removeAllHighlights();
         updatePlayerInformation();
-        selectedEdges.removeListener(selctedEdgesListener);
-        selectedTileSubscription.unsubscribe();
-        getHexGridController().getEdgeControllers().forEach(EdgeController::hideLabel);
-        selectedRailPath.removeListener(selectedRailPathListener);
 
         if (getPlayer().isAi()) {
             return;
@@ -159,31 +153,49 @@ public class PlayerActionsController {
             cityOverlayView.enableSpinButton();
         }
         if (allowedActions.contains(ChooseRailsAction.class)) {
-            selectedEdges.clear();
-            selectedEdges.addListener(selctedEdgesListener);
-            addChooseEdgesHandlers();
-            gameBoardController.updateConfirmationOverlay("Rent selected rails?", this::confirmSelectedRails, () -> {
-                selectedEdges.clear();
-            });
+            configureRailSelection();
         }
         if (allowedActions.contains(ConfirmDrive.class)) {
-            getPlayerState().rentedEdges().stream().forEach(edge -> {
-                getHexGridController().getEdgeControllersMap().get(edge).highlight();
-            });
-            if (getPlayerState().hasPath()) {
-                gameBoardController.updateConfirmationOverlay("Rent highlighted rails and drive?",
-                        () -> confirmDrive(true),
-                        () -> confirmDrive(false));
-            } else {
-                gameBoardController.updateConfirmationOverlay(
-                        "Could not find path to target city. Do you want to rent different rails?",
-                        () -> confirmDrive(false), () -> confirmDrive(true));
-            }
-            selectedEdges.clear();
+            showRentingConfirmation();
         }
         if (allowedActions.contains(DriveAction.class)) {
             updateDriveableTiles();
         }
+    }
+
+    private void showRentingConfirmation() {
+        getPlayerState().rentedEdges().stream().forEach(edge -> {
+            getHexGridController().getEdgeControllersMap().get(edge).highlight();
+        });
+        if (getPlayerState().hasPath()) {
+            gameBoardController.updateConfirmationOverlay("Rent highlighted rails and drive?",
+                    () -> confirmDrive(true),
+                    () -> confirmDrive(false));
+        } else {
+            gameBoardController.updateConfirmationOverlay(
+                    "Could not find path to target city. Do you want to rent different rails?",
+                    () -> confirmDrive(false), () -> confirmDrive(true));
+        }
+        selectedEdges.clear();
+    }
+
+    private void configureRailSelection() {
+        selectedEdges.clear();
+        selectedEdges.addListener(selctedEdgesListener);
+        addChooseEdgesHandlers();
+        gameBoardController.updateConfirmationOverlay("Rent selected rails?", this::confirmSelectedRails, () -> {
+            selectedEdges.clear();
+        });
+    }
+
+    private void resetUiToBaseState() {
+        rollDiceOverlayView.disableRollDiceButton();
+        cityOverlayView.disableSpinButton();
+        gameBoardController.hideConfirmationOverlay();
+        selectedEdges.removeListener(selctedEdgesListener);
+        selectedTileSubscription.unsubscribe();
+        getHexGridController().getEdgeControllers().forEach(EdgeController::hideLabel);
+        selectedRailPath.removeListener(selectedRailPathListener);
     }
 
     private void updateDriveableTiles() {
