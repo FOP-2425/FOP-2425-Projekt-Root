@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers.scene;
+package hProjekt.controller.gui.scene;
 
 import hProjekt.view.menus.MainMenuBuilder;
 import javafx.scene.layout.Region;

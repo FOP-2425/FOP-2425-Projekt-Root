@@ -81,7 +81,5 @@ public interface Player {
      *
      * @return all rails of the player
      */
-    default Map<Set<TilePosition>, Edge> getRails() {
-        return getHexGrid().getRails(this);
-    }
+    Map<Set<TilePosition>, Edge> getRails();
 }

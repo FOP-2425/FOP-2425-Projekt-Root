@@ -1,6 +1,6 @@
 package hProjekt.view.menus;
 
-import hProjekt.controller.gui.controllers.SettingsController;
+import hProjekt.controller.gui.SettingsController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

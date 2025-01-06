@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers.scene;
+package hProjekt.controller.gui.scene;
 
 import java.util.List;
 

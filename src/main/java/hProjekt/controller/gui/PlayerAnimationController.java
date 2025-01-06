@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers;
+package hProjekt.controller.gui;
 
 import java.util.List;
 
