@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers.scene;
+package hProjekt.controller.gui.scene;
 
 import hProjekt.view.menus.SettingsBuilder;
 import javafx.scene.layout.Region;
@@ -9,8 +9,7 @@ public class SettingsSceneController implements SceneController {
 
     public SettingsSceneController() {
         builder = new SettingsBuilder(
-                SceneController::loadMainMenuScene 
-        );
+                SceneController::loadMainMenuScene);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers.scene;
+package hProjekt.controller.gui.scene;
 
 import hProjekt.view.menus.LeaderboardBuilder;
 import javafx.scene.layout.Region;
@@ -6,7 +6,8 @@ import javafx.util.Builder;
 
 /**
  * Controller for managing the Leaderboard Scene.
- * It uses the {@link LeaderboardBuilder} to construct the UI and handles transitions to the main menu.
+ * It uses the {@link LeaderboardBuilder} to construct the UI and handles
+ * transitions to the main menu.
  */
 public class LeaderboardSceneController implements SceneController {
 
@@ -14,7 +15,8 @@ public class LeaderboardSceneController implements SceneController {
 
     /**
      * Initializes the LeaderboardSceneController.
-     * Sets up the builder for creating the leaderboard view and defines the action for returning to the main menu.
+     * Sets up the builder for creating the leaderboard view and defines the action
+     * for returning to the main menu.
      */
     public LeaderboardSceneController() {
         this.builder = new LeaderboardBuilder(SceneController::loadMainMenuScene);

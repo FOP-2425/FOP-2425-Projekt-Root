@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers;
+package hProjekt.controller.gui;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +23,7 @@ import hProjekt.controller.actions.ConfirmDrive;
 import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
-import hProjekt.controller.gui.controllers.scene.GameBoardController;
+import hProjekt.controller.gui.scene.GameBoardController;
 import hProjekt.model.Edge;
 import hProjekt.model.Player;
 import hProjekt.model.PlayerState;

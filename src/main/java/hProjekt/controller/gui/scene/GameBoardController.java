@@ -1,4 +1,4 @@
-package hProjekt.controller.gui.controllers.scene;
+package hProjekt.controller.gui.scene;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.Map;
 
 import hProjekt.controller.GamePhase;
 import hProjekt.controller.PlayerController;
-import hProjekt.controller.gui.controllers.HexGridController;
-import hProjekt.controller.gui.controllers.PlayerActionsController;
-import hProjekt.controller.gui.controllers.PlayerAnimationController;
+import hProjekt.controller.gui.HexGridController;
+import hProjekt.controller.gui.PlayerActionsController;
+import hProjekt.controller.gui.PlayerAnimationController;
 import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.Player;
