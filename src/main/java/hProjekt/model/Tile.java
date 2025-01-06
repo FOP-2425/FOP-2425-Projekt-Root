@@ -79,7 +79,7 @@ public interface Tile {
      *
      * @return whether this tile is at the coast
      */
-    boolean isAtCaost();
+    boolean isAtCoast();
 
     /**
      * Returns the edge in the given direction.

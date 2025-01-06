@@ -161,7 +161,7 @@ public class HexGridImpl implements HexGrid {
 
             double probability = Config.CITY_BASE_PROBABILTY;
 
-            if (tile.isAtCaost()) {
+            if (tile.isAtCoast()) {
                 probability = Config.CITY_AT_COAST_PROBABILTY;
             }
 

@@ -96,7 +96,7 @@ public record TileImpl(
     }
 
     @Override
-    public boolean isAtCaost() {
+    public boolean isAtCoast() {
         return getNeighbours().size() < 6;
     }
 
