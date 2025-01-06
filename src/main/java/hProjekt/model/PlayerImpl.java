@@ -76,6 +76,21 @@ public class PlayerImpl implements Player {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Player %d %s (%s)", getID(), getName(), getColor());
+    }
+
+    @Override
+    public Class<? extends AiController> getAiController() {
+        return aiController;
+    }
+
+    @Override
+    public Map<Set<TilePosition>, Edge> getRails() {
+        return getHexGrid().getRails(this);
+    }
+
     /**
      * Builder for {@link PlayerImpl}.
      * Allows to create a new player and modify its properties before building it.
@@ -202,20 +217,5 @@ public class PlayerImpl implements Player {
         public Player build(final HexGrid grid) {
             return new PlayerImpl(grid, this.color, this.id, nameOrDefault(), this.aiController);
         }
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Player %d %s (%s)", getID(), getName(), getColor());
-    }
-
-    @Override
-    public Class<? extends AiController> getAiController() {
-        return aiController;
-    }
-
-    @Override
-    public Map<Set<TilePosition>, Edge> getRails() {
-        return getHexGrid().getRails(this);
     }
 }
