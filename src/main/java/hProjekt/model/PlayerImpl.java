@@ -1,5 +1,8 @@
 package hProjekt.model;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
@@ -211,4 +214,8 @@ public class PlayerImpl implements Player {
         return aiController;
     }
 
+    @Override
+    public Map<Set<TilePosition>, Edge> getRails() {
+        return getHexGrid().getRails(this);
+    }
 }
