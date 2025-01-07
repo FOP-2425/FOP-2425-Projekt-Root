@@ -150,7 +150,7 @@ public class PlayerActionsController {
             rollDiceOverlayView.enableRollDiceButton();
         }
         if (allowedActions.contains(ChooseCitiesAction.class)) {
-            cityOverlayView.enableSpinButton();
+            cityOverlayView.enableChooseButton();
         }
         if (allowedActions.contains(ChooseRailsAction.class)) {
             configureRailSelection();
@@ -190,7 +190,7 @@ public class PlayerActionsController {
 
     private void resetUiToBaseState() {
         rollDiceOverlayView.disableRollDiceButton();
-        cityOverlayView.disableSpinButton();
+        cityOverlayView.disableChooseButton();
         gameBoardController.hideConfirmationOverlay();
         selectedEdges.removeListener(selctedEdgesListener);
         selectedTileSubscription.unsubscribe();
@@ -378,9 +378,7 @@ public class PlayerActionsController {
     }
 
     public void addBuildHandlers() {
-        gameBoardController.updateConfirmationOverlay(
-                String.format("Finish building? (%s budget left)", getPlayerState().buildingBudget()),
-                () -> getPlayerController().triggerAction(new ConfirmBuildAction()), null);
+        showConfirmBuildDialog();
         selectedRailPath.clear();
         selectedTileSubscription.unsubscribe();
 
@@ -397,6 +395,12 @@ public class PlayerActionsController {
                 findBuildPath(tc.getTile(), selectedTile)),
                 tc -> getPlayerController()
                         .triggerAction(new BuildRailAction(selectedRailPath)));
+    }
+
+    private void showConfirmBuildDialog() {
+        gameBoardController.updateConfirmationOverlay(
+                String.format("Finish building? (%s budget left)", getPlayerState().buildingBudget()),
+                () -> getPlayerController().triggerAction(new ConfirmBuildAction()), null);
     }
 
     private void setupTileSelectionHandlers(BiConsumer<TileController, Tile> handleTileHover,

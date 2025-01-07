@@ -97,7 +97,8 @@ public class ChosenCitiesOverlayView extends StackPane {
         spinButton = new Button("Spin");
         spinButton.setFont(new Font("Arial", 14));
         spinButton.setTextFill(Color.WHITE);
-        spinButton.setStyle("-fx-background-color: #0078d7; -fx-background-radius: 10px; -fx-padding: 8px 15px; -fx-cursor: hand");
+        spinButton.setStyle(
+                "-fx-background-color: #0078d7; -fx-background-radius: 10px; -fx-padding: 8px 15px; -fx-cursor: hand");
         spinButton.setDisable(true); // Disabled by default
         spinButton.setOnAction(chooseCitiesAction::accept); // Set action for the button
 
@@ -157,14 +158,14 @@ public class ChosenCitiesOverlayView extends StackPane {
     /**
      * Enables the Spin button.
      */
-    public void enableSpinButton() {
+    public void enableChooseButton() {
         spinButton.setDisable(false);
     }
 
     /**
      * Disables the Spin button.
      */
-    public void disableSpinButton() {
+    public void disableChooseButton() {
         spinButton.setDisable(true);
     }
 }
