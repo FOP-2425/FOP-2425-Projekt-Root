@@ -115,6 +115,12 @@ public class PlayerAnimationController {
         return fullAnimation;
     }
 
+    /**
+     * Sets the position of the playerCircle to the center of the given
+     * TilePosition.
+     *
+     * @param position the TilePosition to move the playerCircle to
+     */
     public void setPosition(TilePosition position) {
         if (position == null) {
             return;
@@ -124,10 +130,16 @@ public class PlayerAnimationController {
         playerContainer.setTranslateY(center.getY() - playerContainer.getHeight() / 2);
     }
 
+    /**
+     * Shows the train icon.
+     */
     public void showTrain() {
         playerContainer.setVisible(true);
     }
 
+    /**
+     * Hides the train icon.
+     */
     public void hideTrain() {
         playerContainer.setVisible(false);
     }

@@ -458,25 +458,6 @@ public class PlayerActionsController {
                 tc -> selectedEdges.addAll(selectedRailPath), selectedEdges);
     }
 
-    private void chooseEdgeHandler(EdgeController ec) {
-        ec.highlight(event -> {
-            selectedEdges.add(ec.getEdge());
-            ec.selected(event2 -> {
-                selectedEdges.remove(ec.getEdge());
-                chooseEdgeHandler(ec);
-            });
-        });
-    }
-
-    public void updateChooseableEdges() {
-        updateChooseableEdges(getPlayerState().choosableEdges());
-    }
-
-    private void updateChooseableEdges(Set<Edge> edges) {
-        edges.stream().map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
-                .forEach(this::chooseEdgeHandler);
-    }
-
     public void confirmSelectedRails() {
         getPlayerController().triggerAction(new ChooseRailsAction(selectedEdges));
     }

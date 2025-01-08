@@ -46,22 +46,43 @@ public class TileController implements Controller {
         builder.unhighlight();
     }
 
+    /**
+     * Sets the mouse entered handler.
+     *
+     * @param handler the handler to call when the mouse enters the tile
+     */
     public void setMouseEnteredHandler(final Consumer<MouseEvent> handler) {
         builder.setMouseEnteredHandler(handler);
     }
 
+    /**
+     * Removes the mouse entered handler.
+     */
     public void removeMouseEnteredHandler() {
         builder.removeMouseEnteredHandler();
     }
 
+    /**
+     * Sets the mouse clicked handler.
+     *
+     * @param handler the handler to call when the tile is clicked
+     */
     public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
         builder.setMouseClickedHandler(handler);
     }
 
+    /**
+     * Removes the mouse clicked handler.
+     */
     public void removeMouseClickedHandler() {
         builder.removeMouseClickedHandler();
     }
 
+    /**
+     * Returns whether the tile has a mouse clicked handler.
+     *
+     * @return true if the tile has a mouse clicked handler, false otherwise
+     */
     public boolean hasMouseClickedHandler() {
         return builder.hasMouseClickedHandler();
     }
