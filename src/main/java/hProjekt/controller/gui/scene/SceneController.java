@@ -67,7 +67,7 @@ public interface SceneController extends Controller {
     }
 
     /**
-     * Loads the map editor scene.
+     * Loads the leaderboard editor scene.
      */
     static void loadLeaderboardScene() {
         SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.LEADERBOARD);

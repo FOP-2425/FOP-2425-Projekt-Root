@@ -11,11 +11,19 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.util.Builder;
 
+/**
+ * The controller for the setup game scene.
+ */
 public class SetupGameSceneController implements SceneController {
     private final Builder<Region> builder;
     private final GameSetup gameSetup;
     private final GameState gameState;
 
+    /**
+     * Creates a new setup game scene controller.
+     *
+     * @param gameState the game state
+     */
     public SetupGameSceneController(final GameState gameState) {
         this.gameSetup = new GameSetupImpl();
         this.gameState = gameState;
