@@ -1,7 +1,6 @@
 package hProjekt.controller.gui.scene;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
@@ -76,8 +75,7 @@ public class GameBoardController implements SceneController {
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
                 rollDiceOverlayView, chosenCitiesOverlayView, cityOverlayView, confirmationOverlayView, event -> {
-                    List<Player> players = gameState.getPlayers();
-                    SceneController.loadEndScreenScene(players);
+                    SceneController.loadEndScreenScene();
                 });
         for (Player player : gameState.getPlayers()) {
             playerAnimationControllers.put(player,
@@ -128,9 +126,7 @@ public class GameBoardController implements SceneController {
             if (newValue == null) {
                 return;
             }
-            Platform.runLater(() -> {
-                SceneController.loadEndScreenScene(gameState.getPlayers());
-            });
+            Platform.runLater(SceneController::loadEndScreenScene);
         });
     }
 
