@@ -18,8 +18,22 @@ import hProjekt.model.HexGrid;
 import hProjekt.model.Tile;
 import javafx.beans.property.Property;
 
+/**
+ * A basic AI controller as an example for how to implement an AI controller.
+ */
 public class BasicAiController extends AiController {
 
+    /**
+     * Creates a new basic AI controller with the given player controller, hex grid,
+     * game state and active player controller.
+     * Adds a subscription to the player objective property to execute actions when
+     * the player's objective changes.
+     *
+     * @param playerController       the player controller
+     * @param hexGrid                the hex grid
+     * @param gameState              the game state
+     * @param activePlayerController the active player controller
+     */
     public BasicAiController(final PlayerController playerController, final HexGrid hexGrid, final GameState gameState,
             final Property<PlayerController> activePlayerController) {
         super(playerController, hexGrid, gameState, activePlayerController);
