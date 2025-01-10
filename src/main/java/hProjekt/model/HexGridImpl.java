@@ -1,6 +1,5 @@
 package hProjekt.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,8 +44,9 @@ public class HexGridImpl implements HexGrid {
     /**
      * Creates a new HexGrid with the given scale.
      *
-     * @param scale the scale of the grid
-     * @throws IOException
+     * @param scale          the scale of the grid
+     * @param numberOfCities the number of cities to place
+     * @param names          the names to use for the cities
      */
     @DoNotTouch
     public HexGridImpl(final int scale, final int numberOfCities, final String[] names) {
@@ -61,10 +61,26 @@ public class HexGridImpl implements HexGrid {
     /**
      * Creates a new HexGrid with the default values.
      *
-     * @throws IOException
+     * @param names the names to use for the cities
      */
     public HexGridImpl(String[] names) {
         this(Config.MAP_SCALE, Config.NUMBER_OF_CITIES, names);
+    }
+
+    /**
+     * Creates a new HexGrid with the given tiles, edges, and cities.
+     *
+     * @param tiles  the tiles
+     * @param edges  the edges
+     * @param cities the cities
+     */
+    public HexGridImpl(final Map<TilePosition, Tile> tiles, final Map<Set<TilePosition>, Edge> edges,
+            final Map<TilePosition, City> cities) {
+        this.tiles.putAll(tiles);
+        this.edges.putAll(edges);
+        this.cities.putAll(cities);
+        this.tileHeight = Bindings.createDoubleBinding(() -> tileSize.get() * 2, tileSize);
+        this.tileWidth = Bindings.createDoubleBinding(() -> Math.sqrt(3) * tileSize.get(), tileSize);
     }
 
     /**
@@ -262,9 +278,8 @@ public class HexGridImpl implements HexGrid {
     /**
      * Adds a new tile to the grid.
      *
-     * @param position            position of the new tile
-     * @param type                type of the new tile
-     * @param rollNumberGenerator a supplier returning the new tile's roll number
+     * @param position position of the new tile
+     * @param type     type of the new tile
      */
     private void addTile(final TilePosition position, final Tile.Type type) {
         tiles.put(position, new TileImpl(position, type, tileHeight, tileWidth, this));
