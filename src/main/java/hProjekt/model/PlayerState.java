@@ -13,6 +13,13 @@ import hProjekt.controller.PlayerObjective;
  * that can be upgraded
  *
  * @param buildableRailEdges a set of edges where rail can be built
+ * @param playerObjective    the player's objective
+ * @param choosableEdges     a set of edges the player can choose from. For
+ *                           example to rent them.
+ * @param rentedEdges        a set of edges the player has rented
+ * @param hasPath            whether the player has a path to the target city
+ * @param drivableTiles      a map of tiles that can be driven to
+ * @param buildingBudget     the player's budget for building
  */
 @DoNotTouch
 public record PlayerState(

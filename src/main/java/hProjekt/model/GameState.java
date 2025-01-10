@@ -47,6 +47,10 @@ public final class GameState {
      */
     private final Map<Player, TilePosition> playerPositions = new HashMap<>();
 
+    /**
+     * The point surplus of the {@link Player}s. Only relevant for the driving
+     * phase.
+     */
     private final Map<Player, Integer> playerPointSurplus = new HashMap<>();
 
     /**
@@ -118,10 +122,21 @@ public final class GameState {
         playerPositions.put(player, position);
     }
 
+    /**
+     * Returns the point surplus of the {@link Player}s.
+     *
+     * @return the point surplus of the {@link Player}s
+     */
     public Map<Player, Integer> getPlayerPointSurplus() {
         return Collections.unmodifiableMap(playerPointSurplus);
     }
 
+    /**
+     * Sets the point surplus of the given {@link Player}.
+     *
+     * @param player  the {@link Player} to set the point surplus for
+     * @param surplus the point surplus to set
+     */
     public void setPlayerPointSurplus(final Player player, final int surplus) {
         playerPointSurplus.put(player, surplus);
     }

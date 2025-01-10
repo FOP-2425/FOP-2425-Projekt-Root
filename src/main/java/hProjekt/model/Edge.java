@@ -90,9 +90,9 @@ public interface Edge {
     boolean removeRail(Player player);
 
     /**
-     * Returns the rail's owners, if a rail has been built on this edge.
+     * Returns the rail's owners property
      *
-     * @return the rail's owners, if a rail has been built on this edge
+     * @return the rail's owners property
      */
     Property<List<Player>> getRailOwnersProperty();
 
@@ -138,7 +138,8 @@ public interface Edge {
     int getTotalParallelCost(Player player);
 
     /**
-     * Returns the total cost the player has to pay to build a rail on this edge.
+     * Returns the total cost the player has to pay to build a rail on this edge
+     * including the parallel cost.
      * The total cost is the sum of the building cost and the parallel cost times
      * the number of players that have already built on this edge.
      *
@@ -150,6 +151,7 @@ public interface Edge {
     /**
      * Returns the cost of driving along this edge.
      *
+     * @param from the tile position the player is coming from
      * @return the cost of driving along this edge
      */
     int getDrivingCost(TilePosition from);
