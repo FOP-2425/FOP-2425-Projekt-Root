@@ -128,8 +128,7 @@ public class PlayerController {
     }
 
     /**
-     * Sets the value of the {@link #playerObjectiveProperty} to the given
-     * objective.
+     * Sets the player objective.
      *
      * @param nextObjective the objective to set
      */

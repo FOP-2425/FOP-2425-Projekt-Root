@@ -63,7 +63,7 @@ public class PlayerAnimationController {
      * Animates the playerCircle along the given list of Tiles.
      *
      * @param tiles the list of Tiles to follow
-     * @param red
+     * @return the Animation object representing the full animation
      */
     public Animation animatePlayer(List<Tile> tiles) {
         if (tiles == null || tiles.size() < 2) {

@@ -78,10 +78,7 @@ public interface SceneController extends Controller {
     }
 
     /**
-     *
      * Loads the end screen scene with the given GameState.
-     *
-     * @param players the players to display on the end screen.
      */
     static void loadEndScreenScene() {
         SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.END_SCREEN);
