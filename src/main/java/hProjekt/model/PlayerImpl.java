@@ -200,7 +200,7 @@ public class PlayerImpl implements Player {
         /**
          * Sets whether the player is an AI.
          *
-         * @param ai whether the player is an AI
+         * @param ai the ai controller of the player
          * @return this builder
          */
         public Builder ai(final Class<? extends AiController> ai) {

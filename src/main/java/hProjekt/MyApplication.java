@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 
 /**
  * The main application of the game.
+ *
+ * <b>Only touch when you really know what you are doing!</b>
  */
 @DoNotTouch
 public class MyApplication extends Application {
@@ -30,6 +32,7 @@ public class MyApplication extends Application {
 
     @Override
     public void start(final Stage stage) throws Exception {
+        // Don't ask JavaFX does some weird shit and sucks up errors otherwise...
         System.setErr(new PrintStream(new OutputStream() {
             @Override
             public void write(final int b) {
@@ -55,7 +58,6 @@ public class MyApplication extends Application {
         }
         stage.show();
 
-        // TODO: Uncomment when implemented
         SceneSwitcher.getInstance(stage, gameLoopStart).loadScene(SceneType.MAIN_MENU);
     }
 

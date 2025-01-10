@@ -1,12 +1,9 @@
 package hProjekt.controller.gui.scene;
 
-import java.util.List;
-
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.gui.Controller;
 import hProjekt.controller.gui.SceneSwitcher;
-import hProjekt.model.Player;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
@@ -60,14 +57,7 @@ public interface SceneController extends Controller {
     }
 
     /**
-     * Loads the highscore scene.
-     */
-    static void loadHighscoreScene() {
-        System.out.println("Loading highscores");
-    }
-
-    /**
-     * Loads the map editor scene.
+     * Loads the leaderboard editor scene.
      */
     static void loadLeaderboardScene() {
         SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.LEADERBOARD);
@@ -88,13 +78,10 @@ public interface SceneController extends Controller {
     }
 
     /**
-     *
      * Loads the end screen scene with the given GameState.
-     *
-     * @param players the players to display on the end screen.
      */
-    static void loadEndScreenScene(List<Player> players) {
-        SceneSwitcher.getInstance().loadEndScreenScene(players);
+    static void loadEndScreenScene() {
+        SceneSwitcher.getInstance().loadScene(SceneSwitcher.SceneType.END_SCREEN);
     }
 
 }

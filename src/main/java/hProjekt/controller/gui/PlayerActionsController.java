@@ -43,6 +43,17 @@ import javafx.event.ActionEvent;
 import javafx.util.Pair;
 import javafx.util.Subscription;
 
+/**
+ * This class is responsible for handling all player actions performed through
+ * the UI. It ensures that the correct buttons are enabled and disabled based on
+ * the current player objective and state.
+ * It also ensures that the correct actions are triggered when a button is
+ * clicked and that the user is prompted when a action requires user input.
+ * Additionally it triggers the respective actions based on the user input.
+ *
+ * <b>Do not touch any of the given attributes these are constructed in a way to
+ * ensure thread safety.</b>
+ */
 public class PlayerActionsController {
     private final Property<PlayerController> playerControllerProperty = new SimpleObjectProperty<>();
     private final Property<PlayerState> playerStateProperty = new SimpleObjectProperty<>();
@@ -163,6 +174,10 @@ public class PlayerActionsController {
         }
     }
 
+    /**
+     * Shows the renting confirmation overlay. This overlay is shown when the player
+     * is in the driving phase and has to confirm the rented edges.
+     */
     private void showRentingConfirmation() {
         getPlayerState().rentedEdges().stream().forEach(edge -> {
             getHexGridController().getEdgeControllersMap().get(edge).highlight();
@@ -179,6 +194,10 @@ public class PlayerActionsController {
         selectedEdges.clear();
     }
 
+    /**
+     * Configures the edges that can be rented by the player so they can be selected
+     * by the player.
+     */
     private void configureRailSelection() {
         selectedEdges.clear();
         selectedEdges.addListener(selctedEdgesListener);
@@ -188,6 +207,11 @@ public class PlayerActionsController {
         });
     }
 
+    /**
+     * Resets the UI to the base state. This includes disabling all buttons and
+     * hiding all overlays.
+     * Also removes listeners and subscriptions.
+     */
     private void resetUiToBaseState() {
         rollDiceOverlayView.disableRollDiceButton();
         cityOverlayView.disableChooseButton();
@@ -198,6 +222,11 @@ public class PlayerActionsController {
         selectedRailPath.removeListener(selectedRailPathListener);
     }
 
+    /**
+     * Updates the drivable tiles for the player. This includes highlighting the
+     * tiles that can be driven to and animating the player driving to the clicked
+     * tile.
+     */
     private void updateDriveableTiles() {
         gameBoardController.getPlayerAnimationController(getPlayer())
                 .setPosition(gameBoardController.getPlayerPosition(getPlayer()));
@@ -224,6 +253,13 @@ public class PlayerActionsController {
         gameBoardController.updatePlayerInformation();
     }
 
+    /**
+     * Updates the city overlay with the given cities.
+     *
+     * @param fromCity     the city to start from
+     * @param toCity       the city to drive to
+     * @param allCityNames all city names
+     */
     public void updateCityOverlay(String fromCity, String toCity, List<String> allCityNames) {
         cityOverlayView.spinCities(fromCity, toCity, allCityNames);
     }
@@ -284,10 +320,20 @@ public class PlayerActionsController {
         getHexGridController().getTileControllers().forEach(TileController::removeMouseEnteredHandler);
     }
 
+    /**
+     * Returns the roll dice overlay view.
+     *
+     * @return the roll dice overlay view
+     */
     public RollDiceOverlayView getRollDiceOverlayView() {
         return rollDiceOverlayView;
     }
 
+    /**
+     * Returns the city overlay view.
+     *
+     * @return the city overlay view
+     */
     public ChosenCitiesOverlayView getChosenCitiesOverlayView() {
         return cityOverlayView;
     }
@@ -302,10 +348,23 @@ public class PlayerActionsController {
         getPlayerController().triggerAction(new RollDiceAction());
     }
 
+    /**
+     * The action that is triggered when the choose cities button is clicked.
+     *
+     * @param event the event that triggered the action
+     */
     public void chooseCitiesButtonAction(final ActionEvent event) {
         getPlayerController().triggerAction(new ChooseCitiesAction());
     }
 
+    /**
+     * Highlights the tiles from which the player can start building or selecting
+     * rails.
+     * When a tile is clicked all other tiles are unhighlighted and the clicked tile
+     * is highlighted.
+     * If the selectedTile is clicked again all tiles are highlighted again and the
+     * selectedTile is set to null.
+     */
     private void highlightStartingTiles() {
         Collection<Tile> startingTiles;
         selectedTile.setValue(null);
@@ -328,10 +387,25 @@ public class PlayerActionsController {
         }
     }
 
+    /**
+     * Calculates the driving cost function between two tiles.
+     *
+     * @param from the starting tile
+     * @param to   the target tile
+     * @return the driving cost between the two tiles
+     */
     private Integer drivingCostFunction(TilePosition from, TilePosition to) {
         return getHexGridController().getHexGrid().getEdge(from, to).getDrivingCost(from);
     }
 
+    /**
+     * Finds the path between the hovered tile and the selected tile based on all
+     * edges in the grid.
+     *
+     * @param hoveredTile  the hovered/start tile
+     * @param selectedTile the selected/target tile
+     * @return the path between the hovered and selected tile
+     */
     private List<Edge> findBuildPath(Tile hoveredTile, Tile selectedTile) {
         return getHexGridController().getHexGrid().findPath(
                 selectedTile.getPosition(),
@@ -341,11 +415,28 @@ public class PlayerActionsController {
                 this::drivingCostFunction);
     }
 
+    /**
+     * Limits the given path with the given function and highlights it.
+     *
+     * @param terminateFunction the function that limits the path
+     * @param pathToHoveredTile the path to the hovered tile
+     */
     private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
             List<Edge> pathToHoveredTile) {
         highlightPath(terminateFunction, pathToHoveredTile, List.of());
     }
 
+    /**
+     * Limits the given path with the given function and highlights it.
+     * Also unhighlights all edges except the given highlighted edges.
+     *
+     * @param terminateFunction the function that limits the path, gets a pair of
+     *                          the building costs and the parallel costs and the
+     *                          distance. Returns true if the path shouldn't be
+     *                          longer.
+     * @param pathToHoveredTile the path to highlight
+     * @param highlightedEdges  the edges that are already highlighted
+     */
     private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
             List<Edge> pathToHoveredTile, Collection<Edge> highlightedEdges) {
         getHexGridController().getEdgeControllers().stream().filter(ec -> !highlightedEdges.contains(ec.getEdge()))
@@ -377,6 +468,11 @@ public class PlayerActionsController {
         }
     }
 
+    /**
+     * Configures the UI so the user can select tiles to build rails.
+     * Highlights tiles that can be selected and sets up the necessary event
+     * handlers so the user can build rails to where he moves the mouse.
+     */
     public void addBuildHandlers() {
         showConfirmBuildDialog();
         selectedRailPath.clear();
@@ -397,17 +493,36 @@ public class PlayerActionsController {
                         .triggerAction(new BuildRailAction(selectedRailPath)));
     }
 
+    /**
+     * Shows the confirm build dialog.
+     */
     private void showConfirmBuildDialog() {
         gameBoardController.updateConfirmationOverlay(
                 String.format("Finish building? (%s budget left)", getPlayerState().buildingBudget()),
                 () -> getPlayerController().triggerAction(new ConfirmBuildAction()), null);
     }
 
+    /**
+     * Highlights the tiles that can be selected by the player and sets up the other
+     * tiles so they can be hovered and selected.
+     *
+     * @param handleTileHover the function that is called when a tile is hovered
+     * @param handleTileClick the function that is called when a tile is clicked
+     */
     private void setupTileSelectionHandlers(BiConsumer<TileController, Tile> handleTileHover,
             Consumer<TileController> handleTileClick) {
         setupTileSelectionHandlers(handleTileHover, handleTileClick, Set.of());
     }
 
+    /**
+     * Highlights the tiles that can be selected by the player and sets up the other
+     * tiles so the player can buld rails to them.
+     * Also unhighlights all edges except the given highlighted edges.
+     *
+     * @param handleTileHover  the function that is called when a tile is hovered
+     * @param handleTileClick  the function that is called when a tile is clicked
+     * @param highlightedEdges the edges that are already highlighted
+     */
     private void setupTileSelectionHandlers(BiConsumer<TileController, Tile> handleTileHover,
             Consumer<TileController> handleTileClick, Set<Edge> highlightedEdges) {
         highlightStartingTiles();
@@ -434,6 +549,14 @@ public class PlayerActionsController {
         });
     }
 
+    /**
+     * Finds the path between the hovered tile and the selected tile based on the
+     * chooseable edges and the player rails.
+     *
+     * @param hoveredTile  the hovered tile
+     * @param selectedTile the selected tile
+     * @return the path between the hovered and selected tile
+     */
     private List<Edge> findChoosenEdgesPath(Tile hoveredTile, Tile selectedTile) {
         return getHexGridController().getHexGrid().findPath(selectedTile.getPosition(), hoveredTile.getPosition(),
                 Set.of(getPlayerState().choosableEdges(), getPlayer()
@@ -441,6 +564,10 @@ public class PlayerActionsController {
                 this::drivingCostFunction);
     }
 
+    /**
+     * Highlights the tiles that can be selected by the player to rent.
+     * Also unhighlights all edges except the already rented rails.
+     */
     public void addChooseEdgesHandlers() {
         selectedRailPath.clear();
         selectedTileSubscription.unsubscribe();
@@ -458,29 +585,18 @@ public class PlayerActionsController {
                 tc -> selectedEdges.addAll(selectedRailPath), selectedEdges);
     }
 
-    private void chooseEdgeHandler(EdgeController ec) {
-        ec.highlight(event -> {
-            selectedEdges.add(ec.getEdge());
-            ec.selected(event2 -> {
-                selectedEdges.remove(ec.getEdge());
-                chooseEdgeHandler(ec);
-            });
-        });
-    }
-
-    public void updateChooseableEdges() {
-        updateChooseableEdges(getPlayerState().choosableEdges());
-    }
-
-    private void updateChooseableEdges(Set<Edge> edges) {
-        edges.stream().map(edge -> getHexGridController().getEdgeControllersMap().get(edge))
-                .forEach(this::chooseEdgeHandler);
-    }
-
+    /**
+     * Triggers the chooseRailsAction with the selected edges.
+     */
     public void confirmSelectedRails() {
         getPlayerController().triggerAction(new ChooseRailsAction(selectedEdges));
     }
 
+    /**
+     * Triggers the confirm drive action with the given accept value.
+     *
+     * @param accept whether the player accepts the path or not
+     */
     public void confirmDrive(boolean accept) {
         getPlayerController().triggerAction(new ConfirmDrive(accept));
     }

@@ -24,8 +24,8 @@ import javafx.util.Builder;
 
 /**
  * The builder for the {@link HexGrid}.
- * It creates a pane with the hex grid and handles the placement of the tiles,
- * intersections, edges and ports.
+ * It creates a pane with the hex grid and handles the placement of the tiles
+ * and edges.
  * The hex grid pane can be zoomed, panned and centered.
  */
 public class HexGridBuilder implements Builder<Region> {
@@ -46,16 +46,16 @@ public class HexGridBuilder implements Builder<Region> {
      * Creates a new hex grid builder with the given hex grid, intersection
      * builders, edge lines, tile builders and event handlers.
      *
-     * @param grid                 The hex grid.
-     * @param intersectionBuilders The intersection builders.
-     * @param edgeLines            The edge lines.
-     * @param tileBuilders         The tile builders.
-     * @param scrollHandler        The handler for the scroll event. Used for
-     *                             zooming.
-     * @param pressedHandler       The handler for the mouse pressed event.
-     * @param draggedHandler       The handler for the mouse dragged event. Used for
-     *                             panning
-     * @param centerButtonHandler  The handler for the center button event.
+     * @param grid                The hex grid.
+     * @param edgeLines           The edge lines.
+     * @param tileBuilders        The tile builders.
+     * @param cityBuilders        The city builders.
+     * @param scrollHandler       The handler for the scroll event. Used for
+     *                            zooming.
+     * @param pressedHandler      The handler for the mouse pressed event.
+     * @param draggedHandler      The handler for the mouse dragged event. Used for
+     *                            panning
+     * @param centerButtonHandler The handler for the center button event.
      */
     public HexGridBuilder(
             final HexGrid grid,
@@ -183,10 +183,19 @@ public class HexGridBuilder implements Builder<Region> {
         hexGridPane.getChildren().add(edgeLine);
     }
 
+    /**
+     * Draws the cities on the hex grid.
+     */
     public void drawCities() {
         cityBuilders.forEach(CityBuilder::build);
     }
 
+    /**
+     * Places a city on the hex grid.
+     *
+     * @param builder The city builder.
+     * @return The region of the city.
+     */
     private Region placeCity(final CityBuilder builder) {
         final Region cityView = builder.build();
         final City city = builder.getCity();
@@ -236,6 +245,11 @@ public class HexGridBuilder implements Builder<Region> {
         return calculatePositionTranslationOffset(position).add(grid.getTileWidth() / 2, grid.getTileHeight() / 2);
     }
 
+    /**
+     * Returns the pane with the hex grid.
+     *
+     * @return The pane with the hex grid.
+     */
     public Pane getHexGridPane() {
         return hexGridPane;
     }

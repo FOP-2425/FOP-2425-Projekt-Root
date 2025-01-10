@@ -31,9 +31,9 @@ public class ChosenCitiesOverlayView extends StackPane {
     private final Button spinButton;
 
     /**
-     * Constructor for the CityOverlayView.
+     * Constructor for the ChosenCitiesOverlayView.
      *
-     * @param chooseCitiesAction the action to execute when the Spin button is
+     * @param chooseCitiesAction the action to execute when the choose button is
      *                           clicked
      */
     public ChosenCitiesOverlayView(final Consumer<ActionEvent> chooseCitiesAction) {

@@ -3,9 +3,16 @@ package hProjekt.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.tudalgo.algoutils.student.annotation.DoNotTouch;
+
 import hProjekt.controller.AiController;
 import javafx.scene.paint.Color;
 
+/**
+ * Represents a player in the game.
+ * Players have a name, a color, a number of credits, and a set of rails.
+ */
+@DoNotTouch
 public interface Player {
 
     /**

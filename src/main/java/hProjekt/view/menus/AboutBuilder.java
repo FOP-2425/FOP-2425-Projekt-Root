@@ -11,10 +11,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Builder;
 
+/**
+ * Builder for the About screen.
+ */
 public class AboutBuilder implements Builder<Region> {
 
     private final Runnable loadMainMenuAction;
 
+    /**
+     * Constructor for the AboutBuilder.
+     *
+     * @param loadMainMenuAction the action to load the main menu
+     */
     public AboutBuilder(Runnable loadMainMenuAction) {
         this.loadMainMenuAction = loadMainMenuAction;
     }

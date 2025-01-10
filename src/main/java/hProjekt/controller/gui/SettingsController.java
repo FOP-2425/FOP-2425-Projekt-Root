@@ -13,6 +13,12 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
 
+/**
+ * Controller for managing the settings of the game.
+ * It provides properties for all settings and allows to apply and reset them.
+ *
+ * This is cursed I know but well legacy code.
+ */
 public class SettingsController {
 
     // Properties for Game Settings
@@ -57,7 +63,6 @@ public class SettingsController {
     /**
      * Updates Config values with the current settings.
      */
-
     public void applySettings() {
 
         // Game Settings
@@ -137,6 +142,5 @@ public class SettingsController {
         mountainToMountainDrivingCost.set(1);
 
         System.out.println("Settings resetted successfully");
-
     }
 }

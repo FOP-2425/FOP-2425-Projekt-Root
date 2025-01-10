@@ -15,8 +15,7 @@ import javafx.util.Builder;
 
 /**
  * A Builder to create views for {@link Tile}s.
- * Renders the {@link Tile} with a resource icon, a label for the roll number
- * and the robber if present.
+ * Renders the {@link Tile} as a hexagon.
  * Has methods to highlight and unhighlight the tile.
  */
 public class TileBuilder implements Builder<Region> {
@@ -53,7 +52,8 @@ public class TileBuilder implements Builder<Region> {
         final Label positionLabel = createPositionLabel();
         final Label resourceLabel = createResourceLabel();
 
-        // Add labels for debugging
+        // Uncomment to display position and resource labels. Makes everything quite
+        // laggy
         // mainBox.getChildren().addAll(positionLabel, resourceLabel);
         pane.getChildren().addAll(mainBox);
 
@@ -90,7 +90,7 @@ public class TileBuilder implements Builder<Region> {
     /**
      * Creates a label displaying the tile's type (e.g., PLAIN, MOUNTAIN).
      *
-     * @return the resource label
+     * @return the type label
      */
     private Label createResourceLabel() {
         final Label resourceLabel = new Label(tile.getType().toString());
@@ -117,24 +117,45 @@ public class TileBuilder implements Builder<Region> {
         removeMouseClickedHandler();
     }
 
+    /**
+     * Sets a handler for when the mouse enters the tile.
+     *
+     * @param handler the handler to call when the mouse enters the tile
+     */
     public void setMouseEnteredHandler(final Consumer<MouseEvent> handler) {
         pane.setOnMouseEntered(handler::accept);
     }
 
+    /**
+     * Removes the handler for when the mouse enters the tile.
+     */
     public void removeMouseEnteredHandler() {
         pane.setOnMouseEntered(null);
     }
 
+    /**
+     * Sets a handler for when the tile is clicked.
+     *
+     * @param handler the handler to call when the tile is clicked
+     */
     public void setMouseClickedHandler(final Consumer<MouseEvent> handler) {
         hasMouseClickedHandler = true;
         pane.setOnMouseClicked(handler::accept);
     }
 
+    /**
+     * Removes the handler for when the tile is clicked.
+     */
     public void removeMouseClickedHandler() {
         hasMouseClickedHandler = false;
         pane.setOnMouseClicked(null);
     }
 
+    /**
+     * Returns whether the tile has a handler for mouse clicks.
+     *
+     * @return true if the tile has a handler for mouse clicks, false otherwise
+     */
     public boolean hasMouseClickedHandler() {
         return hasMouseClickedHandler;
     }

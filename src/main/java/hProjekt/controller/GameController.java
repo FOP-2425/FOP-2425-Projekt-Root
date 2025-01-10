@@ -42,66 +42,142 @@ public class GameController {
 
     private final Property<PlayerController> activePlayerController = new SimpleObjectProperty<>();
 
+    /**
+     * Creates a new GameController with the given game state and dice supplier.
+     *
+     * @param state the game state
+     * @param dice  the dice supplier
+     */
     public GameController(GameState state, Supplier<Integer> dice) {
         this.state = state;
         this.playerControllers = new HashMap<>();
         this.dice = dice;
     }
 
+    /**
+     * Creates a new GameController with the given game state.
+     *
+     * @param state the game state
+     */
     public GameController(GameState state) {
         this(state, () -> Config.RANDOM.nextInt(1, Config.DICE_SIDES + 1));
     }
 
+    /**
+     * Creates a new GameController with a new game state and a random dice
+     * supplier.
+     */
     public GameController() {
         this(new GameState(new HexGridImpl(Config.TOWN_NAMES), new ArrayList<>()),
                 () -> Config.RANDOM.nextInt(1, Config.DICE_SIDES + 1));
     }
 
+    /**
+     * Returns the game state.
+     *
+     * @return the game state
+     */
     public GameState getState() {
         return state;
     }
 
+    /**
+     * Returns a map from players to player controllers.
+     *
+     * @return a map from players to player controllers
+     */
     public Map<Player, PlayerController> getPlayerControllers() {
         return playerControllers;
     }
 
+    /**
+     * Returns a property that contains the active player controller.
+     *
+     * @return a property that contains the active player controller
+     */
     public Property<PlayerController> activePlayerControllerProperty() {
         return activePlayerController;
     }
 
+    /**
+     * Returns the active player controller.
+     *
+     * @return the active player controller
+     */
     public PlayerController getActivePlayerController() {
         return activePlayerController.getValue();
     }
 
+    /**
+     * Returns the current dice roll property.
+     *
+     * @return the current dice roll property
+     */
     public IntegerProperty currentDiceRollProperty() {
         return currentDiceRoll;
     }
 
+    /**
+     * Returns the current dice roll.
+     *
+     * @return the current dice roll
+     */
     public int getCurrentDiceRoll() {
         return currentDiceRoll.get();
     }
 
+    /**
+     * Returns the round counter property.
+     *
+     * @return the round counter property
+     */
     public IntegerProperty roundCounterProperty() {
         return roundCounter;
     }
 
+    /**
+     * Returns the chosen cities property that contains the starting and target city
+     * as a javaFX Pair.
+     *
+     * @return the chosen cities property
+     */
     public ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty() {
         return chosenCitiesProperty;
     }
 
+    /**
+     * Returns the starting city.
+     *
+     * @return the starting city
+     */
     public City getStartingCity() {
         return chosenCitiesProperty.getValue().getKey();
     }
 
+    /**
+     * Returns the target city.
+     *
+     * @return the target city
+     */
     public City getTargetCity() {
         return chosenCitiesProperty.getValue().getValue();
     }
 
+    /**
+     * Casts the dice and returns the result.
+     *
+     * @return the result of the dice roll
+     */
     public int castDice() {
         currentDiceRoll.set(dice.get());
         return currentDiceRoll.get();
     }
 
+    /**
+     * Chooses two random cities from the grid and sets them as starting and target
+     * city.
+     * The chosen cities are stored in the chosen cities property.
+     */
     public void chooseCities() {
         final List<City> tempCities = getState().getGrid().getCities().values().stream()
                 .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
@@ -115,6 +191,10 @@ public class GameController {
         chosenCitiesProperty.setValue(new Pair<>(startingCity, targetCity));
     }
 
+    /**
+     * Initializes the player controllers for each player in the game state.
+     * If a player is an AI, it creates an AI controller for the player.
+     */
     private void initPlayerControllers() {
         for (Player player : state.getPlayers()) {
             playerControllers.put(player, new PlayerController(this, player));
@@ -144,6 +224,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Starts the game and handles the game loop.
+     *
+     * The game consists of two phases: the building phase and the driving phase.
+     *
+     * @throws IllegalStateException if there are not enough playerss
+     */
     public void startGame() {
         if (this.state.getPlayers().size() < Config.MIN_PLAYERS) {
             throw new IllegalStateException("Not enough players");
@@ -165,6 +252,18 @@ public class GameController {
                 .max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits())).get());
     }
 
+    /**
+     * Executes the driving phase of the game.
+     * The driving phase consists of the following steps:
+     * - If the round counter is a multiple of 3, let the players build during the
+     * driving phase
+     * - Let a player choose the cities to drive to
+     * - Let the players choose their path
+     * - Let the players that are driving roll the dice and drive
+     * - Check if a player has reached the target city and if so, add credits to the
+     * player
+     * - Repeat until all cities were chosen
+     */
     private void executeDrivingPhase() {
         while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
             roundCounter.set(roundCounter.get() + 1);
@@ -193,6 +292,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Let the players build during the driving phase.
+     * The players are sorted by their credits in ascending order ensuring that the
+     * player with the least credits builds first.
+     * Players are given a fixed building budget of
+     * {@link Config#MAX_BUILDINGBUDGET_DRIVING_PHASE}.
+     */
     private void buildingDuringDrivingPhase() {
         getState().getPlayers().stream().sorted((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()))
                 .forEachOrdered((player) -> {
@@ -202,6 +308,10 @@ public class GameController {
                 });
     }
 
+    /**
+     * Let the players choose the rails they want to rent and confirm the calculated
+     * path.
+     */
     private void letPlayersChoosePath() {
         for (Player player : getState().getPlayers()) {
             playerControllers.get(player).resetDrivingPhase();
@@ -215,6 +325,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Handles the driving.
+     * While there are players that are driving and the target city has not been
+     * reached, let the players roll the dice and drive.
+     * The players are sorted by their credits in descending order ensuring that the
+     * player with the most credits drives first.
+     */
     private void handleDriving() {
         while (!getState().getPlayerPositions().values().stream()
                 .anyMatch(pos -> getTargetCity().getPosition().equals(pos))
@@ -229,6 +346,14 @@ public class GameController {
         }
     }
 
+    /**
+     * Returns the winners of a round.
+     * The winners are the players that have reached the target city. If multiple
+     * players have reached the target city, the player with the biggest point
+     * surplus wins.
+     *
+     * @return the winners of a round
+     */
     private List<Player> getWinners() {
         return getState().getPlayerPositions().entrySet().stream()
                 .filter(entry -> entry.getValue().equals(getTargetCity().getPosition()))
@@ -239,6 +364,16 @@ public class GameController {
                 .toList();
     }
 
+    /**
+     * Executes the building phase of the game.
+     * The building phase consists of the following steps:
+     * - While there are unconnected cities, let a player roll the dice
+     * - Starting with the player that rolled the dice, let the players build until
+     * all players have built
+     * - The players are given a building budget according to the dice roll
+     * - Repeat until there are only
+     * {@link Config#UNCONNECTED_CITIES_START_THRESHOLD} unconnected cities left
+     */
     private void executeBuildingPhase() {
         while (state.getGrid().getCities().values().size()
                 - state.getGrid().getConnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
@@ -261,6 +396,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Waits for the player to build.
+     *
+     * @param pc The {@link PlayerController} to wait for.
+     */
     private void waitForBuild(final PlayerController pc) {
         withActivePlayer(pc, () -> {
             PlayerAction action = pc.waitForNextAction(PlayerObjective.PLACE_RAIL);

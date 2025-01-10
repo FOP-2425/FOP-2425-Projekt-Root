@@ -11,6 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+/**
+ * Overlay for displaying a confirmation dialog.
+ * Contains a message and "Yes" and "No" buttons.
+ */
 public class ConfirmationOverlayView extends VBox {
 
     private final Label messageLabel;
@@ -18,6 +22,9 @@ public class ConfirmationOverlayView extends VBox {
     private final Button noButton;
     private final HBox buttonContainer;
 
+    /**
+     * Constructor for the ConfirmationOverlayView.
+     */
     public ConfirmationOverlayView() {
         configureOverlayStyle();
         this.getStylesheets().add(ConfirmationOverlayView.class.getResource("/css/confirmation.css").toExternalForm());
@@ -40,6 +47,9 @@ public class ConfirmationOverlayView extends VBox {
         this.getChildren().add(buttonContainer);
     }
 
+    /**
+     * Styles the overlay.
+     */
     private void configureOverlayStyle() {
         this.setPadding(new Insets(10));
         this.setSpacing(10);
@@ -75,6 +85,7 @@ public class ConfirmationOverlayView extends VBox {
 
     /**
      * Updates the action for the "No" button.
+     * If the action is null, the button is removed.
      *
      * @param onNoAction the action to run when "No" is clicked
      */

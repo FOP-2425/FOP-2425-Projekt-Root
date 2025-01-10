@@ -16,10 +16,18 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
+/**
+ * Builder for the Settings view.
+ */
 public class SettingsBuilder implements Builder<Region> {
     private final Runnable returnToMainMenuAction;
     private final SettingsController settingsController = new SettingsController();
 
+    /**
+     * Constructor for the SettingsBuilder.
+     *
+     * @param returnToMainMenuAction the action to return to the main menu
+     */
     public SettingsBuilder(Runnable returnToMainMenuAction) {
         this.returnToMainMenuAction = returnToMainMenuAction;
     }
@@ -117,6 +125,11 @@ public class SettingsBuilder implements Builder<Region> {
         return box;
     }
 
+    /**
+     * Creates the content for the Game Settings category.
+     *
+     * @return the content pane
+     */
     private Pane createGameSettingsContent() {
         GridPane pane = createBaseGridPane();
         addDefaultHeader(pane);
@@ -162,6 +175,11 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Creates the content for the Credit Settings category.
+     *
+     * @return the content pane
+     */
     private Pane createCreditSettingsContent() {
         GridPane pane = createBaseGridPane();
         addDefaultHeader(pane);
@@ -196,6 +214,11 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Creates the content for the Map Settings category.
+     *
+     * @return the content pane
+     */
     private Pane createMapSettingsContent() {
         GridPane pane = createBaseGridPane();
         addDefaultHeader(pane);
@@ -268,6 +291,11 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Creates the content for the Map Balancing Settings category.
+     *
+     * @return the content pane
+     */
     private Pane createMapBalancingContent() {
         GridPane pane = createBaseGridPane();
         addDefaultHeader(pane);
@@ -325,6 +353,11 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Creates the content for the Building Costs category.
+     *
+     * @return the content pane
+     */
     private Pane createBuildingCostContent() {
         GridPane pane = createBaseGridPane();
         addDefaultHeader(pane);
@@ -372,6 +405,11 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Creates the content for the Driving Costs category.
+     *
+     * @return the content pane
+     */
     private Pane createDrivingCostContent() {
         GridPane pane = createBaseGridPane();
         addDefaultHeader(pane);
@@ -419,6 +457,11 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Updates the UI from the controller.
+     *
+     * This is absolutely not a good way to do this, but it works.
+     */
     private void updateUIFromController() {
         // Game Settings
         settingsController.diceSides.set(settingsController.diceSides.get());
@@ -452,12 +495,22 @@ public class SettingsBuilder implements Builder<Region> {
         settingsController.mountainToMountainDrivingCost.set(settingsController.mountainToMountainDrivingCost.get());
     }
 
+    /**
+     * Creates a default header for the settings categories.
+     *
+     * @param pane the pane to add the header to
+     */
     private void addDefaultHeader(GridPane pane) {
         Label defaultHeader = new Label("Default");
         defaultHeader.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
         pane.add(defaultHeader, 2, 0);
     }
 
+    /**
+     * Creates a base GridPane with default settings.
+     *
+     * @return the GridPane
+     */
     private GridPane createBaseGridPane() {
         GridPane pane = new GridPane();
         pane.setHgap(5);
@@ -466,6 +519,14 @@ public class SettingsBuilder implements Builder<Region> {
         return pane;
     }
 
+    /**
+     * Creates a Slider with default settings.
+     *
+     * @param min   the minimum value
+     * @param max   the maximum value
+     * @param value the initial value
+     * @return the Slider
+     */
     private Slider createSlider(double min, double max, double value) {
         Slider slider = new Slider(min, max, value);
         slider.setShowTickLabels(true);

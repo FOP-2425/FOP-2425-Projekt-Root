@@ -1,8 +1,9 @@
 package hProjekt.controller.gui.scene;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 
 import hProjekt.controller.GamePhase;
 import hProjekt.controller.PlayerController;
@@ -28,6 +29,10 @@ import javafx.scene.layout.Region;
 import javafx.util.Builder;
 import javafx.util.Pair;
 
+/**
+ * The controller for the game board scene.
+ */
+@DoNotTouch
 public class GameBoardController implements SceneController {
     private final HexGridController hexGridController;
     private final GameBoardBuilder builder;
@@ -40,6 +45,21 @@ public class GameBoardController implements SceneController {
     private final GameState gameState;
     private final Map<Player, PlayerAnimationController> playerAnimationControllers = new HashMap<>();
 
+    /**
+     * Creates a new game board controller.
+     * Configures the UI to show the correct player information, round, dice roll
+     * and chosen cities.
+     * Triggers the end screen scene when the game is over.
+     *
+     * <b>Do not touch this constructor!</b>
+     *
+     * @param gameState                      the game state
+     * @param activePlayerControllerProperty the active player controller property
+     * @param diceRollProperty               the dice roll property
+     * @param roundCounterProperty           the round counter property
+     * @param chosenCitiesProperty           the chosen cities property
+     */
+    @DoNotTouch
     public GameBoardController(final GameState gameState,
             final Property<PlayerController> activePlayerControllerProperty, final IntegerProperty diceRollProperty,
             final IntegerProperty roundCounterProperty, final ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty) {
@@ -55,8 +75,7 @@ public class GameBoardController implements SceneController {
         this.rollDiceOverlayView = playerActionsController.getRollDiceOverlayView();
         this.builder = new GameBoardBuilder(hexGridController.buildView(), gameInfoOverlayView, playerOverlayView,
                 rollDiceOverlayView, chosenCitiesOverlayView, cityOverlayView, confirmationOverlayView, event -> {
-                    List<Player> players = gameState.getPlayers();
-                    SceneController.loadEndScreenScene(players);
+                    SceneController.loadEndScreenScene();
                 });
         for (Player player : gameState.getPlayers()) {
             playerAnimationControllers.put(player,
@@ -107,8 +126,15 @@ public class GameBoardController implements SceneController {
             if (newValue == null) {
                 return;
             }
+            Platform.runLater(SceneController::loadEndScreenScene);
+        });
+        gameState.getGamePhaseProperty().subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
             Platform.runLater(() -> {
-                SceneController.loadEndScreenScene(gameState.getPlayers());
+                gameInfoOverlayView.setPhase(newValue.toString());
+                updatePlayerInformation();
             });
         });
     }
@@ -122,20 +148,37 @@ public class GameBoardController implements SceneController {
         return hexGridController;
     }
 
+    /**
+     * Returns the player animation controller for the given player.
+     *
+     * @param player the player
+     * @return the player animation controller
+     */
     public PlayerAnimationController getPlayerAnimationController(Player player) {
         return playerAnimationControllers.get(player);
     }
 
+    /**
+     * Updates the player information.
+     */
     public void updatePlayerInformation() {
         Platform.runLater(() -> {
             playerOverlayView.updatePlayerCredits(gameState.getPlayers());
         });
     }
 
+    /**
+     * Returns the current game phase.
+     *
+     * @return the current game phase
+     */
     public GamePhase getGamePhase() {
         return gameState.getGamePhaseProperty().getValue();
     }
 
+    /**
+     * Updates the city overlay.
+     */
     public void updateCityOverlay() {
         Platform.runLater(() -> {
             System.out.println("Update City Overlay");
@@ -143,6 +186,13 @@ public class GameBoardController implements SceneController {
         });
     }
 
+    /**
+     * Updates the confirmation overlay with the given message and actions.
+     *
+     * @param message     the message to show
+     * @param onYesAction the action to execute when the yes button is clicked
+     * @param onNoAction  the action to execute when the no button is clicked
+     */
     public void updateConfirmationOverlay(String message, Runnable onYesAction, Runnable onNoAction) {
         builder.addConfirmationOverlay();
         Platform.runLater(() -> {
@@ -152,10 +202,19 @@ public class GameBoardController implements SceneController {
         });
     }
 
+    /**
+     * Hides the confirmation overlay.
+     */
     public void hideConfirmationOverlay() {
         builder.removeConfirmationOverlay();
     }
 
+    /**
+     * Returns the position of the player.
+     *
+     * @param player the player
+     * @return the position of the player
+     */
     public TilePosition getPlayerPosition(Player player) {
         return gameState.getPlayerPositions().get(player);
     }

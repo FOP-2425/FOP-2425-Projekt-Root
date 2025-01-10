@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import hProjekt.controller.AiController;
+import hProjekt.controller.BasicAiController;
 import hProjekt.model.Tile;
 import javafx.util.Pair;
 
@@ -95,12 +97,23 @@ public class Config {
      */
     public static int MAP_SCALE = 15;
 
+    /**
+     * The maximum number of tiles a player can rent.
+     */
     public static int MAX_RENTABLE_DISTANCE = 10;
 
+    /**
+     * A map storing information on how much it costs to build a rail between two
+     * tiles depending on their type.
+     */
     public static Map<Set<Tile.Type>, Integer> TILE_TYPE_TO_BUILDING_COST = Map.of(
             Set.of(Tile.Type.PLAIN), 1, Set.of(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 3,
             Set.of(Tile.Type.MOUNTAIN), 5);
 
+    /**
+     * A map storing information on how much it costs to drive between two tiles
+     * depending on their type.
+     */
     public static Map<Pair<Tile.Type, Tile.Type>, Integer> TILE_TYPE_TO_DRIVING_COST = Map.of(
             new Pair<>(Tile.Type.PLAIN, Tile.Type.MOUNTAIN), 2,
             new Pair<>(Tile.Type.PLAIN, Tile.Type.PLAIN), 1,
@@ -113,10 +126,25 @@ public class Config {
      */
     public static List<Integer> WINNING_CREDITS = List.of(20, 10);
 
+    /**
+     * The maximum number of credits a player can spend on building during the
+     * driving phase
+     */
     public static int MAX_BUILDINGBUDGET_DRIVING_PHASE = 10;
 
+    /**
+     * A set of AI controllers that are available for the game.
+     */
+    public static final Set<Class<? extends AiController>> AVAILABLE_AI_CONTROLLER = Set.of(BasicAiController.class);
+
+    /**
+     * A list of town names to train the name generator on.
+     */
     public static final String[] TOWN_NAMES;
 
+    /**
+     * Loads the town names from a file.
+     */
     static {
         String[] names = new String[0];
         try {

@@ -129,18 +129,38 @@ public class HexGridController implements Controller {
         return Collections.unmodifiableMap(edgeControllers);
     }
 
+    /**
+     * Returns the tile controllers.
+     *
+     * @return the tile controllers
+     */
     public Set<TileController> getTileControllers() {
         return tileControllers.values().stream().collect(Collectors.toSet());
     }
 
+    /**
+     * Returns the tile controllers as a map of tiles to tile controllers.
+     *
+     * @return the tile controllers as a map
+     */
     public Map<Tile, TileController> getTileControllersMap() {
         return Collections.unmodifiableMap(tileControllers);
     }
 
+    /**
+     * Returns the city controllers.
+     *
+     * @return the city controllers
+     */
     public Set<CityController> getCityControllers() {
         return cityControllers.values().stream().collect(Collectors.toSet());
     }
 
+    /**
+     * Returns the city controllers as a map of cities to city controllers.
+     *
+     * @return the city controllers as a map
+     */
     public Map<City, CityController> getCityControllersMap() {
         return Collections.unmodifiableMap(cityControllers);
     }

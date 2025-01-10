@@ -97,6 +97,10 @@ public class SceneSwitcher {
             return new SetupGameSceneController(getInstance().gameController.getState());
         }),
         LEADERBOARD(LeaderboardSceneController::new),
+        END_SCREEN(() -> {
+            List<Player> players = getInstance().gameController.getState().getPlayers();
+            return new EndScreenSceneController(players);
+        }),
         SETTINGS(SettingsSceneController::new);
 
         private final Supplier<SceneController> controller;
@@ -132,23 +136,4 @@ public class SceneSwitcher {
             stage.setTitle(newController.getTitle());
         });
     }
-
-    public void loadScene(final SceneController sceneController) {
-        System.out.println("Loading scene: " + sceneController.getTitle());
-        final Scene scene = new Scene(sceneController.buildView());
-        scene.getStylesheets().add("css/hexmap.css");
-        stage.setScene(scene);
-        stage.setTitle(sceneController.getTitle());
-        stage.show();
-    }
-
-    public void loadEndScreenScene(List<Player> players) {
-        Platform.runLater(() -> {
-            EndScreenSceneController controller = new EndScreenSceneController(players);
-            Region newRoot = controller.buildView();
-            stage.getScene().setRoot(newRoot);
-            stage.setTitle(controller.getTitle());
-        });
-    }
-
 }

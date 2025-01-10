@@ -7,7 +7,7 @@ import java.util.List;
 import hProjekt.controller.LeaderboardController;
 import hProjekt.controller.LeaderboardEntry;
 import hProjekt.model.Player;
-import hProjekt.util.Confetti;
+import hProjekt.view.Confetti;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -31,6 +31,12 @@ public class EndScreenBuilder implements Builder<Region> {
     private final List<Player> players;
     private final int CREDITS_PER_STAR = 40; // Determines how many credits are required for a star
 
+    /**
+     * Constructor for the EndScreenBuilder.
+     *
+     * @param loadMainMenuAction the action to load the main menu
+     * @param players            the list of players to display
+     */
     public EndScreenBuilder(Runnable loadMainMenuAction, List<Player> players) {
         this.loadMainMenuAction = loadMainMenuAction;
         this.players = players;
@@ -186,7 +192,11 @@ public class EndScreenBuilder implements Builder<Region> {
         return rootContainer;
     }
 
-    // Returns an animated confetti background
+    /**
+     * Creates a Pane with confetti particles in the background.
+     *
+     * @return the Pane with confetti particles
+     */
     private Pane createConfettiBackground() {
         Pane confettiPane = new Pane();
         confettiPane.setPickOnBounds(false);
@@ -198,7 +208,11 @@ public class EndScreenBuilder implements Builder<Region> {
         return confettiPane;
     }
 
-    // Returns a random color
+    /**
+     * Returns a random color.
+     *
+     * @return the random color
+     */
     private Color randomColor() {
         return Color.color(Math.random(), Math.random(), Math.random());
     }

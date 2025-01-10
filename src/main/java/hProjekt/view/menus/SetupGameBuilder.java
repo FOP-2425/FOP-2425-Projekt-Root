@@ -1,5 +1,10 @@
 package hProjekt.view.menus;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import hProjekt.Config;
+import hProjekt.model.GameSetup;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,15 +14,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import hProjekt.model.GameSetup;
-import hProjekt.Config;
-
+/**
+ * Builder for the Setup Game menu.
+ */
 public class SetupGameBuilder implements Builder<Region> {
     private final Runnable loadMainMenuAction;
     private final Runnable loadGameSceneAction;
@@ -28,9 +33,15 @@ public class SetupGameBuilder implements Builder<Region> {
     private final Button addPlayerButton;
     private final int maxPlayers = Config.MAX_PLAYERS;
     private final List<String> availableColors = List.of(
-            "#ea3323", "#ff8b00", "#fde01a", "#1eb253", "#017cf3", "#9c78fe"
-    );
+            "#ea3323", "#ff8b00", "#fde01a", "#1eb253", "#017cf3", "#9c78fe");
 
+    /**
+     * Constructor for the SetupGameBuilder.
+     *
+     * @param loadGameSceneAction the action to load the game scene
+     * @param loadMainMenuAction  the action to load the main menu
+     * @param gameSetup           the game setup object
+     */
     public SetupGameBuilder(Runnable loadGameSceneAction, Runnable loadMainMenuAction, GameSetup gameSetup) {
         this.loadGameSceneAction = loadGameSceneAction;
         this.loadMainMenuAction = loadMainMenuAction;
@@ -113,7 +124,8 @@ public class SetupGameBuilder implements Builder<Region> {
         HBox mapSelectionContainer = new HBox(10);
         mapSelectionContainer.setAlignment(Pos.CENTER_LEFT);
         mapSelectionContainer.setPadding(new Insets(10, 20, 10, 20));
-        mapSelectionContainer.setStyle("-fx-background-color: #2a2a3b; -fx-background-radius: 8px; -fx-border-radius: 8px;");
+        mapSelectionContainer
+                .setStyle("-fx-background-color: #2a2a3b; -fx-background-radius: 8px; -fx-border-radius: 8px;");
         mapSelectionContainer.setMaxWidth(400); // Limit the width of the box
 
         Label mapLabel = new Label("Select a Map:");
@@ -142,8 +154,12 @@ public class SetupGameBuilder implements Builder<Region> {
         return root;
     }
 
+    /**
+     * Adds a player to the player container.
+     */
     private void addPlayer() {
-        if (playerBoxes.size() >= maxPlayers) return;
+        if (playerBoxes.size() >= maxPlayers)
+            return;
 
         HBox outerBox = new HBox();
         outerBox.setAlignment(Pos.CENTER);
@@ -184,17 +200,21 @@ public class SetupGameBuilder implements Builder<Region> {
         for (int i = 0; i < availableColors.size(); i++) {
             String colorHex = availableColors.get(i);
             Button colorButton = new Button();
-            colorButton.setStyle("-fx-background-color: " + colorHex + "; -fx-min-width: 20px; -fx-min-height: 20px; -fx-max-width: 20px; -fx-max-height: 20px; -fx-background-radius: 6; -fx-border-radius: 6;");
+            colorButton.setStyle("-fx-background-color: " + colorHex
+                    + "; -fx-min-width: 20px; -fx-min-height: 20px; -fx-max-width: 20px; -fx-max-height: 20px; -fx-background-radius: 6; -fx-border-radius: 6;");
 
             // Default selection logic
             if (i == playerNumber - 1) {
-                colorButton.setStyle(colorButton.getStyle() + " -fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;");
+                colorButton.setStyle(colorButton.getStyle()
+                        + " -fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;");
                 gameSetup.setPlayerColor(playerNumber - 1, colorHex);
             }
 
             colorButton.setOnAction(event -> {
-                colorButtons.forEach(btn -> btn.setStyle(btn.getStyle().replaceAll("-fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;", "")));
-                colorButton.setStyle(colorButton.getStyle() + " -fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;");
+                colorButtons.forEach(btn -> btn.setStyle(btn.getStyle()
+                        .replaceAll("-fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;", "")));
+                colorButton.setStyle(colorButton.getStyle()
+                        + " -fx-border-color: white; -fx-border-width: 3px; -fx-border-insets: -3px;");
                 gameSetup.setPlayerColor(playerNumber - 1, colorHex);
             });
 
@@ -212,6 +232,11 @@ public class SetupGameBuilder implements Builder<Region> {
         updateAddPlayerButtonVisibility();
     }
 
+    /**
+     * Removes a player from the player container.
+     *
+     * @param outerBox the outer box containing the player
+     */
     private void removePlayer(HBox outerBox) {
         int indexToRemove = playerBoxes.indexOf(outerBox);
         if (playerBoxes.size() > 2) {
@@ -224,6 +249,9 @@ public class SetupGameBuilder implements Builder<Region> {
         }
     }
 
+    /**
+     * Updates the visibility of the "Add Player" button.
+     */
     private void updateAddPlayerButtonVisibility() {
         addPlayerButton.setVisible(playerBoxes.size() < maxPlayers);
     }

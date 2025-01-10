@@ -2,14 +2,17 @@ package hProjekt.model;
 
 import java.util.List;
 
+/**
+ * Holds information on how to set up a game.
+ */
 public interface GameSetup {
 
     /**
      * Adds a player with the specified name and AI status.
      *
      * @param playerName name of the player
-     * @param isAi whether the player is an AI
-     * @param color the color of the player
+     * @param isAi       whether the player is an AI
+     * @param color      the color of the player
      */
     void addOrUpdatePlayer(String playerName, boolean isAi, int playerIndex, String color);
 
@@ -38,7 +41,7 @@ public interface GameSetup {
      * Sets whether a player is an AI or not.
      *
      * @param playerIndex index of the player
-     * @param isAi true if the player is an AI, false otherwise
+     * @param isAi        true if the player is an AI, false otherwise
      */
     void setPlayerAsAi(int playerIndex, boolean isAi);
 
@@ -50,11 +53,11 @@ public interface GameSetup {
      */
     boolean isPlayerAi(int playerIndex);
 
-      /**
+    /**
      * Sets the color for a player.
      *
      * @param playerIndex index of the player
-     * @param color the color to set for the player
+     * @param color       the color to set for the player
      */
     void setPlayerColor(int playerIndex, String color);
 
