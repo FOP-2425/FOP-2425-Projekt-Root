@@ -18,11 +18,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+/**
+ * Overlay for displaying the list of cities.
+ * Divided into unvisited and visited cities.
+ */
 public class CityOverlayView extends VBox {
 
     private final VBox cityListContainer;
     private final GameState gameState;
 
+    /**
+     * Constructor for the CityOverlayView.
+     *
+     * @param gameState the game state to retrieve the cities from
+     */
     public CityOverlayView(GameState gameState) {
         this.gameState = gameState;
         configureOverlayStyle();
@@ -60,6 +69,9 @@ public class CityOverlayView extends VBox {
         unvisitedButton.setOnAction(e -> updateCityList(false));
     }
 
+    /**
+     * Styles the overlay.
+     */
     private void configureOverlayStyle() {
         this.setPadding(new Insets(10));
         this.setSpacing(10);
@@ -71,6 +83,11 @@ public class CityOverlayView extends VBox {
         this.setPrefHeight(USE_COMPUTED_SIZE);
     }
 
+    /**
+     * Updates the city list based on the selected toggle button.
+     *
+     * @param showVisited true if visited cities should be shown, false otherwise
+     */
     public void updateCityList(boolean showVisited) {
         cityListContainer.getChildren().clear();
 

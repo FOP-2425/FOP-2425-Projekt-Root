@@ -14,6 +14,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
+/**
+ * The builder for the game board.
+ * It creates the layout for the game board, including the map, overlays, and
+ * the end game button.
+ */
 public class GameBoardBuilder implements Builder<Region> {
     private final Region map;
     private final Consumer<ActionEvent> endButtonAction;
@@ -26,6 +31,19 @@ public class GameBoardBuilder implements Builder<Region> {
     private Pane confirmationOverlayContainer;
     private HBox bottomCenterContainer;
 
+    /**
+     * Creates a new game board builder.
+     *
+     * @param map                 the map to display
+     * @param gameInfoOverlay     the overlay for game information
+     * @param playerOverlay       the overlay for player information
+     * @param rollDiceOverlay     the overlay for rolling the dice
+     * @param spinCityOverlay     the overlay for choosing the city
+     * @param cityOverlay         the overlay for city information
+     * @param confirmationOverlay the overlay for confirmation dialogs
+     * @param endButtonAction     the action to execute when the end button is
+     *                            pressed
+     */
     public GameBoardBuilder(final Region map, final Region gameInfoOverlay, final Region playerOverlay,
             final Region rollDiceOverlay, final Region spinCityOverlay, final Region cityOverlay,
             final Region confirmationOverlay,

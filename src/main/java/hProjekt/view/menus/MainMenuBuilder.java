@@ -12,6 +12,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
+/**
+ * Builder for the Main Menu.
+ */
 public class MainMenuBuilder implements Builder<Region> {
     private final Runnable loadSetupGameScene;
     private final Runnable loadSettingsAction;
@@ -19,6 +22,15 @@ public class MainMenuBuilder implements Builder<Region> {
     private final Runnable loadLeaderboardAction;
     private final Runnable quitAction;
 
+    /**
+     * Constructor for the MainMenuBuilder.
+     *
+     * @param loadSetupGameScene    the action to load the setup game scene
+     * @param loadLeaderboardAction the action to load the leaderboard
+     * @param loadSettingsAction    the action to load the settings
+     * @param quitAction            the action to quit the application
+     * @param loadAboutSceneAction  the action to load the about scene
+     */
     public MainMenuBuilder(Runnable loadSetupGameScene, Runnable loadLeaderboardAction, Runnable loadSettingsAction,
             Runnable quitAction, Runnable loadAboutSceneAction) {
         this.loadSetupGameScene = loadSetupGameScene;
@@ -49,7 +61,6 @@ public class MainMenuBuilder implements Builder<Region> {
             logo = new ImageView();
             System.out.println("Error: Logo not found. Make sure the path is correct.");
         }
-
 
         // Create Start Game Button
         Button startGameButton = new Button("Create Game");

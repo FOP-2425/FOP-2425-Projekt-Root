@@ -14,12 +14,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+/**
+ * Overlay for displaying game information.
+ * Contains the current phase, round, and active player.
+ */
 public class GameInfoOverlayView extends HBox {
 
     private final Label phaseLabel;
     private final Label roundLabel;
     private final Label playerStatusLabel;
 
+    /**
+     * Constructor for the GameInfoOverlayView.
+     */
     public GameInfoOverlayView() {
 
         this.setSpacing(15);
@@ -46,6 +53,12 @@ public class GameInfoOverlayView extends HBox {
         this.getChildren().addAll(phaseLabel, roundLabel, playerStatusLabel);
     }
 
+    /**
+     * Creates a styled label with a background and padding.
+     *
+     * @param text the text to display on the label
+     * @return the styled label
+     */
     private Label createStyledLabel(String text) {
         Label label = new Label(text);
         label.setTextFill(Color.WHITE);
@@ -56,14 +69,29 @@ public class GameInfoOverlayView extends HBox {
         return label;
     }
 
+    /**
+     * Updates the phase label with the current phase.
+     *
+     * @param phase the current phase
+     */
     public void setPhase(String phase) {
         phaseLabel.setText("Phase: " + phase);
     }
 
+    /**
+     * Updates the round label with the current round.
+     *
+     * @param round the current round
+     */
     public void setRound(int round) {
         roundLabel.setText("Round: " + round);
     }
 
+    /**
+     * Updates the player status label with the active player.
+     *
+     * @param player the active player
+     */
     public void setPlayerStatus(Player player) {
         String previousPlayer = playerStatusLabel.getText();
 
@@ -76,13 +104,18 @@ public class GameInfoOverlayView extends HBox {
             playerStatusLabel.setText("No active player");
             playerStatusLabel.setTextFill(Color.WHITE); // Default color if no active player
         }
-        if (!playerStatusLabel.getText().equals(previousPlayer)){
+        if (!playerStatusLabel.getText().equals(previousPlayer)) {
             playPulseAnimation(playerStatusLabel);
         }
 
     }
 
-    private void playPulseAnimation(Label label){
+    /**
+     * Plays a pulse animation on the given label.
+     *
+     * @param label the label to animate
+     */
+    private void playPulseAnimation(Label label) {
         ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), label);
         scaleTransition.setFromX(1.0);
         scaleTransition.setFromY(1.0);

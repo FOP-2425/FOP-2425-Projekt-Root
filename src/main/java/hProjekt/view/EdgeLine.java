@@ -119,6 +119,11 @@ public class EdgeLine extends Line {
         }
     }
 
+    /**
+     * Sets the label of the EdgeLine.
+     *
+     * @param text the text to set the label to
+     */
     public void setLabel(final String text) {
         label.setVisible(true);
         label.setText(text);
@@ -127,6 +132,12 @@ public class EdgeLine extends Line {
         label.toFront();
     }
 
+    /**
+     * Sets the label of the EdgeLine to the given costs.
+     * Format: "x1, x2, x3, ..."
+     *
+     * @param costs the costs to set the label to
+     */
     public void setCostLabel(Integer... costs) {
         String text = "";
         for (int i = 0; i < costs.length; i++) {
@@ -141,10 +152,16 @@ public class EdgeLine extends Line {
         setLabel(text);
     }
 
+    /**
+     * Hides the label of the EdgeLine.
+     */
     public void hideLabel() {
         label.setVisible(false);
     }
 
+    /**
+     * Highlights the EdgeLine without a click handler.
+     */
     public void highlight() {
         init();
         outline.getStyleClass().add("selected");
@@ -167,6 +184,12 @@ public class EdgeLine extends Line {
         outline.setMouseTransparent(false);
     }
 
+    /**
+     * Highlights the EdgeLine and sets a handler to deselect it.
+     * The EdgeLine gets a different style class to indicate that it is selected.
+     *
+     * @param deselectHandler the handler to call when the EdgeLine is deselected
+     */
     public void selected(final Consumer<MouseEvent> deselectHandler) {
         highlight(event -> {
             outline.getStyleClass().remove("selected");

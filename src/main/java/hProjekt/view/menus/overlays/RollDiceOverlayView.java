@@ -75,7 +75,7 @@ public class RollDiceOverlayView extends StackPane {
      * Rolls the dice with an animation and updates the dice image based on the
      * result.
      *
-     * @param gameController the GameController to retrieve the final dice roll
+     * @param rolledNumber the number rolled on the dice
      */
     public void rollDice(int rolledNumber) {
         // Animation to simulate rolling dice

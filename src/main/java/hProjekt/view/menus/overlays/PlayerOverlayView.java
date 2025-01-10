@@ -20,9 +20,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
+/**
+ * Overlay for displaying player information.
+ * Contains the player names and their credits.
+ */
 public class PlayerOverlayView extends VBox {
     private Map<Player, Label> playerCreditsLabels = new HashMap<>();
 
+    /**
+     * Constructor for the PlayerOverlayView.
+     *
+     * @param players the list of players to display
+     */
     public PlayerOverlayView(List<Player> players) {
         configureOverlayStyle();
 
@@ -38,6 +47,9 @@ public class PlayerOverlayView extends VBox {
         }
     }
 
+    /**
+     * Styles the overlay.
+     */
     private void configureOverlayStyle() {
         this.setPadding(new Insets(10));
         this.setSpacing(10);
@@ -49,6 +61,12 @@ public class PlayerOverlayView extends VBox {
         this.setPrefHeight(USE_COMPUTED_SIZE);
     }
 
+    /**
+     * Creates a HBox with player information.
+     *
+     * @param player the player to display
+     * @return the HBox with player information
+     */
     private HBox createPlayerBox(Player player) {
         HBox playerBox = new HBox(10);
         playerBox.setAlignment(Pos.CENTER_LEFT);

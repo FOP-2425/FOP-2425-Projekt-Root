@@ -1,4 +1,4 @@
-package hProjekt.util;
+package hProjekt.view;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
@@ -20,7 +20,7 @@ public class Confetti extends Circle {
     private static final double MAX_Y_DISTANCE = 3000; // Maximum vertical travel distance
 
     /**
-     * Constructs a confetti particle with a specified color and 
+     * Constructs a confetti particle with a specified color and
      * initializes its starting position based on the pane dimensions.
      *
      * @param color      The color of the confetti particle.
@@ -46,14 +46,14 @@ public class Confetti extends Circle {
     public void animate() {
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.millis(DURATION), this);
-        translateTransition.setByX(Math.random() * MAX_X_DISTANCE - MAX_X_DISTANCE / 2); 
+        translateTransition.setByX(Math.random() * MAX_X_DISTANCE - MAX_X_DISTANCE / 2);
         translateTransition.setByY(Math.random() * MAX_Y_DISTANCE - MAX_Y_DISTANCE / 2);
-        translateTransition.setCycleCount(1); 
+        translateTransition.setCycleCount(1);
         translateTransition.setInterpolator(javafx.animation.Interpolator.LINEAR);
 
         FadeTransition fadeTransition = new FadeTransition(Duration.millis(FADE_DURATION), this);
         fadeTransition.setFromValue(1.0);
-        fadeTransition.setToValue(0.0); 
+        fadeTransition.setToValue(0.0);
         fadeTransition.setCycleCount(1);
 
         translateTransition.play();
