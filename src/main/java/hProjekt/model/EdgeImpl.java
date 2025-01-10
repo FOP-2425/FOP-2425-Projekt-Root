@@ -68,6 +68,9 @@ public record EdgeImpl(
 
     @Override
     public int getDrivingCost(TilePosition from) {
+        if (!getAdjacentTilePositions().contains(from)) {
+            throw new IllegalArgumentException("The given position is not adjacent to this edge.");
+        }
         return Config.TILE_TYPE_TO_DRIVING_COST
                 .get(new Pair<Tile.Type, Tile.Type>(getHexGrid().getTileAt(from).getType(),
                         getHexGrid().getTileAt(getPosition1().equals(from) ? getPosition2() : getPosition1())
