@@ -128,6 +128,15 @@ public class GameBoardController implements SceneController {
             }
             Platform.runLater(SceneController::loadEndScreenScene);
         });
+        gameState.getGamePhaseProperty().subscribe((oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+            Platform.runLater(() -> {
+                gameInfoOverlayView.setPhase(newValue.toString());
+                updatePlayerInformation();
+            });
+        });
     }
 
     /**
