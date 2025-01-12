@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import hProjekt.Config;
 import hProjekt.controller.actions.ConfirmBuildAction;
@@ -178,6 +179,7 @@ public class GameController {
      * city.
      * The chosen cities are stored in the chosen cities property.
      */
+    @StudentImplementationRequired("P2.4")
     public void chooseCities() {
         final List<City> tempCities = getState().getGrid().getCities().values().stream()
                 .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
@@ -264,6 +266,7 @@ public class GameController {
      * player
      * - Repeat until all cities were chosen
      */
+    @StudentImplementationRequired("P2.9")
     private void executeDrivingPhase() {
         while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
             roundCounter.set(roundCounter.get() + 1);
@@ -312,6 +315,7 @@ public class GameController {
      * Let the players choose the rails they want to rent and confirm the calculated
      * path.
      */
+    @StudentImplementationRequired("P2.6")
     private void letPlayersChoosePath() {
         for (Player player : getState().getPlayers()) {
             playerControllers.get(player).resetDrivingPhase();
@@ -332,6 +336,7 @@ public class GameController {
      * The players are sorted by their credits in descending order ensuring that the
      * player with the most credits drives first.
      */
+    @StudentImplementationRequired("P2.7")
     private void handleDriving() {
         while (!getState().getPlayerPositions().values().stream()
                 .anyMatch(pos -> getTargetCity().getPosition().equals(pos))
@@ -354,6 +359,7 @@ public class GameController {
      *
      * @return the winners of a round
      */
+    @StudentImplementationRequired("P2.8")
     private List<Player> getWinners() {
         return getState().getPlayerPositions().entrySet().stream()
                 .filter(entry -> entry.getValue().equals(getTargetCity().getPosition()))
@@ -374,6 +380,7 @@ public class GameController {
      * - Repeat until there are only
      * {@link Config#UNCONNECTED_CITIES_START_THRESHOLD} unconnected cities left
      */
+    @StudentImplementationRequired("P2.3")
     private void executeBuildingPhase() {
         while (state.getGrid().getCities().values().size()
                 - state.getGrid().getConnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {

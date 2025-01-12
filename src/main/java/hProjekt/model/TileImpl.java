@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import hProjekt.model.TilePosition.EdgeDirection;
 import javafx.beans.value.ObservableDoubleValue;
@@ -61,6 +62,7 @@ public record TileImpl(
     }
 
     @Override
+    @StudentImplementationRequired("P1.4")
     public Edge getEdge(final EdgeDirection direction) {
         final TilePosition neighbour = TilePosition.neighbour(this.position, direction);
         return this.hexGrid.getEdges().get(Set.of(this.position, neighbour));
@@ -91,6 +93,7 @@ public record TileImpl(
     }
 
     @Override
+    @StudentImplementationRequired("P1.4")
     public Tile getNeighbour(final EdgeDirection direction) {
         return getHexGrid().getTileAt(TilePosition.neighbour(getPosition(), direction));
     }
@@ -101,6 +104,7 @@ public record TileImpl(
     }
 
     @Override
+    @StudentImplementationRequired("P1.4")
     public Set<Tile> getConnectedNeighbours(Set<Edge> connectingEdges) {
         return getNeighbours().stream().filter(neighbour -> connectingEdges.stream().filter(
                 edge -> edge.getAdjacentTilePositions()

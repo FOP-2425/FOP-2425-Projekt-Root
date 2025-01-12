@@ -49,7 +49,7 @@ public class LeaderboardController {
      * @param ai         Indicates whether the player is an AI (true) or a human
      *                   (false).
      */
-    @StudentImplementationRequired
+    @StudentImplementationRequired("P3.1")
     public static void savePlayerData(String playerName, int score, boolean ai) {
         try {
             initializeCsv(); // Ensures the CSV exists
@@ -70,7 +70,7 @@ public class LeaderboardController {
      * @return A list of LeaderboardEntry objects containing player data from the
      *         CSV file.
      */
-    @StudentImplementationRequired
+    @StudentImplementationRequired("P3.2")
     public static List<LeaderboardEntry> loadLeaderboardData() {
         List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 

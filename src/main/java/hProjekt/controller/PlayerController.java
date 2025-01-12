@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import hProjekt.Config;
 import hProjekt.controller.actions.IllegalActionException;
@@ -273,6 +274,7 @@ public class PlayerController {
      * @param edge the edge to check
      * @return {@code true} if the player can build a rail on the given edge,
      */
+    @StudentImplementationRequired("P2.1")
     public boolean canBuildRail(Edge edge) {
         boolean hasEnoughBuildingBudget = edge.getBuildingCost() <= buildingBudget;
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
@@ -286,6 +288,7 @@ public class PlayerController {
      *
      * @return all edges the player can build a rail on
      */
+    @StudentImplementationRequired("P2.1")
     public Set<Edge> getBuildableRails() {
         Collection<Edge> ownedRails = getState().getGrid().getRails(player).values();
         Set<Edge> possibleConnections;
@@ -313,6 +316,7 @@ public class PlayerController {
      * @throws IllegalActionException if the player cannot build a rail on the given
      *                                edge
      */
+    @StudentImplementationRequired("P2.2")
     public void buildRail(final Edge edge) throws IllegalActionException {
         Set<Edge> buildableRails = getBuildableRails();
 
@@ -455,6 +459,7 @@ public class PlayerController {
         }
     }
 
+    @StudentImplementationRequired("P2.5")
     public boolean canDrive() {
         if (!getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
             return false;
@@ -525,6 +530,7 @@ public class PlayerController {
         return drivableTiles;
     }
 
+    @StudentImplementationRequired("P2.5")
     public void drive(final Tile targetTile) throws IllegalActionException {
         if (!canDrive()) {
             throw new IllegalActionException("Player cannot drive");

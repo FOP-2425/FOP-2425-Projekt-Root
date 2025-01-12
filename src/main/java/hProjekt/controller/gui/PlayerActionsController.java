@@ -142,7 +142,7 @@ public class PlayerActionsController {
      *
      * @param objective the objective to check
      */
-    @StudentImplementationRequired("H3.2")
+    @StudentImplementationRequired("P4.1")
     private void updateUIBasedOnObjective(final PlayerObjective objective) {
         System.out.println("objective: " + objective);
         resetUiToBaseState();
@@ -365,6 +365,7 @@ public class PlayerActionsController {
      * If the selectedTile is clicked again all tiles are highlighted again and the
      * selectedTile is set to null.
      */
+    @StudentImplementationRequired("P4.3")
     private void highlightStartingTiles() {
         Collection<Tile> startingTiles;
         selectedTile.setValue(null);
@@ -437,6 +438,7 @@ public class PlayerActionsController {
      * @param pathToHoveredTile the path to highlight
      * @param highlightedEdges  the edges that are already highlighted
      */
+    @StudentImplementationRequired("P4.2")
     private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
             List<Edge> pathToHoveredTile, Collection<Edge> highlightedEdges) {
         getHexGridController().getEdgeControllers().stream().filter(ec -> !highlightedEdges.contains(ec.getEdge()))
@@ -473,6 +475,7 @@ public class PlayerActionsController {
      * Highlights tiles that can be selected and sets up the necessary event
      * handlers so the user can build rails to where he moves the mouse.
      */
+    @StudentImplementationRequired("P4.4")
     public void addBuildHandlers() {
         showConfirmBuildDialog();
         selectedRailPath.clear();

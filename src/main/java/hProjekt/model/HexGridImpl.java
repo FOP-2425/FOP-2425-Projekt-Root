@@ -298,7 +298,7 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
-    @StudentImplementationRequired("H1.3")
+    @StudentImplementationRequired("P1.3")
     public Map<Set<TilePosition>, Edge> getRails(final Player player) {
         return Collections.unmodifiableMap(edges.entrySet().stream()
                 .filter(entry -> entry.getValue().getRailOwners().contains(player))
@@ -316,6 +316,7 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
+    @StudentImplementationRequired("P1.4")
     public Map<TilePosition, City> getConnectedCities() {
         return Collections.unmodifiableMap(cities.entrySet().stream()
                 .filter(entry -> edges.values().stream().filter(edge -> edge.hasRail())
@@ -324,6 +325,7 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
+    @StudentImplementationRequired("P1.4")
     public Map<TilePosition, City> getUnconnectedCities() {
         Set<TilePosition> cityPositions = new HashSet<>(cities.keySet());
         cityPositions.removeAll(getConnectedCities().keySet());
@@ -331,6 +333,7 @@ public class HexGridImpl implements HexGrid {
     }
 
     @Override
+    @StudentImplementationRequired("P1.4")
     public Map<TilePosition, City> getStartingCities() {
         return getCities().values().stream().filter(City::isStartingCity)
                 .collect(Collectors.toMap(City::getPosition, Function.identity()));

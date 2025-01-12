@@ -50,7 +50,7 @@ public record EdgeImpl(
     }
 
     @Override
-    @StudentImplementationRequired("H1.3")
+    @StudentImplementationRequired("P1.3")
     public Set<Edge> getConnectedRails(final Player player) {
         return getConnectedEdges().stream()
                 .filter(Edge::hasRail)
@@ -132,6 +132,7 @@ public record EdgeImpl(
     }
 
     @Override
+    @StudentImplementationRequired("P1.3")
     public boolean addRail(Player player) {
         if (getRailOwners().contains(player) || (player.getRails().size() > 0
                 && getConnectedEdges().stream().noneMatch(e -> e.getRailOwners().contains(player)))
@@ -148,6 +149,7 @@ public record EdgeImpl(
     }
 
     @Override
+    @StudentImplementationRequired("P1.3")
     public boolean connectsTo(Edge other) {
         return getAdjacentTilePositions().contains(other.getPosition1())
                 || getAdjacentTilePositions().contains(other.getPosition2());
@@ -159,6 +161,7 @@ public record EdgeImpl(
     }
 
     @Override
+    @StudentImplementationRequired("P1.3")
     public Set<Edge> getConnectedEdges() {
         return getHexGrid().getEdges().entrySet().stream().map(entry -> entry.getValue())
                 .filter(edge -> connectsTo(edge)).collect(Collectors.toUnmodifiableSet());

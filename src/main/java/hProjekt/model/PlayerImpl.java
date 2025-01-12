@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 import org.tudalgo.algoutils.student.annotation.DoNotTouch;
+import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import hProjekt.Config;
 import hProjekt.controller.AiController;
@@ -33,41 +34,49 @@ public class PlayerImpl implements Player {
     }
 
     @Override
+    @StudentImplementationRequired("P1.1")
     public HexGrid getHexGrid() {
         return this.hexGrid;
     }
 
     @Override
+    @StudentImplementationRequired("P1.1")
     public String getName() {
         return this.name;
     }
 
     @Override
+    @StudentImplementationRequired("P1.1")
     public int getID() {
         return id;
     }
 
     @Override
+    @StudentImplementationRequired("P1.1")
     public Color getColor() {
         return this.color;
     }
 
     @Override
+    @StudentImplementationRequired("P1.1")
     public boolean isAi() {
         return this.aiController != null;
     }
 
     @Override
+    @StudentImplementationRequired("P1.2")
     public int getCredits() {
         return credits;
     }
 
     @Override
+    @StudentImplementationRequired("P1.2")
     public void addCredits(int amount) {
         credits += amount;
     }
 
     @Override
+    @StudentImplementationRequired("P1.2")
     public boolean removeCredits(int amount) {
         if (amount < 0 || credits - amount < 0) {
             return false;
