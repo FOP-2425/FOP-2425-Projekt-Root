@@ -3,6 +3,7 @@ package hProjekt;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +132,11 @@ public class Config {
      * driving phase
      */
     public static int MAX_BUILDINGBUDGET_DRIVING_PHASE = 10;
+
+    /**
+     * The path where the leaderboard CSV file is stored.
+     */
+    public static Path CSV_PATH = Paths.get("src/main/resources/leaderboard.csv");
 
     /**
      * A set of AI controllers that are available for the game.

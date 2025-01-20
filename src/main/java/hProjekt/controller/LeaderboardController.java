@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,14 +12,14 @@ import java.util.List;
 
 import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
+import hProjekt.Config;
+
 /**
  * Controller for managing the leaderboard functionality.
  * This class handles reading from, writing to, and initializing the leaderboard
  * CSV file.
  */
 public class LeaderboardController {
-    private static final Path CSV_PATH = Paths.get("src/main/resources/leaderboard.csv");
-
     /**
      * Ensures the leaderboard CSV file exists.
      * If the file does not exist, it creates the file along with its parent
@@ -30,9 +28,9 @@ public class LeaderboardController {
      */
     public static void initializeCsv() {
         try {
-            if (!Files.exists(CSV_PATH)) {
-                Files.createDirectories(CSV_PATH.getParent());
-                BufferedWriter writer = Files.newBufferedWriter(CSV_PATH);
+            if (!Files.exists(Config.CSV_PATH)) {
+                Files.createDirectories(Config.CSV_PATH.getParent());
+                BufferedWriter writer = Files.newBufferedWriter(Config.CSV_PATH);
                 writer.write("PlayerName,AI,Timestamp,Score\n"); // CSV Header
                 writer.close();
             }
@@ -55,7 +53,7 @@ public class LeaderboardController {
     @StudentImplementationRequired("P3.1")
     public static void savePlayerData(String playerName, int score, boolean ai) {
         initializeCsv();
-        try (BufferedWriter writer = Files.newBufferedWriter(CSV_PATH, StandardOpenOption.APPEND)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Config.CSV_PATH, StandardOpenOption.APPEND)) {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             writer.write(String.format("%s,%b,%s,%d%n", playerName, ai, timestamp, score));
         } catch (IOException e) {
@@ -75,7 +73,7 @@ public class LeaderboardController {
     public static List<LeaderboardEntry> loadLeaderboardData() {
         List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 
-        try (BufferedReader reader = Files.newBufferedReader(CSV_PATH)) {
+        try (BufferedReader reader = Files.newBufferedReader(Config.CSV_PATH)) {
             String line = reader.readLine(); // Skips the header row
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
