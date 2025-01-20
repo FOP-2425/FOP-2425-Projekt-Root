@@ -39,7 +39,7 @@ public final class GameState {
      * The {@link Player}s that are currently driving. Only relevant for the driving
      * phase.
      */
-    private final List<Player> dirvingPlayers = new ArrayList<>();
+    private final List<Player> drivingPlayers = new ArrayList<>();
 
     /**
      * The position of the {@link Player}s on the {@link HexGrid}. Only relevant for
@@ -156,7 +156,7 @@ public final class GameState {
      *         driving.
      */
     public List<Player> getDrivingPlayers() {
-        return Collections.unmodifiableList(dirvingPlayers);
+        return Collections.unmodifiableList(drivingPlayers);
     }
 
     /**
@@ -166,14 +166,14 @@ public final class GameState {
      * @param player the {@link Player} to add
      */
     public void addDrivingPlayer(final Player player) {
-        dirvingPlayers.add(player);
+        drivingPlayers.add(player);
     }
 
     /**
      * Resets the list of all {@link Player}s currently driving.
      */
     public void resetDrivingPlayers() {
-        dirvingPlayers.clear();
+        drivingPlayers.clear();
     }
 
     /**
