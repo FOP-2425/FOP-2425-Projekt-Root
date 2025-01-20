@@ -203,9 +203,10 @@ public class GameController {
             if (player.isAi()) {
                 try {
                     aiControllers.add(player.getAiController()
-                            .getConstructor(PlayerController.class, HexGrid.class, GameState.class, Property.class)
+                            .getConstructor(PlayerController.class, HexGrid.class, GameState.class, Property.class,
+                                    IntegerProperty.class, IntegerProperty.class, ReadOnlyProperty.class)
                             .newInstance(playerControllers.get(player), state.getGrid(), state,
-                                    activePlayerController));
+                                    activePlayerController, currentDiceRoll, roundCounter, chosenCitiesProperty));
                 } catch (NoSuchMethodException e) {
                     System.err.println("Could not create ai controller for player " + player.getName());
                     System.err.println("You probably forgot to implement the constructor in your ai controller.");

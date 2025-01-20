@@ -1,8 +1,12 @@
 package hProjekt.controller;
 
+import hProjekt.model.City;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGrid;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.util.Pair;
 
 /**
  * Represents an AI controller that can execute actions based on a player's
@@ -30,7 +34,8 @@ public abstract class AiController {
      */
     protected AiController(
             final PlayerController playerController, final HexGrid hexGrid, final GameState gameState,
-            final Property<PlayerController> activePlayerController) {
+            final Property<PlayerController> activePlayerController, final IntegerProperty diceRollProperty,
+            final IntegerProperty roundCounterProperty, final ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty) {
         this.playerController = playerController;
         this.hexGrid = hexGrid;
         this.gameState = gameState;
