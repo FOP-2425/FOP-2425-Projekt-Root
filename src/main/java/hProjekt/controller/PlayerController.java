@@ -270,12 +270,16 @@ public class PlayerController {
      * Checks if the player has enough credits. If the game is in the building
      * phase, the building cost is checked against the
      * building budget and not the players credits.
+     * If the player already owns a rail on the edge, the player cannot build on it.
      *
      * @param edge the edge to check
      * @return {@code true} if the player can build a rail on the given edge,
      */
     @StudentImplementationRequired("P2.1")
     public boolean canBuildRail(Edge edge) {
+        if (edge.getRailOwners().contains(getPlayer())) {
+            return false;
+        }
         boolean hasEnoughBuildingBudget = edge.getBuildingCost() <= buildingBudget;
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             return hasEnoughBuildingBudget && edge.getTotalParallelCost(player) <= player.getCredits();
@@ -290,7 +294,7 @@ public class PlayerController {
      */
     @StudentImplementationRequired("P2.1")
     public Set<Edge> getBuildableRails() {
-        Collection<Edge> ownedRails = getState().getGrid().getRails(player).values();
+        Collection<Edge> ownedRails = getPlayer().getRails().values();
         Set<Edge> possibleConnections;
         if (ownedRails.isEmpty()) {
             possibleConnections = getState().getGrid().getStartingCities().keySet().stream()
@@ -300,8 +304,7 @@ public class PlayerController {
             return possibleConnections;
         }
         possibleConnections = ownedRails.stream()
-                .flatMap(rail -> rail.getConnectedEdges().stream()
-                        .filter(edge -> !edge.getRailOwners().contains(player)))
+                .flatMap(rail -> rail.getConnectedEdges().stream())
                 .filter(this::canBuildRail)
                 .collect(Collectors.toSet());
         return possibleConnections;
