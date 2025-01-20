@@ -12,11 +12,15 @@ import hProjekt.controller.actions.ConfirmDrive;
 import hProjekt.controller.actions.DriveAction;
 import hProjekt.controller.actions.PlayerAction;
 import hProjekt.controller.actions.RollDiceAction;
+import hProjekt.model.City;
 import hProjekt.model.Edge;
 import hProjekt.model.GameState;
 import hProjekt.model.HexGrid;
 import hProjekt.model.Tile;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.util.Pair;
 
 /**
  * A basic AI controller as an example for how to implement an AI controller.
@@ -35,8 +39,10 @@ public class BasicAiController extends AiController {
      * @param activePlayerController the active player controller
      */
     public BasicAiController(final PlayerController playerController, final HexGrid hexGrid, final GameState gameState,
-            final Property<PlayerController> activePlayerController) {
-        super(playerController, hexGrid, gameState, activePlayerController);
+            final Property<PlayerController> activePlayerController, final IntegerProperty diceRollProperty,
+            final IntegerProperty roundCounterProperty, final ReadOnlyProperty<Pair<City, City>> chosenCitiesProperty) {
+        super(playerController, hexGrid, gameState, activePlayerController, diceRollProperty, roundCounterProperty,
+                chosenCitiesProperty);
     }
 
     @Override
