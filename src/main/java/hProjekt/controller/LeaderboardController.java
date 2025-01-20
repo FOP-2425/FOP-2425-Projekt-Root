@@ -27,15 +27,18 @@ public class LeaderboardController {
      * If the file does not exist, it creates the file along with its parent
      * directories
      * and writes a header row to the file.
-     *
-     * @throws IOException if an error occurs during file or directory creation.
      */
-    public static void initializeCsv() throws IOException {
-        if (!Files.exists(CSV_PATH)) {
-            Files.createDirectories(CSV_PATH.getParent());
-            try (BufferedWriter writer = Files.newBufferedWriter(CSV_PATH)) {
+    public static void initializeCsv() {
+        try {
+            if (!Files.exists(CSV_PATH)) {
+                Files.createDirectories(CSV_PATH.getParent());
+                BufferedWriter writer = Files.newBufferedWriter(CSV_PATH);
                 writer.write("PlayerName,AI,Timestamp,Score\n"); // CSV Header
+                writer.close();
             }
+        } catch (IOException e) {
+            System.out.println("Couldn't create the leaderboard csv file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -51,13 +54,12 @@ public class LeaderboardController {
      */
     @StudentImplementationRequired("P3.1")
     public static void savePlayerData(String playerName, int score, boolean ai) {
-        try {
-            initializeCsv(); // Ensures the CSV exists
-            try (BufferedWriter writer = Files.newBufferedWriter(CSV_PATH, StandardOpenOption.APPEND)) {
-                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                writer.write(String.format("%s,%b,%s,%d%n", playerName, ai, timestamp, score));
-            }
+        initializeCsv();
+        try (BufferedWriter writer = Files.newBufferedWriter(CSV_PATH, StandardOpenOption.APPEND)) {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            writer.write(String.format("%s,%b,%s,%d%n", playerName, ai, timestamp, score));
         } catch (IOException e) {
+            System.out.println("Error while writing to the leaderboard csv file: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -65,7 +67,6 @@ public class LeaderboardController {
     /**
      * Reads the leaderboard data from the CSV file and loads it into a list of
      * LeaderboardEntry objects.
-     * Ensures the file is initialized before reading.
      *
      * @return A list of LeaderboardEntry objects containing player data from the
      *         CSV file.
@@ -74,9 +75,7 @@ public class LeaderboardController {
     public static List<LeaderboardEntry> loadLeaderboardData() {
         List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 
-        try {
-            initializeCsv(); // Ensures the CSV exists
-            BufferedReader reader = Files.newBufferedReader(CSV_PATH);
+        try (BufferedReader reader = Files.newBufferedReader(CSV_PATH)) {
             String line = reader.readLine(); // Skips the header row
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
@@ -86,8 +85,8 @@ public class LeaderboardController {
                 int score = Integer.parseInt(values[3]);
                 leaderboardEntries.add(new LeaderboardEntry(playerName, ai, timestamp, score));
             }
-            reader.close();
         } catch (IOException e) {
+            System.out.println("Error while reading the leaderboard csv file: " + e.getMessage());
             e.printStackTrace();
         }
 
