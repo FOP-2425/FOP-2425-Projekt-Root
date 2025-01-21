@@ -2,6 +2,8 @@ package hProjekt.model;
 
 import java.util.List;
 
+import hProjekt.controller.AiController;
+
 /**
  * Holds information on how to set up a game.
  */
@@ -14,7 +16,8 @@ public interface GameSetup {
      * @param isAi       whether the player is an AI
      * @param color      the color of the player
      */
-    void addOrUpdatePlayer(String playerName, boolean isAi, int playerIndex, String color);
+    void addOrUpdatePlayer(String playerName, Class<? extends AiController> aiController, int playerIndex,
+            String color);
 
     /**
      * Removes a player at the specified index.
@@ -43,7 +46,15 @@ public interface GameSetup {
      * @param playerIndex index of the player
      * @param isAi        true if the player is an AI, false otherwise
      */
-    void setPlayerAsAi(int playerIndex, boolean isAi);
+    void setPlayerAsAi(int playerIndex, Class<? extends AiController> aiController);
+
+    /**
+     * Returns the AI controller for a player.
+     *
+     * @param playerIndex index of the player
+     * @return the AI controller for the player
+     */
+    Class<? extends AiController> getPlayerAiController(int playerIndex);
 
     /**
      * Returns whether a player is an AI or not.

@@ -2,7 +2,7 @@ package hProjekt.controller.gui.scene;
 
 import java.util.List;
 
-import hProjekt.controller.BasicAiController;
+import hProjekt.controller.AiController;
 import hProjekt.model.GameSetup;
 import hProjekt.model.GameSetupImpl;
 import hProjekt.model.GameState;
@@ -54,13 +54,12 @@ public class SetupGameSceneController implements SceneController {
         // Use GameState's newPlayer method to add players
         for (int i = 0; i < playerNames.size(); i++) {
             String playerName = playerNames.get(i);
-            boolean isAi = gameSetup.isPlayerAi(i);
+            Class<? extends AiController> aiController = gameSetup.getPlayerAiController(i);
             String colorHex = gameSetup.getPlayerColor(i);
             Color playerColor = Color.web(colorHex);
 
             // Create a new player and add it to the GameState
-            gameState.newPlayer(playerName, playerColor,
-                    isAi ? BasicAiController.class : null);
+            gameState.newPlayer(playerName, playerColor, aiController);
         }
 
         // Print players for debugging

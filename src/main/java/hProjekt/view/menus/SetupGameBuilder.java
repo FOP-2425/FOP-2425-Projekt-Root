@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hProjekt.Config;
+import hProjekt.controller.AiController;
 import hProjekt.model.GameSetup;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
+import javafx.util.Callback;
 
 /**
  * Builder for the Setup Game menu.
@@ -73,7 +76,7 @@ public class SetupGameBuilder implements Builder<Region> {
         startGameButton.getStyleClass().add("start-game-button");
         startGameButton.setOnAction(event -> {
             List<String> playerNames = new ArrayList<>();
-            List<Boolean> isAiList = new ArrayList<>();
+            List<Class<? extends AiController>> aiControllerList = new ArrayList<>();
 
             for (int i = 0; i < playerBoxes.size(); i++) {
                 HBox playerBox = playerBoxes.get(i);
@@ -83,14 +86,14 @@ public class SetupGameBuilder implements Builder<Region> {
                         : "Player " + (i + 1);
                 playerNames.add(playerName);
 
-                ToggleButton cpuToggle = (ToggleButton) playerBox.lookup(".toggle-button");
-                boolean isAi = cpuToggle != null && cpuToggle.isSelected();
-                isAiList.add(isAi);
+                ComboBox<Class<? extends AiController>> cpuSelection = (ComboBox<Class<? extends AiController>>) playerBox
+                        .lookup(".combo-box"); // This isn't possible in a better way without rewriting this whole class
+                aiControllerList.add(cpuSelection.getValue());
             }
 
             gameSetup.setPlayerNames(playerNames);
-            for (int i = 0; i < isAiList.size(); i++) {
-                gameSetup.setPlayerAsAi(i, isAiList.get(i));
+            for (int i = 0; i < aiControllerList.size(); i++) {
+                gameSetup.setPlayerAsAi(i, aiControllerList.get(i));
             }
 
             loadGameSceneAction.run();
@@ -186,12 +189,31 @@ public class SetupGameBuilder implements Builder<Region> {
         playerNameField.setPromptText("Enter Player Name");
         playerNameField.setMaxWidth(150);
 
-        ToggleButton cpuToggle = new ToggleButton("CPU");
-        cpuToggle.getStyleClass().add("toggle-button");
-        cpuToggle.setDisable(playerNumber == 1); // Disable for Player 1
+        ComboBox<Class<? extends AiController>> cpuSelection = new ComboBox<>();
+        cpuSelection.getStyleClass().add("combo-box");
+        cpuSelection.getItems().add(null);
+        cpuSelection.getItems().addAll(Config.AVAILABLE_AI_CONTROLLER);
+        Callback<ListView<Class<? extends AiController>>, ListCell<Class<? extends AiController>>> listCellFactory = p -> {
+            return new ListCell<>() {
+                @Override
+                protected void updateItem(Class<? extends AiController> item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else if (item == null) {
+                        setText("Human Player");
+                    } else {
+                        setText(item.getSimpleName());
+                    }
+                }
+            };
+        };
+        cpuSelection.setCellFactory(listCellFactory);
+        cpuSelection.setButtonCell(listCellFactory.call(null));
+        cpuSelection.setValue(null);
 
-        HBox.setMargin(cpuToggle, new Insets(0, 0, 0, 5));
-        playerBox.getChildren().addAll(removeButton, playerNameField, cpuToggle);
+        HBox.setMargin(cpuSelection, new Insets(0, 5, 0, 5));
+        playerBox.getChildren().addAll(removeButton, playerNameField, cpuSelection);
 
         // Add color selection buttons
         HBox colorContainer = new HBox(5);
