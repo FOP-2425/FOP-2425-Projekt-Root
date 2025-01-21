@@ -3,30 +3,33 @@ package hProjekt.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import hProjekt.controller.AiController;
+
 public class GameSetupImpl implements GameSetup {
     private List<String> playerNames;
-    private List<Boolean> isAiList;
+    private List<Class<? extends AiController>> aiControllerList;
     private List<String> playerColors;
     private String mapSelection;
 
     public GameSetupImpl() {
         this.playerNames = new ArrayList<>();
-        this.isAiList = new ArrayList<>();
+        this.aiControllerList = new ArrayList<>();
         this.playerColors = new ArrayList<>();
         this.mapSelection = "";
     }
 
     @Override
-    public void addOrUpdatePlayer(String playerName, boolean isAi, int playerIndex, String color) {
+    public void addOrUpdatePlayer(String playerName,
+            Class<? extends AiController> aiController, int playerIndex, String color) {
         if (playerIndex >= 0 && playerIndex < playerNames.size()) {
             // Update existing player
             playerNames.set(playerIndex, playerName);
-            isAiList.set(playerIndex, isAi);
+            aiControllerList.set(playerIndex, aiController);
             playerColors.set(playerIndex, color);
         } else if (playerIndex >= playerNames.size()) {
             // Add new player
             playerNames.add(playerName);
-            isAiList.add(isAi);
+            aiControllerList.add(aiController);
             playerColors.add(color);
         }
     }
@@ -35,7 +38,7 @@ public class GameSetupImpl implements GameSetup {
     public void removePlayer(int playerIndex) {
         if (playerIndex >= 0 && playerIndex < playerNames.size()) {
             playerNames.remove(playerIndex);
-            isAiList.remove(playerIndex);
+            aiControllerList.remove(playerIndex);
             if (playerIndex < playerColors.size()) {
                 playerColors.remove(playerIndex);
             }
@@ -45,8 +48,8 @@ public class GameSetupImpl implements GameSetup {
     @Override
     public void setPlayerNames(List<String> playerNames) {
         this.playerNames = new ArrayList<>(playerNames);
-        while (isAiList.size() < playerNames.size()) {
-            isAiList.add(false); // Default to non-AI
+        while (aiControllerList.size() < playerNames.size()) {
+            aiControllerList.add(null); // Default to non-AI
         }
         while (playerColors.size() < playerNames.size()) {
             playerColors.add(""); // Default to no color
@@ -59,15 +62,15 @@ public class GameSetupImpl implements GameSetup {
     }
 
     @Override
-    public void setPlayerAsAi(int playerIndex, boolean isAi) {
-        if (playerIndex >= 0 && playerIndex < isAiList.size()) {
-            isAiList.set(playerIndex, isAi);
+    public void setPlayerAsAi(int playerIndex, Class<? extends AiController> aiController) {
+        if (playerIndex >= 0 && playerIndex < aiControllerList.size()) {
+            aiControllerList.set(playerIndex, aiController);
         }
     }
 
     @Override
     public boolean isPlayerAi(int playerIndex) {
-        return playerIndex >= 0 && playerIndex < isAiList.size() && isAiList.get(playerIndex);
+        return playerIndex >= 0 && playerIndex < aiControllerList.size() && aiControllerList.get(playerIndex) != null;
     }
 
     @Override
@@ -99,5 +102,13 @@ public class GameSetupImpl implements GameSetup {
             return playerColors.get(playerIndex);
         }
         return ""; // Return empty string if index is invalid
+    }
+
+    @Override
+    public Class<? extends AiController> getPlayerAiController(int playerIndex) {
+        if (playerIndex >= 0 && playerIndex < aiControllerList.size()) {
+            return aiControllerList.get(playerIndex);
+        }
+        return null;
     }
 }
