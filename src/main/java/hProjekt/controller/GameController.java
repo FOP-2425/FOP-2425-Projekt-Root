@@ -2,6 +2,7 @@ package hProjekt.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -340,11 +341,28 @@ public class GameController {
      */
     @StudentImplementationRequired("P2.7")
     private void handleDriving() {
-        while (!getState().getPlayerPositions().values().stream()
-                .anyMatch(pos -> getTargetCity().getPosition().equals(pos))
-                && !getState().getDrivingPlayers().isEmpty()) {
+        if (getState().getDrivingPlayers().isEmpty()) {
+            return;
+        }
+
+        if (getState().getDrivingPlayers().size() == 1) {
+            getState().setPlayerPositon(getState().getDrivingPlayers().getFirst(), getTargetCity().getPosition());
+            return;
+        }
+
+        while (getState().getPlayerPositions().values().stream().filter(getTargetCity().getPosition()::equals)
+                .count() < Config.WINNING_CREDITS.size()) {
+            if (getState().getPlayerPositions().entrySet().stream()
+                    .anyMatch(e -> e.getValue().equals(getTargetCity().getPosition()))) {
+                getState().getDrivingPlayers().stream()
+                        .filter(p -> !getState().getPlayerPositions().get(p).equals(getTargetCity().getPosition()))
+                        .forEach(p -> p.addCredits(-Config.DICE_SIDES));
+            }
             for (Player player : getState().getDrivingPlayers().stream()
-                    .sorted((p1, p2) -> -Integer.compare(p1.getCredits(), p2.getCredits())).toList()) {
+                    .sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList()) {
+                if (getState().getPlayerPositions().get(player).equals(getTargetCity().getPosition())) {
+                    continue;
+                }
                 withActivePlayer(playerControllers.get(player), () -> {
                     getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
                     getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
@@ -366,8 +384,7 @@ public class GameController {
         return getState().getPlayerPositions().entrySet().stream()
                 .filter(entry -> entry.getValue().equals(getTargetCity().getPosition()))
                 .map(entry -> entry.getKey())
-                .sorted((p1, p2) -> Integer.compare(getState().getPlayerPointSurplus().get(p1),
-                        getState().getPlayerPointSurplus().get(p2)))
+                .sorted(Comparator.comparingInt(getState().getPlayerPointSurplus()::get).reversed())
                 .limit(Config.WINNING_CREDITS.size())
                 .toList();
     }
