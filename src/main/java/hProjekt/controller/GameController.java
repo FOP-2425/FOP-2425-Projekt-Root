@@ -273,6 +273,7 @@ public class GameController {
             roundCounter.set(roundCounter.get() + 1);
             getState().resetDrivingPlayers();
             getState().resetPlayerPositions();
+            getState().resetPlayerSurplus();
 
             if (roundCounter.get() % 3 == 0) {
                 buildingDuringDrivingPhase();
