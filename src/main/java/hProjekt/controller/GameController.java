@@ -356,7 +356,7 @@ public class GameController {
                     .anyMatch(e -> e.getValue().equals(getTargetCity().getPosition()))) {
                 getState().getDrivingPlayers().stream()
                         .filter(p -> !getState().getPlayerPositions().get(p).equals(getTargetCity().getPosition()))
-                        .forEach(p -> p.addCredits(-Config.DICE_SIDES));
+                        .forEach(p -> getState().addPlayerPointSurplus(p, -Config.DICE_SIDES));
             }
             for (Player player : getState().getDrivingPlayers().stream()
                     .sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList()) {
