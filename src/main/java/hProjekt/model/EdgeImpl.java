@@ -84,11 +84,11 @@ public record EdgeImpl(
 
     @Override
     public int getTotalParallelCost(Player player) {
-        return getParallelCost(player).values().stream().reduce(0, Integer::sum);
+        return getParallelCostPerPlayer(player).values().stream().reduce(0, Integer::sum);
     }
 
     @Override
-    public Map<Player, Integer> getParallelCost(Player player) {
+    public Map<Player, Integer> getParallelCostPerPlayer(Player player) {
         final Map<Player, Integer> result = new HashMap<>();
         if (!getRailOwners().isEmpty() && !(getRailOwners().size() == 1 && getRailOwners().contains(player))) {
             if (Collections.disjoint(getHexGrid().getCities().keySet(), getAdjacentTilePositions())) {

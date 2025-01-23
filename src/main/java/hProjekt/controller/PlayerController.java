@@ -337,7 +337,7 @@ public class PlayerController {
         int totalParallelCost = edge.getTotalParallelCost(player);
 
         if (totalParallelCost > 0) {
-            Map<Player, Integer> parallelCost = edge.getParallelCost(player);
+            Map<Player, Integer> parallelCost = edge.getParallelCostPerPlayer(player);
             for (Map.Entry<Player, Integer> entry : parallelCost.entrySet()) {
                 entry.getKey().addCredits(entry.getValue());
             }

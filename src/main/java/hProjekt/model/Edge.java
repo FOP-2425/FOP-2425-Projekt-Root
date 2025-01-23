@@ -126,7 +126,7 @@ public interface Edge {
      * @return the cost that needs to be paid to each player that has already built
      *         on this edge
      */
-    Map<Player, Integer> getParallelCost(Player player);
+    Map<Player, Integer> getParallelCostPerPlayer(Player player);
 
     /**
      * Returns the total cost that needs to be paid by the player to build a rail on
