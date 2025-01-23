@@ -132,13 +132,20 @@ public final class GameState {
     }
 
     /**
-     * Sets the point surplus of the given {@link Player}.
+     * Adds the given point surplus to the given {@link Player}.
      *
-     * @param player  the {@link Player} to set the point surplus for
-     * @param surplus the point surplus to set
+     * @param player  the {@link Player} to add the point surplus to
+     * @param surplus the point surplus to add
      */
-    public void setPlayerPointSurplus(final Player player, final int surplus) {
-        playerPointSurplus.put(player, surplus);
+    public void addPlayerPointSurplus(final Player player, final int surplus) {
+        playerPointSurplus.put(player, playerPointSurplus.getOrDefault(player, 0) + surplus);
+    }
+
+    /**
+     * Resets the point surplus of all {@link Player}s.
+     */
+    public void resetPlayerSurplus() {
+        playerPointSurplus.clear();
     }
 
     /**
