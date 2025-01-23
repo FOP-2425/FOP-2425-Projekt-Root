@@ -358,11 +358,13 @@ public class GameController {
                         .filter(p -> !getState().getPlayerPositions().get(p).equals(getTargetCity().getPosition()))
                         .forEach(p -> getState().addPlayerPointSurplus(p, -Config.DICE_SIDES));
             }
+
             for (Player player : getState().getDrivingPlayers().stream()
                     .sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList()) {
                 if (getState().getPlayerPositions().get(player).equals(getTargetCity().getPosition())) {
                     continue;
                 }
+
                 withActivePlayer(playerControllers.get(player), () -> {
                     getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
                     getActivePlayerController().waitForNextAction(PlayerObjective.DRIVE);
