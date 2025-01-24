@@ -1,5 +1,6 @@
 package hProjekt.controller.gui;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -422,9 +423,9 @@ public class PlayerActionsController {
      * @param terminateFunction the function that limits the path
      * @param pathToHoveredTile the path to the hovered tile
      */
-    private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
+    private void highlightTrimmedPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
             List<Edge> pathToHoveredTile) {
-        highlightPath(terminateFunction, pathToHoveredTile, List.of());
+        highlightTrimmedPath(terminateFunction, pathToHoveredTile, List.of());
     }
 
     /**
@@ -438,18 +439,48 @@ public class PlayerActionsController {
      * @param pathToHoveredTile the path to highlight
      * @param highlightedEdges  the edges that are already highlighted
      */
-    @StudentImplementationRequired("P4.2")
-    private void highlightPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
+    private void highlightTrimmedPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
             List<Edge> pathToHoveredTile, Collection<Edge> highlightedEdges) {
         getHexGridController().getEdgeControllers().stream().filter(ec -> !highlightedEdges.contains(ec.getEdge()))
                 .forEach(EdgeController::unhighlight);
 
-        selectedRailPath.clear();
+        selectedRailPath.setAll(trimPath(terminateFunction, pathToHoveredTile));
+
+        highlightPath(selectedRailPath);
+    }
+
+    /**
+     * Highlights the given path.
+     *
+     * @param path the path to highlight.
+     */
+    @StudentImplementationRequired("P4.2")
+    private void highlightPath(List<Edge> path) {
+        for (Edge edge : path) {
+            getHexGridController().getEdgeControllersMap().get(edge).highlight();
+        }
+    }
+
+    /**
+     * Trims the path tile based on the given function.
+     * The function gets the building costs, the parallel costs and the distance and
+     * returns true if the path should be terminated.
+     *
+     * @param terminateFunction the function that limits the path, gets a pair of
+     *                          the building costs and the parallel costs and the
+     *                          distance. Returns true if the path shouldn't be
+     *                          longer
+     * @param path              the path to trim
+     */
+    @StudentImplementationRequired("P4.2")
+    private List<Edge> trimPath(BiFunction<Pair<Integer, Integer>, Integer, Boolean> terminateFunction,
+            List<Edge> path) {
         int buildingCost = 0;
         int parallelCost = 0;
         int distance = 0;
+        List<Edge> trimmedPath = new ArrayList<>();
 
-        for (Edge edge : pathToHoveredTile) {
+        for (Edge edge : path) {
             if (edge.getRailOwners().contains(getPlayer())) {
                 continue;
             }
@@ -462,12 +493,9 @@ public class PlayerActionsController {
                 break;
             }
 
-            selectedRailPath.add(edge);
+            trimmedPath.add(edge);
         }
-
-        for (Edge edge : selectedRailPath) {
-            getHexGridController().getEdgeControllersMap().get(edge).highlight();
-        }
+        return trimmedPath;
     }
 
     /**
@@ -486,7 +514,7 @@ public class PlayerActionsController {
         }
 
         selectedRailPath.addListener(selectedRailPathListener);
-        setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
+        setupTileSelectionHandlers((tc, selectedTile) -> highlightTrimmedPath(
                 (costs, distance) -> costs.getKey() > getPlayerState()
                         .buildingBudget() || costs.getValue() > getPlayer().getCredits()
                         || (GamePhase.DRIVING_PHASE.equals(gameBoardController.getGamePhase())
@@ -579,7 +607,7 @@ public class PlayerActionsController {
             return;
         }
 
-        setupTileSelectionHandlers((tc, selectedTile) -> highlightPath(
+        setupTileSelectionHandlers((tc, selectedTile) -> highlightTrimmedPath(
                 (costs, distance) -> {
                     distance += selectedEdges.size();
                     return distance > Config.MAX_RENTABLE_DISTANCE || distance > getPlayer().getCredits();
