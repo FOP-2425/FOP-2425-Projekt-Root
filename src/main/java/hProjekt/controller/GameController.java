@@ -335,8 +335,12 @@ public class GameController {
 
     /**
      * Handles the driving.
-     * While there are players that are driving and the target city has not been
-     * reached, let the players roll the dice and drive.
+     * If only one player is driving, the player automatically reaches the target
+     * city.
+     * While there are players that have not reached the target city and there are
+     * still credits to win, let the players roll the dice and drive.
+     * If a player reaches the target city, all other players surplus will be
+     * reduced by {@link Config#DICE_SIDES} before each round.
      * The players are sorted by their credits in descending order ensuring that the
      * player with the most credits drives first.
      */
