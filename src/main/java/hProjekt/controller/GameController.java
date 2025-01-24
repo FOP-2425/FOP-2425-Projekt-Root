@@ -403,16 +403,13 @@ public class GameController {
      */
     @StudentImplementationRequired("P2.3")
     private void executeBuildingPhase() {
-        while (state.getGrid().getCities().values().size()
-                - state.getGrid().getConnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
+        while (state.getGrid().getUnconnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
             roundCounter.set(roundCounter.get() + 1);
             final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
 
             withActivePlayer(
                     playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
-                    () -> {
-                        getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE);
-                    });
+                    () -> getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE));
 
             for (int i = 0; i < state.getPlayers().size(); i++) {
                 final Player player = state.getPlayers()
