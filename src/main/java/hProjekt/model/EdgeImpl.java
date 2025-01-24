@@ -79,7 +79,7 @@ public record EdgeImpl(
 
     @Override
     public int getTotalBuildingCost(Player player) {
-        return getBuildingCost() + getTotalParallelCost(player);
+        return getBaseBuildingCost() + getTotalParallelCost(player);
     }
 
     @Override
@@ -116,7 +116,7 @@ public record EdgeImpl(
     }
 
     @Override
-    public int getBuildingCost() {
+    public int getBaseBuildingCost() {
         return Config.TILE_TYPE_TO_BUILDING_COST.get(getAdjacentTilePositions().stream()
                 .map(position -> getHexGrid().getTileAt(position).getType()).collect(Collectors.toUnmodifiableSet()));
     }

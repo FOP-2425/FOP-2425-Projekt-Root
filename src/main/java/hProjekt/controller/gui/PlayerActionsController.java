@@ -74,7 +74,7 @@ public class PlayerActionsController {
         getHexGridController().getEdgeControllers().forEach(EdgeController::hideLabel);
         change.getList().forEach(edge -> {
             EdgeController edgeController = getHexGridController().getEdgeControllersMap().get(edge);
-            edgeController.setCostLabel(edge.getBuildingCost(),
+            edgeController.setCostLabel(edge.getBaseBuildingCost(),
                     edge.getTotalParallelCost(getPlayer()));
         });
     };
@@ -454,7 +454,7 @@ public class PlayerActionsController {
                 continue;
             }
 
-            buildingCost += edge.getBuildingCost();
+            buildingCost += edge.getBaseBuildingCost();
             parallelCost += edge.getTotalParallelCost(getPlayer());
             distance++;
 

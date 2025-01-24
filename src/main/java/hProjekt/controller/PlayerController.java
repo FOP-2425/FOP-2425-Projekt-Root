@@ -276,7 +276,7 @@ public class PlayerController {
      */
     @StudentImplementationRequired("P2.1")
     public boolean canBuildRail(Edge edge) {
-        boolean hasEnoughBuildingBudget = edge.getBuildingCost() <= buildingBudget;
+        boolean hasEnoughBuildingBudget = edge.getBaseBuildingCost() <= buildingBudget;
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             return hasEnoughBuildingBudget && edge.getTotalParallelCost(player) <= player.getCredits();
         }
@@ -347,7 +347,7 @@ public class PlayerController {
             player.addCredits(Config.CITY_CONNECTION_BONUS);
         }
 
-        buildingBudget -= edge.getBuildingCost();
+        buildingBudget -= edge.getBaseBuildingCost();
 
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             player.removeCredits(totalParallelCost);

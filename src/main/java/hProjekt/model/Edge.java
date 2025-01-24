@@ -112,11 +112,11 @@ public interface Edge {
     Set<Edge> getConnectedRails(Player player);
 
     /**
-     * Returns the cost of building a rail on this edge.
+     * Returns the base cost of building a rail on this edge.
      *
-     * @return the cost of building a rail on this edge
+     * @return the base cost of building a rail on this edge
      */
-    int getBuildingCost();
+    int getBaseBuildingCost();
 
     /**
      * Returns the cost that needs to be paid to each player that has already built
