@@ -450,18 +450,6 @@ public class PlayerActionsController {
     }
 
     /**
-     * Highlights the given path.
-     *
-     * @param path the path to highlight.
-     */
-    @StudentImplementationRequired("P4.2")
-    private void highlightPath(List<Edge> path) {
-        for (Edge edge : path) {
-            getHexGridController().getEdgeControllersMap().get(edge).highlight();
-        }
-    }
-
-    /**
      * Trims the path tile based on the given function.
      * The function gets the building costs, the parallel costs and the distance and
      * returns true if the path should be terminated.
@@ -496,6 +484,18 @@ public class PlayerActionsController {
             trimmedPath.add(edge);
         }
         return trimmedPath;
+    }
+
+    /**
+     * Highlights the edges of the given path.
+     *
+     * @param path the path to highlight.
+     */
+    @StudentImplementationRequired("P4.2")
+    private void highlightPath(List<Edge> path) {
+        for (Edge edge : path) {
+            getHexGridController().getEdgeControllersMap().get(edge).highlight();
+        }
     }
 
     /**
