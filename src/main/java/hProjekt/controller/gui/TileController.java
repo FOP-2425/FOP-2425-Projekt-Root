@@ -31,7 +31,7 @@ public class TileController implements Controller {
     }
 
     /**
-     * Highlights the tile.
+     * Highlights the tile and overwrites the click handler.
      *
      * @param handler the handler to call when the tile is clicked
      */
@@ -40,7 +40,7 @@ public class TileController implements Controller {
     }
 
     /**
-     * Unhighlights the tile.
+     * Unhighlights the tile and removes the click handler.
      */
     public void unhighlight() {
         builder.unhighlight();

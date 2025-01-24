@@ -41,6 +41,7 @@ public class EdgeController {
 
     /**
      * Highlights the edge and calls the given handler when the edge is clicked.
+     * Overwrites any existing click handler.
      *
      * @param handler the handler to call when the edge is clicked
      */
@@ -58,6 +59,7 @@ public class EdgeController {
     /**
      * Highlights the edge as selected and calls the given handler when the edge is
      * clicked.
+     * Overwrites any existing click handler.
      *
      * @param deselectHandler the handler to call when the edge is deselected
      */
@@ -92,7 +94,7 @@ public class EdgeController {
     }
 
     /**
-     * Unhighlights the edge.
+     * Unhighlights the edge and removes the click handler.
      */
     public void unhighlight() {
         line.unhighlight();
