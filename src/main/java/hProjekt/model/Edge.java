@@ -119,29 +119,30 @@ public interface Edge {
     int getBaseBuildingCost();
 
     /**
-     * Returns the cost that needs to be paid to each player that has already built
+     * Returns the credits that need to be paid to each player that has already
+     * built
      * on this edge.
      *
      * @param player the player to calculate the parallel cost for
-     * @return the cost that needs to be paid to each player that has already built
-     *         on this edge
+     * @return a map of players and the credits that need to be paid to them
      */
     Map<Player, Integer> getParallelCostPerPlayer(Player player);
 
     /**
-     * Returns the total cost that needs to be paid by the player to build a rail on
-     * this edge if other players have already built on this edge.
+     * Returns the total sum of credits that needs to be paid by the player to other
+     * players
+     * when building a rail.
      *
      * @param player the player to calculate the total parallel cost for
-     * @return the total cost that needs to be paid by the player to build a rail
+     * @return the total sum of credits that needs to be paid by the player to build
+     *         a rail
      */
     int getTotalParallelCost(Player player);
 
     /**
      * Returns the total cost the player has to pay to build a rail on this edge
      * including the parallel cost.
-     * The total cost is the sum of the building cost and the parallel cost times
-     * the number of players that have already built on this edge.
+     * The total cost is the sum of the building cost and the total parallel cost.
      *
      * @param player the player to calculate the total cost for
      * @return the total cost the player has to pay to build a rail on this edge
