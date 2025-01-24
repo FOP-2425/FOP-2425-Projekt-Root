@@ -136,6 +136,9 @@ public class PlayerController {
     @DoNotTouch
     public void setPlayerObjective(final PlayerObjective nextObjective) {
         playerObjective = nextObjective;
+        if (PlayerObjective.IDLE.equals(nextObjective)) {
+            updatePlayerState();
+        }
     }
 
     /**
@@ -280,7 +283,7 @@ public class PlayerController {
         if (edge.getRailOwners().contains(getPlayer())) {
             return false;
         }
-        boolean hasEnoughBuildingBudget = edge.getBuildingCost() <= buildingBudget;
+        boolean hasEnoughBuildingBudget = edge.getBaseBuildingCost() <= buildingBudget;
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             return hasEnoughBuildingBudget && edge.getTotalParallelCost(player) <= player.getCredits();
         }
@@ -296,6 +299,7 @@ public class PlayerController {
     public Set<Edge> getBuildableRails() {
         Collection<Edge> ownedRails = getPlayer().getRails().values();
         Set<Edge> possibleConnections;
+
         if (ownedRails.isEmpty()) {
             possibleConnections = getState().getGrid().getStartingCities().keySet().stream()
                     .flatMap(position -> getState().getGrid().getTileAt(position).getEdges().stream())
@@ -303,6 +307,7 @@ public class PlayerController {
                     .collect(Collectors.toSet());
             return possibleConnections;
         }
+
         possibleConnections = ownedRails.stream()
                 .flatMap(rail -> rail.getConnectedEdges().stream())
                 .filter(this::canBuildRail)
@@ -340,7 +345,7 @@ public class PlayerController {
         int totalParallelCost = edge.getTotalParallelCost(player);
 
         if (totalParallelCost > 0) {
-            Map<Player, Integer> parallelCost = edge.getParallelCost(player);
+            Map<Player, Integer> parallelCost = edge.getParallelCostPerPlayer(player);
             for (Map.Entry<Player, Integer> entry : parallelCost.entrySet()) {
                 entry.getKey().addCredits(entry.getValue());
             }
@@ -350,7 +355,7 @@ public class PlayerController {
             player.addCredits(Config.CITY_CONNECTION_BONUS);
         }
 
-        buildingBudget -= edge.getBuildingCost();
+        buildingBudget -= edge.getBaseBuildingCost();
 
         if (getState().getGamePhaseProperty().getValue().equals(GamePhase.BUILDING_PHASE)) {
             player.removeCredits(totalParallelCost);

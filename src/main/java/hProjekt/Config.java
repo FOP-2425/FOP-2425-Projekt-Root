@@ -33,9 +33,9 @@ public class Config {
     public static int NUMBER_OF_STARTING_CITIES = 3;
 
     /**
-     * The number of cities on the board. Needs to divisible by 2.
+     * The number of cities on the board. Needs to be divisible by 2.
      */
-    public static int NUMBER_OF_CITIES = 36;
+    public static int NUMBER_OF_CITIES = 10;
 
     /**
      * The number of unconnected cities left to start the driving phase.
@@ -96,7 +96,7 @@ public class Config {
     /**
      * The scale of the map, bigger values mean a bigger map.
      */
-    public static int MAP_SCALE = 15;
+    public static int MAP_SCALE = 5;
 
     /**
      * The maximum number of tiles a player can rent.
