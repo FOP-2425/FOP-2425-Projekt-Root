@@ -136,6 +136,9 @@ public class PlayerController {
     @DoNotTouch
     public void setPlayerObjective(final PlayerObjective nextObjective) {
         playerObjective = nextObjective;
+        if (PlayerObjective.IDLE.equals(nextObjective)) {
+            updatePlayerState();
+        }
     }
 
     /**
