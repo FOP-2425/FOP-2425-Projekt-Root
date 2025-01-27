@@ -359,37 +359,6 @@ public class PlayerActionsController {
     }
 
     /**
-     * Highlights the tiles from which the player can start building or selecting
-     * rails.
-     * When a tile is clicked all other tiles are unhighlighted and the clicked tile
-     * is highlighted.
-     * If the selectedTile is clicked again all tiles are highlighted again and the
-     * selectedTile is set to null.
-     */
-    @StudentImplementationRequired("P4.3")
-    private void highlightStartingTiles() {
-        Collection<Tile> startingTiles;
-        selectedTile.setValue(null);
-        if (getPlayer().getRails().isEmpty()) {
-            startingTiles = getHexGridController().getHexGrid().getStartingCities().keySet().stream()
-                    .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
-        } else {
-            startingTiles = getPlayer().getRails().keySet().stream().flatMap(set -> set.stream())
-                    .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
-        }
-        for (Tile tile : startingTiles) {
-            getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
-                getHexGridController().unhighlightTiles();
-                getHexGridController().getTileControllersMap().get(tile).highlight(e2 -> {
-                    selectedTile.setValue(null);
-                    highlightStartingTiles();
-                });
-                selectedTile.setValue(tile);
-            });
-        }
-    }
-
-    /**
      * Calculates the driving cost function between two tiles.
      *
      * @param from the starting tile
@@ -495,6 +464,37 @@ public class PlayerActionsController {
     private void highlightPath(List<Edge> path) {
         for (Edge edge : path) {
             getHexGridController().getEdgeControllersMap().get(edge).highlight();
+        }
+    }
+
+    /**
+     * Highlights the tiles from which the player can start building or selecting
+     * rails.
+     * When a tile is clicked all other tiles are unhighlighted and the clicked tile
+     * is highlighted.
+     * If the selectedTile is clicked again all tiles are highlighted again and the
+     * selectedTile is set to null.
+     */
+    @StudentImplementationRequired("P4.3")
+    private void highlightStartingTiles() {
+        Collection<Tile> startingTiles;
+        selectedTile.setValue(null);
+        if (getPlayer().getRails().isEmpty()) {
+            startingTiles = getHexGridController().getHexGrid().getStartingCities().keySet().stream()
+                    .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
+        } else {
+            startingTiles = getPlayer().getRails().keySet().stream().flatMap(set -> set.stream())
+                    .map(position -> getHexGridController().getHexGrid().getTileAt(position)).toList();
+        }
+        for (Tile tile : startingTiles) {
+            getHexGridController().getTileControllersMap().get(tile).highlight(e -> {
+                getHexGridController().unhighlightTiles();
+                getHexGridController().getTileControllersMap().get(tile).highlight(e2 -> {
+                    selectedTile.setValue(null);
+                    highlightStartingTiles();
+                });
+                selectedTile.setValue(tile);
+            });
         }
     }
 

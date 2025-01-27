@@ -185,25 +185,6 @@ public class GameController {
     }
 
     /**
-     * Chooses two random cities from the grid and sets them as starting and target
-     * city.
-     * The chosen cities are stored in the chosen cities property.
-     */
-    @StudentImplementationRequired("P2.4")
-    public void chooseCities() {
-        final List<City> tempCities = getState().getGrid().getCities().values().stream()
-                .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
-
-        City startingCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
-        tempCities.remove(startingCity);
-        getState().addChosenCity(startingCity);
-        City targetCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
-        getState().addChosenCity(targetCity);
-
-        chosenCitiesProperty.setValue(new Pair<>(startingCity, targetCity));
-    }
-
-    /**
      * Initializes the player controllers for each player in the game state.
      * If a player is an AI, it creates an AI controller for the player.
      */
@@ -266,45 +247,52 @@ public class GameController {
     }
 
     /**
-     * Executes the driving phase of the game.
-     * The driving phase consists of the following steps:
-     * - If the round counter is a multiple of 3, let the players build during the
-     * driving phase
-     * - Let a player choose the cities to drive to
-     * - Let the players choose their path
-     * - Let the players that are driving roll the dice and drive
-     * - Check if a player has reached the target city and if so, add credits to the
-     * player
-     * - Repeat until all cities were chosen
+     * Executes the building phase of the game.
+     * The building phase consists of the following steps:
+     * - While there are unconnected cities, let a player roll the dice
+     * - Starting with the player that rolled the dice, let the players build until
+     * all players have built
+     * - The players are given a building budget according to the dice roll
+     * - Repeat until there are only
+     * {@link Config#UNCONNECTED_CITIES_START_THRESHOLD} unconnected cities left
      */
-    @StudentImplementationRequired("P2.9")
-    private void executeDrivingPhase() {
-        while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
+    @StudentImplementationRequired("P2.3")
+    private void executeBuildingPhase() {
+        while (state.getGrid().getUnconnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
             roundCounter.set(roundCounter.get() + 1);
-            getState().resetDrivingPlayers();
-            getState().resetPlayerPositions();
-            getState().resetPlayerSurplus();
+            final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
 
-            if (roundCounter.get() % 3 == 0) {
-                buildingDuringDrivingPhase();
-            }
+            withActivePlayer(
+                    playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
+                    () -> getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE));
 
-            withActivePlayer(playerControllers
-                    .get(getState().getPlayers().get((roundCounter.get() - 1) % state.getPlayers().size())), () -> {
-                        getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_CITIES);
-                    });
-
-            letPlayersChoosePath();
-
-            handleDriving();
-
-            List<Player> winners = getWinners();
-
-            for (int i = 0; i < winners.size(); i++) {
-                Player player = winners.get(i);
-                player.addCredits(Config.WINNING_CREDITS.get(i));
+            for (int i = 0; i < state.getPlayers().size(); i++) {
+                final Player player = state.getPlayers()
+                        .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
+                final PlayerController pc = playerControllers.get(player);
+                pc.setBuildingBudget(getCurrentDiceRoll());
+                waitForBuild(pc);
             }
         }
+    }
+
+    /**
+     * Chooses two random cities from the grid and sets them as starting and target
+     * city.
+     * The chosen cities are stored in the chosen cities property.
+     */
+    @StudentImplementationRequired("P2.4")
+    public void chooseCities() {
+        final List<City> tempCities = getState().getGrid().getCities().values().stream()
+                .filter(city -> !getState().getChosenCities().contains(city)).collect(Collectors.toList());
+
+        City startingCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+        tempCities.remove(startingCity);
+        getState().addChosenCity(startingCity);
+        City targetCity = tempCities.get(Config.RANDOM.nextInt(tempCities.size()));
+        getState().addChosenCity(targetCity);
+
+        chosenCitiesProperty.setValue(new Pair<>(startingCity, targetCity));
     }
 
     /**
@@ -408,31 +396,43 @@ public class GameController {
     }
 
     /**
-     * Executes the building phase of the game.
-     * The building phase consists of the following steps:
-     * - While there are unconnected cities, let a player roll the dice
-     * - Starting with the player that rolled the dice, let the players build until
-     * all players have built
-     * - The players are given a building budget according to the dice roll
-     * - Repeat until there are only
-     * {@link Config#UNCONNECTED_CITIES_START_THRESHOLD} unconnected cities left
+     * Executes the driving phase of the game.
+     * The driving phase consists of the following steps:
+     * - If the round counter is a multiple of 3, let the players build during the
+     * driving phase
+     * - Let a player choose the cities to drive to
+     * - Let the players choose their path
+     * - Let the players that are driving roll the dice and drive
+     * - Check if a player has reached the target city and if so, add credits to the
+     * player
+     * - Repeat until all cities were chosen
      */
-    @StudentImplementationRequired("P2.3")
-    private void executeBuildingPhase() {
-        while (state.getGrid().getUnconnectedCities().size() > Config.UNCONNECTED_CITIES_START_THRESHOLD) {
+    @StudentImplementationRequired("P2.9")
+    private void executeDrivingPhase() {
+        while (getState().getChosenCities().size() < getState().getGrid().getCities().size()) {
             roundCounter.set(roundCounter.get() + 1);
-            final int diceRollingPlayerIndex = (roundCounter.get() - 1) % state.getPlayers().size();
+            getState().resetDrivingPlayers();
+            getState().resetPlayerPositions();
+            getState().resetPlayerSurplus();
 
-            withActivePlayer(
-                    playerControllers.get(state.getPlayers().get(diceRollingPlayerIndex)),
-                    () -> getActivePlayerController().waitForNextAction(PlayerObjective.ROLL_DICE));
+            if (roundCounter.get() % 3 == 0) {
+                buildingDuringDrivingPhase();
+            }
 
-            for (int i = 0; i < state.getPlayers().size(); i++) {
-                final Player player = state.getPlayers()
-                        .get((i + diceRollingPlayerIndex) % state.getPlayers().size());
-                final PlayerController pc = playerControllers.get(player);
-                pc.setBuildingBudget(getCurrentDiceRoll());
-                waitForBuild(pc);
+            withActivePlayer(playerControllers
+                    .get(getState().getPlayers().get((roundCounter.get() - 1) % state.getPlayers().size())), () -> {
+                        getActivePlayerController().waitForNextAction(PlayerObjective.CHOOSE_CITIES);
+                    });
+
+            letPlayersChoosePath();
+
+            handleDriving();
+
+            List<Player> winners = getWinners();
+
+            for (int i = 0; i < winners.size(); i++) {
+                Player player = winners.get(i);
+                player.addCredits(Config.WINNING_CREDITS.get(i));
             }
         }
     }
