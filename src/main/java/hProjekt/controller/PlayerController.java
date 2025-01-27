@@ -84,6 +84,11 @@ public class PlayerController {
         return player;
     }
 
+    /**
+     * Returns the {@link GameState}.
+     *
+     * @return the {@link GameState}.
+     */
     private GameState getState() {
         return gameController.getState();
     }
@@ -130,6 +135,7 @@ public class PlayerController {
 
     /**
      * Sets the player objective.
+     * Also updates the player state, when the objective is IDLE.
      *
      * @param nextObjective the objective to set
      */
@@ -159,26 +165,50 @@ public class PlayerController {
         buildingBudget = amount;
     }
 
+    /**
+     * Returns true if the player has a path to drive, false otherwise.
+     *
+     * @return true if the player has a path to drive, false otherwise
+     */
     public boolean hasPath() {
         return hasPath;
     }
 
+    /**
+     * Resets the hasPath flag.
+     */
     public void resetHasPath() {
         this.hasPath = false;
     }
 
+    /**
+     * Returns true if the player has confirmed a path to drive, false otherwise.
+     *
+     * @return true if the player has confirmed a path to drive, false otherwise
+     */
     public boolean hasConfirmedPath() {
         return hasConfirmedPath;
     }
 
+    /**
+     * Resets the hasConfirmedPath flag.
+     */
     public void resetHasConfirmedPath() {
         this.hasConfirmedPath = false;
     }
 
+    /**
+     * Resets the rented edges.
+     */
     public void resetRentedEdges() {
         rentedEdges = new HashSet<>();
     }
 
+    /**
+     * Resets several flags and values that are relevant during the driving phase.
+     * This method should be called when the player chooses the path to drive.
+     * It resets the hasPath flag, the hasConfirmedPath flag and the rented edges.
+     */
     public void resetDrivingPhase() {
         resetHasConfirmedPath();
         resetHasPath();
@@ -192,6 +222,11 @@ public class PlayerController {
         gameController.castDice();
     }
 
+    /**
+     * Chooses the cities to drive to.
+     *
+     * @see GameController#chooseCities()
+     */
     public void chooseCities() {
         gameController.chooseCities();
     }
@@ -257,7 +292,6 @@ public class PlayerController {
                         action, getPlayerObjective().getAllowedActions()));
             }
             action.execute(this);
-            updatePlayerState();
             return action;
         } catch (final IllegalActionException e) {
             // Ignore and keep going
@@ -364,6 +398,13 @@ public class PlayerController {
         player.removeCredits(edge.getTotalBuildingCost(player));
     }
 
+    /**
+     * Builds rails on the given edges.
+     *
+     * @param edges the edges to build the rails on
+     * @throws IllegalActionException if the player cannot build rails on the given
+     *                                edges
+     */
     public void buildRails(final List<Edge> edges) throws IllegalActionException {
         Set<Edge> buildableRails = getBuildableRails();
 
@@ -376,6 +417,11 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Returns all edges the player can choose to rent.
+     *
+     * @return all edges the player can choose to rent
+     */
     public Set<Edge> getChooseableEdges() {
         if (player.getCredits() == 0 || !getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
             return Set.of();
@@ -411,6 +457,15 @@ public class PlayerController {
         return chooseableEdges;
     }
 
+    /**
+     * Chooses the edges to rent.
+     *
+     * @param edges the edges to rent
+     * @throws IllegalActionException if the player cannot rent the chosen edges or
+     *                                if the player cannot afford to rent the chosen
+     *                                edges or if the player chooses more than 10
+     *                                edges
+     */
     public void chooseEdges(final Set<Edge> edges) throws IllegalActionException {
         Set<Edge> chooseableEdges = getChooseableEdges();
         hasPath = false;
@@ -443,10 +498,23 @@ public class PlayerController {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Returns the edges the player has rented as an unmodifiable set.
+     *
+     * @return the edges the player has rented as an unmodifiable set
+     */
     private Set<Edge> getRentedEdges() {
         return Collections.unmodifiableSet(rentedEdges);
     }
 
+    /**
+     * Confirms the path the player has chosen to drive.
+     * If the player confirms the path, the player pays the renting costs for the
+     * rented edges.
+     *
+     * @param confirm {@code true} if the player confirms the path, {@code false}
+     *                otherwise
+     */
     public void confirmPath(boolean confirm) {
         if (!confirm) {
             hasConfirmedPath = false;
@@ -467,6 +535,13 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Returns {@code true} if the player can drive, {@code false} otherwise.
+     * The player can drive if the game is in the driving phase and the player is a
+     * driving player.
+     *
+     * @return {@code true} if the player can drive, {@code false} otherwise
+     */
     @StudentImplementationRequired("P2.5")
     public boolean canDrive() {
         if (!getState().getGamePhaseProperty().getValue().equals(GamePhase.DRIVING_PHASE)) {
@@ -481,10 +556,12 @@ public class PlayerController {
     }
 
     /**
-     * Calculates the tiles the player can drive to with the current dice roll.
-     * If the player can reach the target city, it is the only tile returned.
+     * Returns a map of drivable tiles and the path to drive to the target tile.
+     * The path is a list of tiles starting from the current player position to the
+     * target tile.
+     * A tile can be driven to if it is reachable with the current dice roll.
      *
-     * @return the tiles the player can drive to with the current dice roll
+     * @return a map of drivable tiles and the path to drive to the target tile
      */
     public Map<Tile, List<Tile>> getDrivableTiles() {
         if (!canDrive()) {
@@ -531,6 +608,12 @@ public class PlayerController {
                         path.add(tile);
                         drivableTiles.put(tile, path);
                     }
+                } else {
+                    if (!drivableTiles.containsKey(currentPair.getValue().getLast())) {
+                        List<Tile> path = new ArrayList<>(currentPair.getValue());
+                        path.add(currentPair.getKey());
+                        drivableTiles.put(currentPair.getKey(), path);
+                    }
                 }
             }
             visitedNodes.add(currentPair.getKey());
@@ -538,6 +621,17 @@ public class PlayerController {
         return drivableTiles;
     }
 
+    /**
+     * Drives to the target tile.
+     * If the player drives to the target city, the point surplus is added for the
+     * player based on the remaining dice roll.
+     * The player poisition is set to the target tile position if the player can
+     * drive to the target tile.
+     *
+     * @param targetTile the tile to drive to
+     * @throws IllegalActionException if the player cannot drive or if the player
+     *                                cannot drive to the target tile
+     */
     @StudentImplementationRequired("P2.5")
     public void drive(final Tile targetTile) throws IllegalActionException {
         if (!canDrive()) {

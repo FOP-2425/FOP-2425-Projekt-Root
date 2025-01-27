@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -44,6 +43,8 @@ public class GameController {
     private final Property<Pair<City, City>> chosenCitiesProperty = new SimpleObjectProperty<>();
 
     private final Property<PlayerController> activePlayerController = new SimpleObjectProperty<>();
+
+    private boolean stopped = false;
 
     /**
      * Creates a new GameController with the given game state and dice supplier.
@@ -174,6 +175,13 @@ public class GameController {
     public int castDice() {
         currentDiceRoll.set(dice.get());
         return currentDiceRoll.get();
+    }
+
+    /**
+     * Stops the game and the Thread.
+     */
+    public void stop() {
+        stopped = true;
     }
 
     /**
@@ -357,7 +365,9 @@ public class GameController {
 
         while (getState().getPlayerPositions().values().stream().filter(getTargetCity().getPosition()::equals)
                 .count() < Config.WINNING_CREDITS.size()
-                && getState().getPlayerPositions().values().stream().anyMatch(Predicate.not(getTargetCity()::equals))) {
+                && getState().getPlayerPositions().entrySet().stream()
+                        .filter(entry -> getState().getDrivingPlayers().contains(entry.getKey()))
+                        .filter(entry -> !entry.getValue().equals(getTargetCity().getPosition())).count() > 0) {
             if (getState().getPlayerPositions().entrySet().stream()
                     .anyMatch(e -> e.getValue().equals(getTargetCity().getPosition()))) {
                 getState().getDrivingPlayers().stream()
@@ -452,6 +462,9 @@ public class GameController {
      */
     @DoNotTouch
     public void withActivePlayer(final PlayerController pc, final Runnable r) {
+        if (stopped) {
+            throw new RuntimeException("Game was stopped");
+        }
         activePlayerController.setValue(pc);
         r.run();
         pc.setPlayerObjective(PlayerObjective.IDLE);
