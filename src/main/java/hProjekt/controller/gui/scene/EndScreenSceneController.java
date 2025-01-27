@@ -2,6 +2,7 @@ package hProjekt.controller.gui.scene;
 
 import java.util.List;
 
+import hProjekt.controller.GameController;
 import hProjekt.controller.LeaderboardController;
 import hProjekt.model.Player;
 import hProjekt.view.menus.EndScreenBuilder;
@@ -20,11 +21,13 @@ public class EndScreenSceneController implements SceneController {
      *
      * @param players the players to display on the end screen
      */
-    public EndScreenSceneController(List<Player> players) {
+    public EndScreenSceneController(List<Player> players, GameController gameController) {
         for (Player player : players) {
             LeaderboardController.savePlayerData(player.getName(), player.getCredits(), player.isAi());
         }
         this.builder = new EndScreenBuilder(SceneController::loadMainMenuScene, players);
+
+        gameController.stop();
     }
 
     @Override

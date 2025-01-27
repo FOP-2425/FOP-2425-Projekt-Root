@@ -45,6 +45,8 @@ public class GameController {
 
     private final Property<PlayerController> activePlayerController = new SimpleObjectProperty<>();
 
+    private boolean stopped = false;
+
     /**
      * Creates a new GameController with the given game state and dice supplier.
      *
@@ -174,6 +176,13 @@ public class GameController {
     public int castDice() {
         currentDiceRoll.set(dice.get());
         return currentDiceRoll.get();
+    }
+
+    /**
+     * Stops the game and the Thread.
+     */
+    public void stop() {
+        stopped = true;
     }
 
     /**
@@ -452,6 +461,9 @@ public class GameController {
      */
     @DoNotTouch
     public void withActivePlayer(final PlayerController pc, final Runnable r) {
+        if (stopped) {
+            throw new RuntimeException("Game was stopped");
+        }
         activePlayerController.setValue(pc);
         r.run();
         pc.setPlayerObjective(PlayerObjective.IDLE);

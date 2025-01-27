@@ -99,7 +99,7 @@ public class SceneSwitcher {
         LEADERBOARD(LeaderboardSceneController::new),
         END_SCREEN(() -> {
             List<Player> players = getInstance().gameController.getState().getPlayers();
-            return new EndScreenSceneController(players);
+            return new EndScreenSceneController(players, getInstance().gameController);
         }),
         SETTINGS(SettingsSceneController::new);
 

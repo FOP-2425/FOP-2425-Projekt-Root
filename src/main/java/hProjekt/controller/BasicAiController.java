@@ -50,7 +50,7 @@ public class BasicAiController extends AiController {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
-            System.out.println("Something weird happend");
+            throw new RuntimeException("Main thread was interrupted", e);
         }
 
         final Set<Class<? extends PlayerAction>> allowedActions = playerController.getPlayerObjective()
