@@ -292,7 +292,6 @@ public class PlayerController {
                         action, getPlayerObjective().getAllowedActions()));
             }
             action.execute(this);
-            updatePlayerState();
             return action;
         } catch (final IllegalActionException e) {
             // Ignore and keep going
