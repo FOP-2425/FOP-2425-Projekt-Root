@@ -608,6 +608,12 @@ public class PlayerController {
                         path.add(tile);
                         drivableTiles.put(tile, path);
                     }
+                } else {
+                    if (!drivableTiles.containsKey(currentPair.getValue().getLast())) {
+                        List<Tile> path = new ArrayList<>(currentPair.getValue());
+                        path.add(currentPair.getKey());
+                        drivableTiles.put(currentPair.getKey(), path);
+                    }
                 }
             }
             visitedNodes.add(currentPair.getKey());
