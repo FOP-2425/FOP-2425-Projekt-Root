@@ -184,7 +184,9 @@ public class PlayerActionsController {
             getHexGridController().getEdgeControllersMap().get(edge).highlight();
         });
         if (getPlayerState().hasPath()) {
-            gameBoardController.updateConfirmationOverlay("Rent highlighted rails and drive?",
+            gameBoardController.updateConfirmationOverlay(
+                    getPlayerState().rentedEdges().isEmpty() ? "Drive on own rails?"
+                            : "Rent highlighted rails and drive?",
                     () -> confirmDrive(true),
                     () -> confirmDrive(false));
         } else {
