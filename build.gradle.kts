@@ -1,6 +1,7 @@
 plugins {
     java
     application
+    alias(libs.plugins.algomate)
     alias(libs.plugins.style)
     alias(libs.plugins.jagr.gradle)
     alias(libs.plugins.javafx)
@@ -8,13 +9,35 @@ plugins {
 
 version = file("version").readLines().first()
 
-jagr {
+exercise {
     assignmentId.set("hProjekt")
-    submissions {
-        val main by creating {
-            // studentId.set("")
-            // firstName.set("")
-            // lastName.set("")
+}
+
+submission {
+    // ACHTUNG!
+    // Setzen Sie im folgenden Bereich Ihre TU-ID (NICHT Ihre Matrikelnummer!), Ihren Nachnamen und Ihren Vornamen
+    // in Anführungszeichen (z.B. "ab12cdef" für Ihre TU-ID) ein!
+    // BEISPIEL:
+    // studentId = "ab12cdef"
+    // firstName = "sol_first"
+    // lastName = "sol_last"
+    studentId = "ab12cdef"
+    firstName = "sol_first"
+    lastName = "sol_last"
+
+    // Optionally require own tests for mainBuildSubmission task. Default is false
+    requireTests = false
+}
+
+jagr {
+    graders {
+        val graderPublic by getting {
+            rubricProviderName.set("hProjekt.HProjekt_RubricProviderPublic")
+        }
+        val graderPrivate by creating {
+            parent(graderPublic)
+            graderName.set("FOP-2425-Projekt-Private")
+            rubricProviderName.set("hProjekt.HProjekt_RubricProviderPrivate")
         }
     }
 }
