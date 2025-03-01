@@ -1,4 +1,4 @@
-package graderPrivate.java.hProjekt;
+package hProjekt;
 
 import static org.tudalgo.algoutils.tutor.general.jagr.RubricUtils.criterion;
 
@@ -7,7 +7,7 @@ import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
 
-public class HProjekt_RubricProvider implements RubricProvider {
+public class HProjekt_RubricProviderPrivate implements RubricProvider {
 
     private static final Criterion HProjekt_1_1 = Criterion.builder()
         .shortDescription("P1.1 | Daten des Players")
