@@ -10,108 +10,335 @@ import org.sourcegrade.jagr.api.rubric.RubricProvider;
 public class HProjekt_RubricProviderPrivate implements RubricProvider {
 
     private static final Criterion HProjekt_1_1 = Criterion.builder()
-        .shortDescription("P1.1 | Daten des Players")
-        .maxPoints(1)
-        .minPoints(0)
-        .addChildCriteria(
-                criterion(
-                    "Die Methoden getHexGrid, getname, getID, getColor und isAi geben für einen Spieler die korrekten Werte zurück.",
-                    (JUnitTestRef) null
-                )
-        ).build();
+            .shortDescription("P1.1 | Daten des Players")
+            .maxPoints(1)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methoden getHexGrid, getname, getID, getColor und isAi geben für einen Spieler die korrekten Werte zurück.",
+                            (JUnitTestRef) null))
+            .build();
 
     private static final Criterion HProjekt_1_2 = Criterion.builder()
-        .shortDescription("P1.2 | Bankkonto des Players")
-        .maxPoints(2)
-        .minPoints(0)
-        .addChildCriteria(
-                criterion(
-                    "Die Methode getCredits gibt die korrekte Anzahl Credits eines Spielers zurück.",
-                    (JUnitTestRef) null
-                ),
-            criterion(
-                "Die Methoden addCredits und removeCredits sind vollständig korrekt implementiert.",
-                (JUnitTestRef) null
-            )
-        ).build();
+            .shortDescription("P1.2 | Bankkonto des Players")
+            .maxPoints(2)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode getCredits gibt die korrekte Anzahl Credits eines Spielers zurück.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methoden addCredits und removeCredits sind vollständig korrekt implementiert.",
+                            (JUnitTestRef) null))
+            .build();
 
     private static final Criterion HProjekt_1_3 = Criterion.builder()
-        .shortDescription("P1.3 | Alle Schienen führen nach ...")
-        .maxPoints(6)
-        .minPoints(0)
-        .addChildCriteria(
-            criterion(
-                "Die Methode getRails gibt eine unveränderbare Sicht auf die Schienen des Spielers zurück.",
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode connectsTo gibt genau dann true zurück, wenn beide Edges ein gemeinsames Tile besitzen.",
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode getConnectedEdges gibt alle Kanten der, durch die Edge verbundenen, Tiles zurück.",
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode getConnectedRails gibt alle Schienen zurück, die an den beiden Tiles, die die Edge verbindet, anliegen und zum gegebenen Spieler gehören.",
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode addRail gibt true zurück und fügt eine Schiene hinzu, genau dann wenn alle Kriterien zum Bauen erfüllt sind.",
-                2,
-                (JUnitTestRef) null
-            )
-        ).build();
+            .shortDescription("P1.3 | Alle Schienen führen nach ...")
+            .maxPoints(6)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode getRails gibt eine unveränderbare Sicht auf die Schienen des Spielers zurück.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode connectsTo gibt genau dann true zurück, wenn beide Edges ein gemeinsames Tile besitzen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getConnectedEdges gibt alle Kanten der, durch die Edge verbundenen, Tiles zurück.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getConnectedRails gibt alle Schienen zurück, die an den beiden Tiles, die die Edge verbindet, anliegen und zum gegebenen Spieler gehören.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode addRail gibt true zurück und fügt eine Schiene hinzu, genau dann wenn alle Kriterien zum Bauen erfüllt sind.",
+                            2,
+                            (JUnitTestRef) null))
+            .build();
 
     private static final Criterion HProjekt_1_4 = Criterion.builder()
-        .shortDescription("P1.4 | ...Rom - Implementation der Städte")
-        .maxPoints(11)
-        .minPoints(0)
-        .addChildCriteria(
-            criterion(
-                "Die Methode getNeighbour gibt das Tile zurück, welches in der richtigen Richtung angrenzt.",
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode getEdge gibt die Edge zurück, welche in der richtigen Richtung das Tile verbindet.",
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode getConnectedNeighbours gibt die korrekten Tiles zurück.",
-                3,
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode getConnectedCities gibt eine unveränderbare Sicht auf alle verbundenen Städte zurück.",
-                2,
-                (JUnitTestRef) null
-            ),
-            criterion(
-                "Die Methode getUnconnectedCities gibt eine unveränderbare Sicht auf alle noch nicht verbundenen Städte zurück.",
-                2,
-                (JUnitTestRef) null
-            ),
-            criterion("Die Methode getStartingCities gibt alle Startstädte zurück.",
-                2,
-                (JUnitTestRef) null
-            )
-        ).build();
+            .shortDescription("P1.4 | ...Rom - Implementation der Städte")
+            .maxPoints(11)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode getNeighbour gibt das Tile zurück, welches in der richtigen Richtung angrenzt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getEdge gibt die Edge zurück, welche in der richtigen Richtung das Tile verbindet.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getConnectedNeighbours gibt die korrekten Tiles zurück.",
+                            3,
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getConnectedCities gibt eine unveränderbare Sicht auf alle verbundenen Städte zurück.",
+                            2,
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getUnconnectedCities gibt eine unveränderbare Sicht auf alle noch nicht verbundenen Städte zurück.",
+                            2,
+                            (JUnitTestRef) null),
+                    criterion("Die Methode getStartingCities gibt alle Startstädte zurück.",
+                            2,
+                            (JUnitTestRef) null))
+            .build();
 
     private static final Criterion HProjekt_1 = Criterion.builder()
-        .shortDescription("P1 | Implementierung des Modells")
-        .minPoints(0)
-        .addChildCriteria(
-            HProjekt_1_1,
-            HProjekt_1_2,
-            HProjekt_1_3,
-            HProjekt_1_4
-        ).build();
+            .shortDescription("P1 | Implementierung des Modells")
+            .minPoints(0)
+            .addChildCriteria(
+                    HProjekt_1_1,
+                    HProjekt_1_2,
+                    HProjekt_1_3,
+                    HProjekt_1_4)
+            .build();
+
+    private static final Criterion HProjekt_2_1 = Criterion.builder()
+            .shortDescription("P2.1 | Welche Gleise?")
+            .maxPoints(4)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode canBuildRail gibt false zurück, wenn der Spieler auf der Kante bereits eine Schiene besitzt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode canBuildRail gibt false zurück, wenn der Spieler nicht genug Baubudget hat.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode canBuildRail gibt false zurück, wenn der Spieler nicht genug Credits hat um die Parallelbaukosten zu zahlen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode canBuildRail gibt false zurück, wenn der Spieler in der Fahrphase nicht genug Credits hat um die gesamten Baukosten zu zahlen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode canBuildRail gibt true zurück, wenn alle Bedingungen zum Bauen erfüllt sind",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getBuildableRails gibt nur Kanten zurück, die der Spieler bebauen kann.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getBuildableRails gibt zu Beginn nur Kanten die an Startstädte angrenzen zurück.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_2 = Criterion.builder()
+            .shortDescription("P2.2 | Gleise bauen")
+            .maxPoints(4)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode buildRail löst eine IllegalActionException aus, wenn die Kante nicht zu den baubaren Kanten gehört oder auf der Kante gebaut werden kann.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail ruft Edge.addRail korrekt auf, um die Schiene zu bauen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail berechnet die parallelen Baukosten korrekt und zieht sie vom Spieler ab.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail schreibt anderen Spielern die Einnahmen aus parallelen Baukosten korrekt gut.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail reduziert das Baubudget des Spielers korrekt um die Basis-Baukosten.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail zieht in der Bauphase nur die Parallelbaukosten von den Credits des Spielers ab.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail zieht außerhalb der Bauphase die gesamten Baukosten (Basis- + Parallelbaukosten) ab.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail erkennt das Erreichen einer unverbundenen Stadt korrekt und vergibt den CITY_CONNECTION_BONUS.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode buildRail gewährt keinen CITY_CONNECTION_BONUS für Startstädte.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_3 = Criterion.builder()
+            .shortDescription("P2.3 | Städte verbinden und bauen")
+            .maxPoints(4)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode executeBuildingPhase erhöht die Anzahl der Runden.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeBuildingPhase bestimmt den würfelnden Spieler korrekt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeBuildingPhase löst die Würfelaktion korrekt aus",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeBuildingPhase aktualisiert das Baubudget jedes Spielers.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeBuildingPhase führt für jeden Spieler die Bauaktion aus.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeBuildingPhase stoppt korrekt.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_4 = Criterion.builder()
+            .shortDescription("P2.4 | Prepare the race")
+            .maxPoints(2)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode chooseCities wählt zufällig eine Start- und eine Zielstadt aus allen noch nicht gewählten Städten aus.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode chooseCities stellt sicher, dass Start- und Zielstadt nicht identisch sind.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode chooseCities markiert die ausgewählten Städte im GameState als 'ausgewählt'.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode chooseCities speichert die Auswahl.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_5 = Criterion.builder()
+            .shortDescription("P2.5 | Darf ich fahren?")
+            .maxPoints(4)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode canDrive gibt true zurück, wenn die aktuelle Spielphase die GamePhase.DRIVING_PHASE ist und der Spieler in der aktuellen Fahrerliste vorhanden ist.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode canDrive gibt false zurück, wenn eine der Bedingungen nicht erfüllt ist.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode drive wirft eine IllegalActionException, wenn der Spieler nicht fahren darf oder die Zielkachel nicht erreichbar ist.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode drive aktualisiert die Position des Spielers korrekt nach einer gültigen Bewegung.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode drive berechnet den Würfelüberschuss korrekt und speichert ihn, falls die Zielstadt erreicht wurde.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_6 = Criterion.builder()
+            .shortDescription("P2.6 | Die Qual der Wahl, welche Strecke nehmen ich denn?")
+            .maxPoints(2)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode letPlayersChoosePath setzt den PlayerController für die Fahrphase korrekt zurück und setzt die Spielerposition auf die Startstadt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode letPlayersChoosePath fordert den Spieler korrekt auf, einen Pfad zu wählen.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_7 = Criterion.builder()
+            .shortDescription("P2.7 | Tchooo, Tchooo: Steuerung des Fahrens im Spiel")
+            .maxPoints(3)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode handleDriving tut nichts, wenn keine Spieler fahren.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode handleDriving setzt die Position des Spielers direkt auf die Zielstadt, wenn nur ein Spieler fährt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode handleDriving zieht zu Beginn jeder Runde Config.DICE_SIDES vom Würfelüberschuss der noch fahrenden Spieler ab, falls bereits ein Spieler die Zielstadt erreicht hat.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode handleDriving lässt alle Spieler in der korrekten Reihenfolge würfel und fahren.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode handleDriving stoppt, wenn genügend oder alle Spieler die Zielstadt erreicht haben.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_8 = Criterion.builder()
+            .shortDescription("P2.8 | Winner, Winner, Chicken-Dinner")
+            .maxPoints(2)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode getWinners gibt nur Spieler zurück, die die Zielstadt erreicht haben.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getWinners sortiert die Spieler in absteigender Reihenfolge nach ihrem Würfelüberschuss.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode getWinners gibt maximal so viele Gewinner zurück, wie es Einträge in Config.WINNING_CREDITS gibt.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2_9 = Criterion.builder()
+            .shortDescription("P2.9 | Let the race begin!")
+            .maxPoints(3)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode executeDrivingPhase erhöht zu Beginn jeder Runde die Anzahl der Runden.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeDrivingPhase setzt die Liste der fahrenden Spieler, die Spielerpositionen und die Überschüsse im GameState korrekt zurück.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeDrivingPhase ruft alle 3 Runden die Methode buildingDuringDrivingPhase() auf.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeDrivingPhase fordert den korrekten Spieler auf, eine Start- und Zielstadt zu wählen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeDrivingPhase ruft die Methoden letPlayersChoosePath() und handleDriving() korrekt auf, um die Fahrphase durchzuführen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode executeDrivingPhase ruft getWinners() auf und aktualisiert die Credits der Spieler entsprechend.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_2 = Criterion.builder()
+            .shortDescription("P2 | Control the Flow!")
+            .minPoints(0)
+            .addChildCriteria(
+                    HProjekt_2_1,
+                    HProjekt_2_2,
+                    HProjekt_2_3,
+                    HProjekt_2_4,
+                    HProjekt_2_5,
+                    HProjekt_2_6,
+                    HProjekt_2_7,
+                    HProjekt_2_8,
+                    HProjekt_2_9)
+            .build();
+
+    private static final Criterion HProjekt_3 = Criterion.builder()
+            .shortDescription("P3 | Highscore!")
+            .minPoints(0)
+            .addChildCriteria()
+            .build();
+
+    private static final Criterion HProjekt_4 = Criterion.builder()
+            .shortDescription("P4 | Dem User Interface etwas Leben einhauchen")
+            .minPoints(0)
+            .addChildCriteria()
+            .build();
+
+    private static final Criterion HProjekt_5 = Criterion.builder()
+            .shortDescription("P5 | Weiterführende Aufgaben")
+            .minPoints(0)
+            .addChildCriteria()
+            .build();
 
     public static final Rubric RUBRIC = Rubric.builder()
-        .title("Projekt | Dampfross")
-        .addChildCriteria(
-            HProjekt_1
-        ).build();
+            .title("Projekt | Dampfross")
+            .addChildCriteria(
+                    HProjekt_1,
+                    HProjekt_2,
+                    HProjekt_3,
+                    HProjekt_4,
+                    HProjekt_5)
+            .build();
 
     @Override
     public Rubric getRubric() {
