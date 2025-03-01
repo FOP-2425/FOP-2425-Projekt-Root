@@ -6,6 +6,7 @@ import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.tudalgo.algoutils.tutor.general.jagr.RubricUtils;
 
 public class HProjekt_RubricProviderPrivate implements RubricProvider {
 
@@ -312,22 +313,191 @@ public class HProjekt_RubricProviderPrivate implements RubricProvider {
                     HProjekt_2_9)
             .build();
 
+    private static final Criterion HProjekt_3_1 = Criterion.builder()
+            .shortDescription("P3.1 | Leaderboard-Daten speichern")
+            .maxPoints(3)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode savePlayerData speichert den Namen, die Punkte und den Spielertyp korrekt in einer CSV-Datei.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode savePlayerData verwendet das richtige CSV-Format.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die aktuelle Zeit wird korrekt formatiert.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_3_2 = Criterion.builder()
+            .shortDescription("P3.2 | Leaderboard-Daten laden")
+            .maxPoints(3)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode loadLeaderboardData liest alle gültigen Einträge aus der CSV-Datei und gibt sie als Liste von LeaderBoardEntry zurück.",
+                            2,
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode loadLeaderboardData ignoriert die Kopfzeile der CSV-Datei und greift nur lesend auf die Datei zu.",
+                            (JUnitTestRef) null))
+            .build();
+
     private static final Criterion HProjekt_3 = Criterion.builder()
             .shortDescription("P3 | Highscore!")
             .minPoints(0)
-            .addChildCriteria()
+            .addChildCriteria(
+                    HProjekt_3_1,
+                    HProjekt_3_2)
+            .build();
+
+    private static final Criterion HProjekt_4_1 = Criterion.builder()
+            .shortDescription("P4.1 | Should I stay or should I go?")
+            .maxPoints(1)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode updateUIBasedOnObjective setzt das GUI korrekt auf den Basiszustand zurück.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Falls der aktuelle Spieler ein Computergegner ist, werden keine weiteren Änderungen am GUI vorgenommen.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode updateUIBasedOnObjective konfiguriert das GUI entsprechend der erlaubten Aktionen.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_4_2 = Criterion.builder()
+            .shortDescription("P4.2 | Wo ist der Weg?")
+            .maxPoints(5)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode trimPath verkürzt den Pfad korrekt und gibt alle Kanten des Pfads zurück.",
+                            4,
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode highlightPath hebt alle übergebenen Edges korrekt hervor.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_4_3 = Criterion.builder()
+            .shortDescription("P4.3 | Wo solls eigentlich losgehen?")
+            .maxPoints(5)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode highlightStartingTiles setzt das aktuell gewählte Tile korrekt auf null, bevor die Hervorhebung beginnt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Alle Tiles mit einer Startstadt werden korrekt hervorgehoben, wenn der Spieler noch keine Schienen gebaut hat.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Alle Tiles mit angeschlossenen Schienen des Spielers werden korrekt hervorgehoben, wenn bereits gebaut wurde.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Beim Anklicken eines hervorgehobenen Tiles wird dieses als ausgewähltes Tile gespeichert und alle anderen Hervorhebungen werden entfernt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Wenn das aktuell gewählte Tile erneut angeklickt wird, wird die Auswahl zurückgesetzt und die möglichen Starttiles erneut hervorgehoben.",
+                            (JUnitTestRef) null))
+            .build();
+
+    private static final Criterion HProjekt_4_4 = Criterion.builder()
+            .shortDescription("P4.4 | Bob der Baumeister: Wir bauen Schienen!")
+            .maxPoints(5)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Methode addBuildHandlers leert den selectedRailPath korrekt und entfernt die selectedTileSubscription.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Der Bestätigungs-Dialog wird korrekt angezeigt, wenn der Spieler Schienen bauen soll.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode tut nichts weiter, wenn das Baubudget des Spielers bereits aufgebraucht ist.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Der selectedRailPathListener wird korrekt als Listener zum selectedRailPath hinzugefügt.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Die Methode highlightTrimmedPath hebt korrekt den Pfad zwischen Starttile und Ziel-Tile basierend auf den Baukosten hervor.",
+                            (JUnitTestRef) null),
+                    criterion(
+                            "Wenn der Spieler auf ein Tile klickt, wird die BuildRailAction korrekt ausgeführt.",
+                            (JUnitTestRef) null))
             .build();
 
     private static final Criterion HProjekt_4 = Criterion.builder()
             .shortDescription("P4 | Dem User Interface etwas Leben einhauchen")
             .minPoints(0)
-            .addChildCriteria()
+            .addChildCriteria(
+                    HProjekt_4_1,
+                    HProjekt_4_2,
+                    HProjekt_4_3,
+                    HProjekt_4_4)
+            .build();
+
+    private static final Criterion HProjekt_5_1 = Criterion.builder()
+            .shortDescription("P5.1 | Neue Spielmechaniken")
+            .maxPoints(15)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die erste neue Spielmechanik wurde in das Spiel integriert und ist verständlich dokumentiert.",
+                            1),
+                    criterion(
+                            "Die zweite neue Spielmechanik wurde in das Spiel integriert und ist verständlich dokumentiert.",
+                            1),
+                    criterion(
+                            "Die erste neue Spielmechanik bereichert das Spiel und ist nicht zu stark oder zu schwach.",
+                            1),
+                    criterion(
+                            "Die zweite neue Spielmechanik bereichert das Spiel und ist nicht zu stark oder zu schwach.",
+                            1),
+                    criterion(
+                            "Je nach Komplexität der ersten Mechanik können hier noch bis zu fünf weitere Punkte vergeben werden.",
+                            5),
+                    criterion(
+                            "Je nach Komplexität der zweiten Mechanik können hier noch bis zu fünf weitere Punkte vergeben werden.",
+                            5),
+                    criterion(
+                            "Es wurden 2 Spielmechaniken implementiert.",
+                            1))
+            .grader(RubricUtils.manualGrader())
+            .build();
+
+    private static final Criterion HProjekt_5_2 = Criterion.builder()
+            .shortDescription("P5.2 | KI als Gegner?")
+            .maxPoints(15)
+            .minPoints(0)
+            .addChildCriteria(
+                    criterion(
+                            "Die Strategie des Computergegners ist gut dokumentiert und sinnvoll.", 7),
+                    criterion(
+                            "Die Strategie des Computergegners ist komplexer, als die der vorgegebenen KI.",
+                            1),
+                    criterion(
+                            "Der Computergegner ist implementiert und kann über das Menü ausgewählt werden.",
+                            1),
+                    criterion(
+                            "Der Computergegner kann alle Aktionen sinnvoll ausführen.",
+                            3),
+                    criterion(
+                            "Der Computergegner führt nur erlaubte Aktionen aus",
+                            1),
+                    criterion(
+                            "Wenn man zwei Computergegner gegeneinander spielen lässt, gewinnt einer der beiden.",
+                            2))
+            .grader(RubricUtils.manualGrader())
             .build();
 
     private static final Criterion HProjekt_5 = Criterion.builder()
             .shortDescription("P5 | Weiterführende Aufgaben")
             .minPoints(0)
-            .addChildCriteria()
+            .addChildCriteria(
+                    HProjekt_5_1,
+                    HProjekt_5_2)
             .build();
 
     public static final Rubric RUBRIC = Rubric.builder()
