@@ -3,6 +3,7 @@ package hProjekt;
 import static org.tudalgo.algoutils.tutor.general.jagr.RubricUtils.criterion;
 
 import hProjekt.controller.LeaderboardControllerTests;
+import hProjekt.model.PlayerImplTests;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
@@ -18,7 +19,12 @@ public class HProjekt_RubricProviderPublic implements RubricProvider {
         .minPoints(0)
         .addChildCriteria(
             criterion(
-                "Die Methoden getHexGrid, getname, getID, getColor und isAi geben für einen Spieler die korrekten Werte zurück."))
+                "Die Methoden getHexGrid, getname, getID, getColor und isAi geben für einen Spieler die korrekten Werte zurück.",
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testGetHexGrid")),
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testGetName")),
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testGetId")),
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testGetColor")),
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testIsAi", boolean.class))))
         .build();
 
     private static final Criterion HProjekt_1_2 = Criterion.builder()
@@ -27,9 +33,13 @@ public class HProjekt_RubricProviderPublic implements RubricProvider {
         .minPoints(0)
         .addChildCriteria(
             criterion(
-                "Die Methode getCredits gibt die korrekte Anzahl Credits eines Spielers zurück."),
+                "Die Methode getCredits gibt die korrekte Anzahl Credits eines Spielers zurück.",
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testGetCredits", int.class))),
             criterion(
-                "Die Methoden addCredits und removeCredits sind vollständig korrekt implementiert."))
+                "Die Methoden addCredits und removeCredits sind vollständig korrekt implementiert.",
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testAddCredits", int.class)),
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testRemoveCredits", int.class)),
+                JUnitTestRef.ofMethod(() -> PlayerImplTests.class.getDeclaredMethod("testRemoveCreditsNegative"))))
         .build();
 
     private static final Criterion HProjekt_1_3 = Criterion.builder()

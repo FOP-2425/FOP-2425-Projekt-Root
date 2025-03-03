@@ -3,12 +3,18 @@ package hProjekt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import hProjekt.controller.AiController;
+import hProjekt.model.HexGrid;
+import hProjekt.model.Player;
+import hProjekt.model.PlayerImpl;
+import javafx.scene.paint.Color;
 import org.tudalgo.algoutils.tutor.general.SpoonUtils;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
@@ -106,5 +112,19 @@ public abstract class TestUtils {
             .getBody()
             .descendantIterator();
         consumer.accept(iterator);
+    }
+
+    public static Player newPlayerInstance(final HexGrid hexGrid,
+                                      final Color color,
+                                      final int id,
+                                      final String name,
+                                      final Class<? extends AiController> ai) {
+        try {
+            Constructor<PlayerImpl> constructor = PlayerImpl.class.getDeclaredConstructor(HexGrid.class, Color.class, int.class, String.class, Class.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(hexGrid, color, id, name, ai);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
